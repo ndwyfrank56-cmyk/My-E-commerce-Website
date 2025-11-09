@@ -2568,7 +2568,7 @@ def viewall():
                 JOIN products p ON dv.prod_id = p.id
                 WHERE (p.category_id IS NULL OR p.category_id = 0 OR p.category_id NOT IN (SELECT id FROM categories))
                 AND LOWER(dv.attr_name) = 'size'
-                ORDER BY dv.attr_value
+                ORDER BY LOWER(dv.attr_value)
             """)
         else:
             cur.execute("""
@@ -2576,7 +2576,7 @@ def viewall():
                 FROM dropdown_variation dv
                 JOIN products p ON dv.prod_id = p.id
                 WHERE p.category_id = %s AND LOWER(dv.attr_name) = 'size'
-                ORDER BY dv.attr_value
+                ORDER BY LOWER(dv.attr_value)
             """, (category_id,))
         available_sizes = [row[0] for row in cur.fetchall()]
         
