@@ -1,0 +1,129 @@
+/* ========================================
+   HOME PAGE STYLES - EXTRACTED FROM INLINE
+   ======================================== */
+
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #f9fafb;
+  --border: #e5e7eb;
+  --text-primary: #111318;
+  --text-secondary: #4b5563;
+  --text-light: #6b7280;
+  --price-tag-green: #2e4d2c; /* dark military green */
+  --accent: #111318;
+  --accent-hover: #1d2228;
+  --danger: #b54747;
+  --danger-hover: #9e3d3d;
+  --surface: var(--panel);
+  --surface-elevated: var(--panel-2);
+  --border-light: var(--border);
+  --shadow-sm: 0 1px 0 rgba(0,0,0,0.06);
+  --shadow-md: 0 2px 0 rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 0 rgba(0,0,0,0.10);
+  --shadow-xl: 0 6px 0 rgba(0,0,0,0.12);
+  --border-radius: 10px;
+  --border-radius-lg: 12px;
+  --transition: all 0.25s ease;
+}
+
+/* Floating price badge: minimal pill */
+.price-badge {
+  position: absolute;
+  left: 0.65rem;
+  bottom: 0.65rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: .4rem .7rem;
+  border-radius: 6px;
+  background: rgba(46,77,44,0.95);
+  color: #e8f5e4;
+  border: none;
+  font-weight: 700;
+  font-size: .85rem;
+  box-shadow: none;
+  backdrop-filter: none;
+  line-height: 1;
+}
+
+.price-badge .original-price {
+  font-size: 0.75rem;
+  text-decoration: line-through;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.price-badge .discount-percent {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Remove decorative hole/notch like View All */
+.price-badge::before { content: none; }
+.price-badge::after { content: none; }
+.price-badge i { display: none; }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+:root{ --navbar-height: 120px; }
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2002; /* above overlay */
+  background: var(--panel);
+  border-bottom: none;
+  transition: var(--transition);
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-top,
+.navbar-bottom {
+  border-bottom: 1px solid var(--border);
+}
