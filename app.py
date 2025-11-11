@@ -1464,6 +1464,7 @@ def register():
         phone = request.form.get('phone', '').strip()
         city = request.form.get('city', '').strip()
         address = request.form.get('address', '').strip()
+        ip_address = request.remote_addr
 
         errors = []
         if not username or len(username) < 3:
