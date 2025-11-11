@@ -1634,25 +1634,25 @@
       justify-content: center;
       text-align: center;
       padding: 5rem 1.5rem 4rem;
-      margin: 120px auto 2rem;
-      max-width: 90%;
+      margin: 120px 0 2rem;
+      max-width: 100%;
       background: var(--bg);
       overflow: hidden;
-      border-radius: 20px;
-      border: 1px solid var(--border);
+      border-radius: 0;
+      border: none;
     }
 
     .hero-section::before {
       content: '';
       position: absolute;
-      top: -20%;
+      top: 0;
       left: 0;
       right: 0;
-      bottom: -20%;
+      bottom: 0;
       background: url('/static/eshop.jpg') no-repeat center center / cover;
       opacity: 0.3;
       z-index: 1;
-      will-change: transform;
+      will-change: auto;
       transition: none;
     }
 
@@ -3689,12 +3689,12 @@
       updateParallax(); // Initial call
     }
     
-    // Initialize parallax when DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initParallax);
-    } else {
-      initParallax();
-    }
+    // Parallax disabled for performance
+    // if (document.readyState === 'loading') {
+    //   document.addEventListener('DOMContentLoaded', initParallax);
+    // } else {
+    //   initParallax();
+    // }
   </script>
   
   <script defer src="{{ url_for('static', filename='js/loading.js') }}"></script>
