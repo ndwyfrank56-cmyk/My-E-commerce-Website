@@ -1311,17 +1311,18 @@
         {% endif %}
 
         <!-- Quantity Selector -->
-        <div style="margin-top: 1.5rem; margin-bottom: 1rem;">
+        <div style="margin-top: 1.5rem; margin-bottom: 1rem;" data-product-stock="{{ product.stock }}">
           <label style="display: block; font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem;">Quantity</label>
           <div class="item-quantity" style="display: inline-flex; padding: 0.4rem 0.75rem;">
-            <button class="qty-btn" onclick="changeQuantity(-1)" type="button">
+            <button class="qty-btn" onclick="changeQuantity(-1)" type="button" id="qtyMinusBtn">
               <i class="fas fa-minus"></i>
             </button>
             <span class="qty-value" id="productQuantity">1</span>
-            <button class="qty-btn" onclick="changeQuantity(1)" type="button">
+            <button class="qty-btn" onclick="changeQuantity(1)" type="button" id="qtyPlusBtn">
               <i class="fas fa-plus"></i>
             </button>
           </div>
+          <div id="qtyWarning" style="display: none; font-size: 0.75rem; color: #ef4444; margin-top: 0.5rem;"></div>
         </div>
 
         <div class="actions">
@@ -1892,6 +1893,10 @@
       
       // Refresh hidden input for dropdowns
       updateSelectedDropdownVariations();
+      
+      // Reset quantity to 1 when variation changes
+      const qtyEl = document.getElementById('productQuantity');
+      if (qtyEl) qtyEl.textContent = '1';
     }
     
     // Variation box click tracking is handled by onclick="selectVariationBox(this)" in the HTML
@@ -1990,17 +1995,76 @@
       // Add active to clicked box
       button.classList.add('active');
       updateSelectedDropdownVariations();
+      
+      // Reset quantity to 1 when variation changes
+      const qtyEl = document.getElementById('productQuantity');
+      if (qtyEl) qtyEl.textContent = '1';
     }
     
-    // Quantity change function
+    // Quantity change function with validation
     function changeQuantity(delta) {
       const qtyEl = document.getElementById('productQuantity');
+      const warningEl = document.getElementById('qtyWarning');
       if (!qtyEl) return;
+      
+      // Get max stock
+      let maxStock = 99;
+      
+      // Check if variations exist
+      const hasImageVars = document.querySelectorAll('.image-variation-item').length > 0;
+      const hasDropdownVars = document.querySelectorAll('.variation-boxes').length > 0;
+      
+      if (hasImageVars || hasDropdownVars) {
+        // Check if variation is selected
+        const dropdownVarId = (document.getElementById('selectedDropdownVariations')?.value || '').split(',').filter(Boolean)[0];
+        const imgVarId = document.getElementById('selectedImageVariations')?.value?.trim();
+        
+        if (hasDropdownVars && !dropdownVarId) {
+          warningEl.textContent = 'Please select a size first';
+          warningEl.style.display = 'block';
+          setTimeout(() => warningEl.style.display = 'none', 3000);
+          return;
+        }
+        
+        if (hasImageVars && !imgVarId) {
+          warningEl.textContent = 'Please select a color first';
+          warningEl.style.display = 'block';
+          setTimeout(() => warningEl.style.display = 'none', 3000);
+          return;
+        }
+        
+        // Get stock from selected variation
+        if (dropdownVarId) {
+          const selectedBox = document.querySelector(`.variation-box[data-variation-id="${dropdownVarId}"]`);
+          if (selectedBox) {
+            maxStock = parseInt(selectedBox.getAttribute('data-stock') || '99', 10);
+          }
+        }
+      } else {
+        // No variations, use product stock
+        const stockEl = document.querySelector('[data-product-stock]');
+        if (stockEl) {
+          maxStock = parseInt(stockEl.getAttribute('data-product-stock') || '99', 10);
+        }
+      }
+      
+      // Update quantity
       let current = parseInt(qtyEl.textContent || '1', 10);
       current += delta;
-      if (current < 1) current = 1;
-      if (current > 99) current = 99;
+      
+      if (current < 1) {
+        current = 1;
+      }
+      
+      if (current > maxStock) {
+        warningEl.textContent = `Only ${maxStock} available in stock`;
+        warningEl.style.display = 'block';
+        setTimeout(() => warningEl.style.display = 'none', 3000);
+        current = maxStock;
+      }
+      
       qtyEl.textContent = current;
+      warningEl.style.display = 'none';
     }
     
     async function addToCartWithVariations(productId) {
