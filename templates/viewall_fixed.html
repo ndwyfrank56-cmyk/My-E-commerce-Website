@@ -1092,7 +1092,7 @@
     #leftSidebar .sidebar-scrollable {
       flex: 1;
       overflow-y: auto;
-      padding-bottom: 80px; /* Space for login pocket */
+      padding-bottom: 20px;
     }
     
     /* Sidebar Login Pocket - Fixed at Bottom */
@@ -3080,7 +3080,7 @@
     }
 
     @media (max-width: 900px) {
-      body { padding-top: 100px; }
+      body { padding-top: 140px; }
       .main-content { padding: 0.5rem 1rem 3rem 1rem; }
       .filter-products-wrapper { padding: 1rem; gap: 1.5rem; }
       .category-header-bar { 
@@ -3100,7 +3100,7 @@
     }
 
     @media (max-width: 768px) {
-      body { padding-top: 95px; }
+      body { padding-top: 135px; }
       .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
       .main-content { padding: 0.25rem 0.75rem 2.5rem 0.75rem; }
       
@@ -3143,7 +3143,7 @@
     }
 
     @media (max-width: 480px) {
-      body { padding-top: 90px; }
+      body { padding-top: 130px; }
       .products-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
       .main-content { padding: 0.25rem 0.5rem 1.5rem 0.5rem; }
       .filter-products-wrapper { padding: 0.5rem; gap: 1rem; }
@@ -3855,18 +3855,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </ul>
       </div>
       
-      <!-- Login/Logout Button - Fixed at Bottom -->
-      <div class="sidebar-login-section">
-        {% if session.get('user_id') %}
-          <a href="/logout" class="sidebar-login-btn">
-            <i class="fas fa-sign-out-alt"></i>Logout
-          </a>
-        {% else %}
-          <a href="/login" class="sidebar-login-btn">
-            <i class="fas fa-sign-in-alt"></i>Login
-          </a>
-        {% endif %}
-      </div>
     </div>
   </aside>
 

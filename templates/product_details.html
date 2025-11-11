@@ -231,7 +231,7 @@
     #leftSidebar .sidebar-scrollable {
       flex: 1;
       overflow-y: auto;
-      padding-bottom: 80px; /* Space for login pocket */
+      padding-bottom: 20px;
     }
     
     /* Sidebar Login Pocket - Fixed at Bottom */
@@ -1074,18 +1074,6 @@
         </ul>
       </div>
       
-      <!-- Login/Logout Button - Fixed at Bottom -->
-      <div class="sidebar-login-section">
-        {% if session.get('user_id') %}
-          <a href="/logout" class="sidebar-login-btn">
-            <i class="fas fa-sign-out-alt"></i>Logout
-          </a>
-        {% else %}
-          <a href="/login" class="sidebar-login-btn">
-            <i class="fas fa-sign-in-alt"></i>Login
-          </a>
-        {% endif %}
-      </div>
     </div>
   </aside>
 
