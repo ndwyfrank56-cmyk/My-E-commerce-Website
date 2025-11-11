@@ -1078,22 +1078,43 @@
       }
 
       .mini-cart-footer {
-        padding: 1rem;
+        padding: 1.25rem 1rem 1.5rem;
+        position: sticky;
+        bottom: 0;
+        z-index: 100;
+        background: linear-gradient(180deg, rgba(15, 19, 24, 1) 0%, rgba(10, 13, 18, 1) 100%);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.6);
       }
 
       .cart-subtotal {
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 0;
+        margin-bottom: 1rem;
       }
 
       .cart-buttons {
-        gap: 0.5rem;
+        gap: 0.75rem;
+        flex-direction: column;
       }
 
       .btn-checkout,
       .btn-view-cart {
         flex: 1;
-        padding: 0.65rem 0.75rem;
-        font-size: 0.8rem;
+        width: 100%;
+        padding: 1rem 1.25rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        min-height: 50px;
+      }
+      
+      .btn-checkout {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      
+      .btn-view-cart {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
     }
 
