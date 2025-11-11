@@ -4071,10 +4071,10 @@ def add_review():
             review_text = review_text[:2000]
 
         cur = mysql.connection.cursor()
-        # Insert review with rating into reviews table
+        # Insert review with rating into reviews table (replie field required by DB schema)
         cur.execute(
-            "INSERT INTO reviews (user_id, rating, review, product_id) VALUES (%s, %s, %s, %s)",
-            (session['user_id'], rating if rating is not None else 0, review_text, product_id)
+            "INSERT INTO reviews (user_id, rating, review, product_id, replie) VALUES (%s, %s, %s, %s, %s)",
+            (session['user_id'], rating if rating is not None else 0, review_text, product_id, '')
         )
         
         # Recompute product average rating and update products.rate
