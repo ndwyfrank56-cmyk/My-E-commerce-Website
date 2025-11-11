@@ -3071,6 +3071,10 @@
         width: 100%; 
         max-width: 100%;
         margin-bottom: 1.5rem;
+        order: 2; /* Move filters below products on mobile */
+      }
+      .products-section {
+        order: 1; /* Products appear first on mobile */
       }
       .products-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
     }
