@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='21') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='23') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <style>
     :root {
@@ -798,37 +798,55 @@
     }
 
     .btn-view-cart-header {
-      padding: 0.4rem 0.8rem;
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 0.5rem 1rem;
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      border: 1px solid rgba(229, 231, 235, 0.6);
       border-radius: 6px;
       text-decoration: none;
       font-size: 0.8rem;
       font-weight: 600;
       transition: all 0.2s ease;
+      min-width: 80px;
+      text-align: center;
     }
 
     .btn-view-cart-header:hover {
-      background: rgba(34, 197, 94, 0.25);
-      color: #16a34a;
+      background: rgba(229, 231, 235, 1);
+      color: #000;
+      transform: translateY(-1px);
     }
 
     .btn-checkout-header {
-      padding: 0.4rem 0.8rem;
-      background: rgba(59, 130, 246, 0.15);
-      color: #3b82f6;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.5rem 1rem;
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      border: 1px solid rgba(229, 231, 235, 0.6);
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
+      min-width: 80px;
+      text-align: center;
     }
 
     .btn-checkout-header:hover {
-      background: rgba(59, 130, 246, 0.25);
-      color: #2563eb;
+      background: rgba(229, 231, 235, 1);
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .qty-simple {
+      display: inline-block;
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 20px;
+      text-align: center;
     }
 
     .mini-cart-count {
@@ -2640,11 +2658,11 @@
   }
   
   .scroll-arrow.left {
-    left: 60px;
+    left: 80px;
   }
   
   .scroll-arrow.right {
-    right: 60px;
+    right: 80px;
   }
   
   .scroll-arrow:disabled {
@@ -3474,7 +3492,6 @@
           <a href="/addtocart" class="btn-view-cart-header">View Cart</a>
           <button class="btn-checkout-header" onclick="window.location.href='/checkout'">Checkout</button>
         </div>
-        <span class="mini-cart-count">({{ cart_items|length if cart_items else 0 }})</span>
       </div>
       <button class="mini-cart-close" onclick="closeMiniCart()" aria-label="Close cart">
         <i class="fas fa-times"></i>
@@ -3516,7 +3533,7 @@
                 <div class="item-price-qty">
                   <span class="item-price">RWF {{ "{:,.0f}".format(item.price) }}</span>
                   <div class="item-quantity">
-                    <span class="qty-display">Qty: {{ item.quantity }}</span>
+                    <span class="qty-simple">{{ item.quantity }}</span>
                   </div>
                 </div>
               </div>

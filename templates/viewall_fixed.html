@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='21') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='23') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -373,38 +373,57 @@
     }
 
     .btn-view-cart-header {
-      padding: 0.4rem 0.8rem;
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 0.5rem 1rem;
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      border: 1px solid rgba(229, 231, 235, 0.6);
       border-radius: 6px;
       text-decoration: none;
       font-size: 0.8rem;
       font-weight: 600;
       transition: all 0.2s ease;
+      min-width: 80px;
+      text-align: center;
     }
 
     .btn-view-cart-header:hover {
-      background: rgba(34, 197, 94, 0.25);
-      color: #16a34a;
+      background: rgba(229, 231, 235, 1);
+      color: #000;
+      transform: translateY(-1px);
     }
 
     .btn-checkout-header {
-      padding: 0.4rem 0.8rem;
-      background: rgba(59, 130, 246, 0.15);
-      color: #3b82f6;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.5rem 1rem;
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      border: 1px solid rgba(229, 231, 235, 0.6);
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
+      min-width: 80px;
+      text-align: center;
     }
 
     .btn-checkout-header:hover {
-      background: rgba(59, 130, 246, 0.25);
-      color: #2563eb;
+      background: rgba(229, 231, 235, 1);
+      color: #000;
+      transform: translateY(-1px);
     }
+
+    .qty-simple {
+      display: inline-block;
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 20px;
+      text-align: center;
+    }
+
     .mini-cart-count { color: rgba(255, 255, 255, 0.6); font-weight: 700; font-size: 0.95rem; }
     .mini-cart-close { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 8px; color: #fff; font-size: 1.2rem; cursor: pointer; }
     .mini-cart-body { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; scrollbar-width: none; -ms-overflow-style: none; }
@@ -3039,6 +3058,79 @@
       color: rgba(255,255,255,0.7);
     }
 
+    /* Sort Radio Options */
+    .sort-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sort-radio-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      transition: all 0.2s ease;
+    }
+
+    .sort-radio-label:hover {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .sort-radio-label input[type="radio"] {
+      display: none;
+    }
+
+    .sort-radio-label span {
+      position: relative;
+      padding-left: 1.75rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      transition: all 0.2s ease;
+    }
+
+    .sort-radio-label span::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .sort-radio-label span::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3b82f6;
+      opacity: 0;
+      transition: all 0.2s ease;
+    }
+
+    .sort-radio-label input[type="radio"]:checked + span {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .sort-radio-label input[type="radio"]:checked + span::before {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+    }
+
+    .sort-radio-label input[type="radio"]:checked + span::after {
+      opacity: 1;
+    }
+
     /* Clean Secondary Section */
     .filter-secondary-section {
       padding: 1.5rem 2rem 1rem;
@@ -3591,6 +3683,34 @@
           </div>
         </div>
 
+        <!-- Sort Options (Collapsible) -->
+        <div class="filter-section" id="sortSection">
+          <div class="filter-section-header" onclick="toggleFilterSection('sortSection')">
+            <h4 class="filter-title">Sort By</h4>
+            <i class="fas fa-chevron-down collapse-icon"></i>
+          </div>
+          <div class="filter-section-content">
+            <div class="sort-options">
+              <label class="sort-radio-label">
+                <input type="radio" name="sort_by" value="newest" {% if sort_by == 'newest' %}checked{% endif %}>
+                <span>Newest First</span>
+              </label>
+              <label class="sort-radio-label">
+                <input type="radio" name="sort_by" value="price_low" {% if sort_by == 'price_low' %}checked{% endif %}>
+                <span>Price: Low → High</span>
+              </label>
+              <label class="sort-radio-label">
+                <input type="radio" name="sort_by" value="price_high" {% if sort_by == 'price_high' %}checked{% endif %}>
+                <span>Price: High → Low</span>
+              </label>
+              <label class="sort-radio-label">
+                <input type="radio" name="sort_by" value="rating" {% if sort_by == 'rating' %}checked{% endif %}>
+                <span>Top Rated</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <!-- Out of Stock (Secondary Section) -->
         <div class="filter-secondary-section">
           <label class="checkbox-simple-label">
@@ -3623,17 +3743,6 @@
         <div class="category-header-left">
           <h1 class="category-title">{{ category.name if category else 'Category' }}</h1>
           <p class="products-count">{{ total_products }} products</p>
-        </div>
-        <div class="category-header-right">
-          <div class="sort-wrapper">
-            <label for="sortSelect">Sort:</label>
-            <select id="sortSelect" class="sort-select">
-              <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
-              <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low → High</option>
-              <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High → Low</option>
-              <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Top Rated</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -3835,7 +3944,7 @@ class PriceSlider {
 // ===== FILTER APPLY FUNCTIONS =====
 function applyFilters() {
   const categoryId = new URLSearchParams(window.location.search).get('category');
-  const sortBy = document.getElementById('sortSelect').value;
+  const sortBy = document.querySelector('input[name="sort_by"]:checked')?.value || 'newest';
   const showOOS = document.getElementById('showOOS').checked ? '1' : '0';
   
   const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(el => el.value);
@@ -3895,8 +4004,10 @@ document.addEventListener('DOMContentLoaded', () => {
     priceSlider.updateUI();
   }
   
-  // Sort dropdown auto-applies
-  document.getElementById('sortSelect')?.addEventListener('change', applyFilters);
+  // Sort radio buttons auto-apply
+  document.querySelectorAll('input[name="sort_by"]').forEach(radio => {
+    radio.addEventListener('change', applyFilters);
+  });
 });
 </script>
 
@@ -3949,7 +4060,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="/addtocart" class="btn-view-cart-header">View Cart</a>
           <button class="btn-checkout-header" onclick="window.location.href='/checkout'">Checkout</button>
         </div>
-        <span class="mini-cart-count">({{ cart_items|length if cart_items else 0 }})</span>
       </div>
       <button class="mini-cart-close" onclick="closeMiniCart()" aria-label="Close cart">
         <i class="fas fa-times"></i>
@@ -3991,7 +4101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="item-price-qty">
                   <span class="item-price">RWF {{ "{:,.0f}".format(item.price) }}</span>
                   <div class="item-quantity">
-                    <span class="qty-display">Qty: {{ item.quantity }}</span>
+                    <span class="qty-simple">{{ item.quantity }}</span>
                   </div>
                 </div>
               </div>
