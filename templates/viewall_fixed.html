@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='25') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='26') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -373,7 +373,7 @@
     }
 
     .btn-view-cart-header {
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.2rem;
       background: rgba(229, 231, 235, 0.9);
       color: #111318;
       border: 1px solid rgba(229, 231, 235, 0.6);
@@ -382,7 +382,11 @@
       font-size: 0.8rem;
       font-weight: 600;
       transition: all 0.2s ease;
-      min-width: 80px;
+      width: 90px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
     }
 
@@ -393,7 +397,7 @@
     }
 
     .btn-checkout-header {
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.2rem;
       background: rgba(229, 231, 235, 0.9);
       color: #111318;
       border: 1px solid rgba(229, 231, 235, 0.6);
@@ -402,7 +406,11 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      min-width: 80px;
+      width: 90px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
     }
 
@@ -414,12 +422,9 @@
 
     .qty-simple {
       display: inline-block;
-      background: rgba(229, 231, 235, 0.9);
-      color: #111318;
-      border-radius: 4px;
-      padding: 2px 6px;
+      color: rgba(255, 255, 255, 0.8);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
       min-width: 20px;
       text-align: center;
     }
