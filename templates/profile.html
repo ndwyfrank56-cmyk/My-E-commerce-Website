@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='27') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='30') }}">
   <style>
     :root {
       --bg: #0b0c10;
@@ -520,118 +520,6 @@
       color: var(--text-secondary);
     }
     
-    /* Sign Out Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      z-index: 10000;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .modal-overlay.active {
-      display: flex;
-    }
-    
-    .modal-content {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      animation: modalSlideIn 0.2s ease;
-    }
-    
-    @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .modal-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    
-    .modal-header i {
-      font-size: 1.5rem;
-      color: rgba(239, 68, 68, 0.9);
-    }
-    
-    .modal-header h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin: 0;
-    }
-    
-    .modal-body {
-      margin-bottom: 1.5rem;
-    }
-    
-    .modal-body p {
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0;
-    }
-    
-    .modal-actions {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: flex-end;
-    }
-    
-    .modal-btn {
-      padding: 0.65rem 1.5rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .modal-btn-cancel {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-    
-    .modal-btn-cancel:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-primary);
-    }
-    
-    .modal-btn-confirm {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: rgba(239, 68, 68, 0.9);
-    }
-    
-    .modal-btn-confirm:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.5);
-      color: rgba(239, 68, 68, 1);
-    }
     
     .loading-state i, .empty-state i {
       font-size: 3rem;
@@ -1440,7 +1328,7 @@
         <!-- Login Pocket Section -->
         <div class="sidebar-login-section">
           {% if session.user_id %}
-            <a href="/logout" class="sidebar-login-btn" onclick="showSignOutModal(event)">
+            <a href="/logout" class="sidebar-login-btn" onclick="return confirm('Are you sure you want to sign out?')">
               <i class="fas fa-sign-out-alt"></i> Sign Out
             </a>
           {% else %}
@@ -1515,7 +1403,7 @@
                   <h4>Sign Out</h4>
                   <p>Log out of your account securely</p>
                 </div>
-                <a href="/logout" class="btn btn-logout" onclick="showSignOutModal(event)">
+                <a href="/logout" class="btn btn-logout" onclick="return confirm('Are you sure you want to sign out?')">
                   <i class="fas fa-sign-out-alt"></i> Sign Out
                 </a>
               </div>
@@ -2201,41 +2089,5 @@
     }
   </script>
 
-  <!-- Sign Out Confirmation Modal -->
-  <div id="signOutModal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <i class="fas fa-sign-out-alt"></i>
-        <h3>Sign Out</h3>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to sign out?</p>
-      </div>
-      <div class="modal-actions">
-        <button class="modal-btn modal-btn-cancel" onclick="closeSignOutModal()">Cancel</button>
-        <a href="/logout" class="modal-btn modal-btn-confirm">
-          <i class="fas fa-sign-out-alt"></i> Sign Out
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function showSignOutModal(event) {
-      event.preventDefault();
-      document.getElementById('signOutModal').classList.add('active');
-    }
-    
-    function closeSignOutModal() {
-      document.getElementById('signOutModal').classList.remove('active');
-    }
-    
-    // Close modal when clicking outside
-    document.getElementById('signOutModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeSignOutModal();
-      }
-    });
-  </script>
 </body>
 </html>

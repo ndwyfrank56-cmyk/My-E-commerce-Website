@@ -1,0 +1,39 @@
+[build]
+  # Build command - not needed for Flask apps
+  command = ""
+  
+  # Publish directory - Flask serves from root
+  publish = "."
+
+[build.environment]
+  # Python version
+  PYTHON_VERSION = "3.11"
+
+# Redirect all requests to the Flask app
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/app"
+  status = 200
+
+# Function configuration for Flask app
+[functions]
+  # Directory where the function files are located
+  directory = "netlify/functions"
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Environment variables (these will be set in Netlify dashboard)
+# FLASK_ENV=production
+# PRODUCTION=True
+# SECRET_KEY=your-production-secret-key
+# MYSQL_HOST=your-production-mysql-host
+# MYSQL_USER=your-production-mysql-user
+# MYSQL_PASSWORD=your-production-mysql-password
+# MYSQL_DB=your-production-database-name

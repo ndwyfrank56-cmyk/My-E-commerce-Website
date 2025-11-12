@@ -54,7 +54,7 @@
       background: var(--bg);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      padding-top: 105px;
+      padding-top: 125px;
       box-sizing: border-box;
     }
 
@@ -73,12 +73,12 @@
     .navbar-container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0.85rem 2rem;
+      padding: 1.2rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
 
     .navbar-top,
@@ -87,24 +87,27 @@
     }
 
     .navbar-top .navbar-container {
-      padding: 0.75rem 2rem;
+      padding: 1rem 2.5rem;
+      min-height: 60px;
     }
 
     .navbar-bottom .navbar-container {
-      padding: 0.6rem 2rem;
+      padding: 1rem 2.5rem;
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
-      column-gap: 1rem;
+      column-gap: 1.5rem;
+      min-height: 65px;
     }
 
     .logo {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-weight: 800;
       letter-spacing: 0.02em;
-      color: rgba(255,255,255,0.85) !important;
+      color: rgba(255,255,255,0.95) !important;
       text-decoration: none;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     .logo:visited,
     .logo:hover { color: rgba(255,255,255,0.92) !important; text-decoration: none; }
@@ -134,15 +137,17 @@
 
     .search-input {
       width: 100%;
-      padding: 14px 20px 14px 50px;
-      border: none;
+      padding: 16px 24px 16px 55px;
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 50px;
-      background: rgba(24,24,24,0.6);
+      background: rgba(24,24,24,0.8);
       color: var(--text-primary);
-      font-size: 0.95rem;
+      font-size: 1rem;
       outline: none;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-      transition: none;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
     .search-input::placeholder {
@@ -150,19 +155,20 @@
     }
 
     .search-input:focus {
-      border: none;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 3px rgba(255,255,255,0.05);
       outline: none;
+      background: rgba(24,24,24,0.9);
     }
 
     .search-icon {
       position: absolute;
-      left: 18px;
+      left: 22px;
       top: 50%;
       transform: translateY(-50%);
-      color: #AAAAAA;
+      color: #CCCCCC;
       pointer-events: none;
-      font-size: 0.95rem;
+      font-size: 1.1rem;
     }
 
     .search-dropdown {
@@ -309,54 +315,85 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
     .nav-btn {
       position: relative;
-      padding: 0.5rem;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: var(--panel-2);
-      border-radius: 10px;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(27, 32, 43, 0.8);
+      border-radius: 12px;
       cursor: pointer;
-      color: rgba(255,255,255,0.5);
-      font-size: 0.9rem;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
-      box-shadow: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
     .nav-btn.profile {
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.35);
-      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.9);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.55),
-        inset 0 -1px 0 rgba(0,0,0,0.08),
-        0 6px 14px rgba(0,0,0,0.20);
+        inset 0 1px 0 rgba(255,255,255,0.6),
+        inset 0 -1px 0 rgba(0,0,0,0.1),
+        0 8px 16px rgba(0,0,0,0.25);
     }
     .nav-btn.profile i { color: #111318; }
     .nav-btn.profile:hover { background: rgba(255,255,255,0.92); border-color: rgba(255,255,255,0.45); box-shadow: 0 10px 22px rgba(0,0,0,0.22); }
 
     .nav-btn.wishlist {
-      border: none;
-      background: transparent;
-      padding: 0.55rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(27, 32, 43, 0.8);
+      padding: 0.75rem;
       color: var(--text-secondary);
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       position: relative;
       text-decoration: none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .nav-btn.wishlist i { color: #d1d5db; }
-    .nav-btn.wishlist:hover i { color: #f3f4f6; }
+    .nav-btn.wishlist i { color: #e5e7eb; }
+    .nav-btn.wishlist:hover i { color: #f9fafb; }
 
-    .nav-btn.cart { border: none; background: transparent; padding: 0.55rem; position: relative; }
-    .cart-badge { position: absolute; top: -6px; right: -6px; background: rgba(255, 255, 255, 0.2); color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+    .nav-btn.cart { 
+      border: 1px solid rgba(255,255,255,0.15); 
+      background: rgba(27, 32, 43, 0.8); 
+      padding: 0.75rem; 
+      position: relative; 
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-size: 1.3rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .cart-badge { 
+      position: absolute; 
+      top: -8px; 
+      right: -8px; 
+      background: linear-gradient(135deg, #ef4444, #dc2626); 
+      color: #fff; 
+      border-radius: 50%; 
+      width: 22px; 
+      height: 22px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 0.75rem; 
+      font-weight: 700; 
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+      border: 2px solid var(--panel);
+    }
 
     .mini-cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; z-index: 9998; }
     .mini-cart-overlay.active { opacity: 1; visibility: visible; }
@@ -500,11 +537,11 @@
 
     .wishlist-badge {
       position: absolute;
-      top: -6px;
-      right: -6px;
-      background: #d1d5db;
-      color: #111318;
-      border: 1px solid #9ca3af;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      border: 2px solid var(--panel);
       border-radius: 50%;
       width: 22px;
       height: 22px;
@@ -513,22 +550,27 @@
       justify-content: center;
       font-size: 0.75rem;
       font-weight: 700;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.35), 0 6px 14px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .menu-btn {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      padding: 0.5rem;
-      background: transparent;
-      border: none;
+      padding: 0.75rem;
+      background: rgba(27, 32, 43, 0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
       cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
 
     .menu-btn i {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
+      font-size: 1.3rem;
+      color: rgba(255,255,255,0.7);
     }
 
     /* hover behavior inherits from .nav-btn:hover (lift/glow) */
