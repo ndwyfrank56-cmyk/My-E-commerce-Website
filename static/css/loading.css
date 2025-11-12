@@ -56,11 +56,9 @@ button.is-loading > .loading-dot,
 .navbar {
   position: sticky;
   top: 0;
-  background: linear-gradient(180deg, rgba(21,25,34,0.95), rgba(17,22,31,0.92));
+  background: rgba(21,25,34,0.98);
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 .navbar-top .navbar-container,
 .navbar-bottom .navbar-container {
