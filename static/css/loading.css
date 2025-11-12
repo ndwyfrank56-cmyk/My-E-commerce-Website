@@ -1,4 +1,10 @@
 /* Global loading overlay */
+/* Mobile: remove tap highlight and accidental selection */
+* { -webkit-tap-highlight-color: transparent; }
+button, a, .btn, .nav-btn, .menu-btn, .category-link, .search-item, .search-suggestion, .qty-btn { -webkit-tap-highlight-color: transparent; }
+img, a, button, .btn, .nav-btn, .menu-btn, .category-link, .search-item, .search-suggestion { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea { -webkit-user-select: text; -ms-user-select: text; user-select: text; -webkit-touch-callout: default; }
+
 #global-loading-overlay {
   position: fixed;
   inset: 0;
