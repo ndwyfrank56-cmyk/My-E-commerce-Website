@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='26') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='27') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -1190,9 +1190,6 @@
               {% if half %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}
               {% for _ in range(empty) %}<i class="fa-regular fa-star"></i>{% endfor %}
             </div>
-            <span class="value" style="color:var(--text-secondary)">{{ '%.1f' % product.rating }}/5</span>
-          {% else %}
-            <span class="value" style="color:var(--text-secondary)">N/A</span>
           {% endif %}
         </div>
 
