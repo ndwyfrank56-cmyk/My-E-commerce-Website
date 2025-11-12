@@ -1834,8 +1834,29 @@
       window.location.href = '/add-to-cart?product_id=' + productId;
     }
 
+    // AJAX function to update cart without page reload
     function updateQuantity(productId, quantity) {
-      window.location.href = '/update-cart?product_id=' + productId + '&quantity=' + quantity + '&action=update';
+      fetch('/update-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `product_id=${productId}&quantity=${quantity}&action=update`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Update the cart display without reloading
+          updateCartDisplay();
+          showToast('Cart updated successfully', 'success');
+        } else {
+          showToast('Failed to update cart', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showToast('Error updating cart', 'error');
+      });
     }
 
     function stepQty(btn, delta, max){
@@ -1852,7 +1873,7 @@
       if(id){ updateQuantity(id, newVal); }
     }
 
-    // Beautiful modal functions
+    // AJAX function to remove from cart without page reload
     function removeFromCart(productId) {
       // Set modal content
       document.getElementById('modalTitleText').textContent = 'Remove Item?';
@@ -1861,7 +1882,32 @@
       // Set up confirm button
       const confirmBtn = document.getElementById('confirmButton');
       confirmBtn.onclick = () => {
-        window.location.href = '/update-cart?product_id=' + productId + '&action=remove';
+        fetch('/update-cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `product_id=${productId}&action=remove`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Remove the item from display
+            const cartItem = document.querySelector(`[data-id="${productId}"]`).closest('.cart-item');
+            if (cartItem) {
+              cartItem.remove();
+            }
+            updateCartDisplay();
+            showToast('Item removed from cart', 'success');
+            closeModal();
+          } else {
+            showToast('Failed to remove item', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('Error removing item', 'error');
+        });
       };
       
       // Show modal
@@ -1983,6 +2029,75 @@
         closeMiniCart();
       }
     });
+
+    // Helper functions for AJAX cart updates
+    function updateCartDisplay() {
+      // Update cart count and totals
+      fetch('/cart-info')
+        .then(response => response.json())
+        .then(data => {
+          // Update cart count in navbar
+          const cartCount = document.querySelector('.cart-count');
+          if (cartCount) {
+            cartCount.textContent = data.count || 0;
+          }
+          
+          // Update subtotal if on cart page
+          const subtotalAmount = document.querySelector('.subtotal-amount');
+          if (subtotalAmount && data.total) {
+            subtotalAmount.textContent = `RWF ${data.total.toLocaleString()}`;
+          }
+        })
+        .catch(error => console.error('Error updating cart display:', error));
+    }
+
+    function showToast(message, type = 'success') {
+      // Create toast container if it doesn't exist
+      let container = document.querySelector('.toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        container.style.cssText = 'position: fixed; top: 16px; right: 16px; z-index: 10000; display: flex; flex-direction: column; gap: 8px;';
+        document.body.appendChild(container);
+      }
+
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.style.cssText = `
+        display: flex; align-items: center; gap: 10px; min-width: 260px; max-width: 380px; 
+        padding: 12px 16px; border-radius: 12px; color: #e5e7eb; font-size: 14px; font-weight: 500;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4); transform: translateX(100%); 
+        transition: transform 0.3s ease; backdrop-filter: blur(10px);
+        ${type === 'success' ? 'background: rgba(34, 197, 94, 0.9); border: 1px solid rgba(34, 197, 94, 0.3);' : 
+          'background: rgba(239, 68, 68, 0.9); border: 1px solid rgba(239, 68, 68, 0.3);'}
+      `;
+      
+      const icon = type === 'success' ? '✓' : '✕';
+      toast.innerHTML = `<span style="font-size: 16px;">${icon}</span><span>${message}</span>`;
+      
+      container.appendChild(toast);
+      
+      // Animate in
+      setTimeout(() => toast.style.transform = 'translateX(0)', 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          if (container.contains(toast)) {
+            container.removeChild(toast);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('confirmModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
   </script>
   
   <script defer src="{{ url_for('static', filename='js/loading.js') }}"></script>

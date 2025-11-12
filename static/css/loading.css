@@ -197,17 +197,55 @@ button.is-loading > .loading-dot,
   padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
 }
 
-/* Hide quantity adjustment buttons in mini-cart */
-.mini-cart .item-quantity,
+/* Mini-cart: show quantity adjustment buttons */
+.mini-cart .item-quantity {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 .mini-cart .qty-btn {
-  display: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mini-cart .qty-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.mini-cart .qty-input {
+  width: 50px;
+  text-align: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-primary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
   .mini-cart-body { padding-bottom: 0 !important; }
   .cart-buttons { gap: 0.75rem !important; }
   .btn-view-cart, .btn-checkout { min-height: 50px !important; font-weight: 800 !important; }
-  .mini-cart-footer { padding: 1.25rem 1rem 1.5rem !important; }
+  .mini-cart-footer { 
+    padding: 1.25rem 1rem 1.5rem !important; 
+    position: relative !important;
+    bottom: auto !important;
+  }
 }
 body:has([action="/checkout"]) .search-container,
 body:has([action="/checkout/momo"]) .search-container {
