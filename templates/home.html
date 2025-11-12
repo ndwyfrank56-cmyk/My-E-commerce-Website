@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='14') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='15') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <style>
     :root {
@@ -2541,7 +2541,11 @@
     padding: 1rem 0.5rem;
   }
 
-  /* Mobile: Horizontal scrolling with 2 items visible */
+  /* Mobile: Horizontal scrolling with arrow navigation */
+  .category-section {
+    position: relative;
+  }
+  
   .products-grid {
     display: flex;
     overflow-x: auto;
@@ -2549,7 +2553,6 @@
     gap: 1rem;
     padding: 0 1rem 1rem 0;
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-snap-type: x mandatory;
@@ -2566,23 +2569,62 @@
     scroll-snap-stop: always;
   }
   
-  /* Add subtle scroll indicator */
-  .section-content {
-    position: relative;
-  }
-  
-  .section-content::after {
-    content: '';
+  /* Arrow navigation buttons */
+  .scroll-arrow {
     position: absolute;
     top: 50%;
-    right: 0;
-    width: 20px;
-    height: 60px;
-    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.1) 100%);
-    pointer-events: none;
     transform: translateY(-50%);
-    border-radius: 10px 0 0 10px;
-    opacity: 0.6;
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.7);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .scroll-arrow:hover {
+    background: rgba(0,0,0,0.9);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .scroll-arrow.left {
+    left: 10px;
+  }
+  
+  .scroll-arrow.right {
+    right: 10px;
+  }
+  
+  .scroll-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  /* Special class for Explore More - show all items in grid */
+  .products-grid.explore-more {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.75rem !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  
+  .products-grid.explore-more .product-card {
+    flex: none !important;
+    min-width: auto !important;
+  }
+  
+  /* Hide arrows for explore-more sections */
+  .category-section:has(.products-grid.explore-more) .scroll-arrow {
+    display: none !important;
   }
 
   /* Mobile: Smaller price badges */
@@ -3281,7 +3323,15 @@
             <h3 class="category-title">{{ section_data.name }}</h3>
           </div>
           
-          <div class="products-grid">
+          <!-- Arrow navigation buttons (hidden on desktop, visible on mobile) -->
+          <button class="scroll-arrow left" onclick="scrollSection(this, 'left')" style="display: none;">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="scroll-arrow right" onclick="scrollSection(this, 'right')" style="display: none;">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          
+          <div class="products-grid {% if 'explore' in section_data.name.lower() %}explore-more{% endif %}">
             {% for product in section_data.products %}
               <article class="product-card scroll-animate">
                 <a class="card-link" href="/product/{{ product.id }}">View</a>
@@ -3625,49 +3675,72 @@
     }
   })();
 
-  // Enhanced horizontal scrolling for mobile product grids
+  // Arrow navigation for mobile product grids
   document.addEventListener('DOMContentLoaded', function() {
     if (window.innerWidth <= 768) {
-      const productGrids = document.querySelectorAll('.products-grid');
-      
-      productGrids.forEach(grid => {
-        let isScrolling = false;
-        let startX = 0;
-        let scrollLeft = 0;
-        
-        // Touch events for smooth scrolling
-        grid.addEventListener('touchstart', (e) => {
-          isScrolling = true;
-          startX = e.touches[0].pageX - grid.offsetLeft;
-          scrollLeft = grid.scrollLeft;
-        });
-        
-        grid.addEventListener('touchmove', (e) => {
-          if (!isScrolling) return;
-          e.preventDefault();
-          const x = e.touches[0].pageX - grid.offsetLeft;
-          const walk = (x - startX) * 2;
-          grid.scrollLeft = scrollLeft - walk;
-        });
-        
-        grid.addEventListener('touchend', () => {
-          isScrolling = false;
-          // Snap to nearest item
-          const cardWidth = grid.querySelector('.product-card')?.offsetWidth || 0;
-          const gap = 16; // 1rem gap
-          const itemWidth = cardWidth + gap;
-          const scrollPosition = grid.scrollLeft;
-          const targetIndex = Math.round(scrollPosition / itemWidth);
-          const targetScroll = targetIndex * itemWidth;
-          
-          grid.scrollTo({
-            left: targetScroll,
-            behavior: 'smooth'
-          });
-        });
+      // Show arrow buttons on mobile
+      const arrows = document.querySelectorAll('.scroll-arrow');
+      arrows.forEach(arrow => {
+        arrow.style.display = 'flex';
       });
+      
+      // Update arrow states based on scroll position
+      function updateArrowStates() {
+        const productGrids = document.querySelectorAll('.products-grid:not(.explore-more)');
+        productGrids.forEach(grid => {
+          const section = grid.closest('.category-section');
+          const leftArrow = section.querySelector('.scroll-arrow.left');
+          const rightArrow = section.querySelector('.scroll-arrow.right');
+          
+          if (leftArrow && rightArrow) {
+            leftArrow.disabled = grid.scrollLeft <= 0;
+            rightArrow.disabled = grid.scrollLeft >= (grid.scrollWidth - grid.clientWidth);
+          }
+        });
+      }
+      
+      // Add scroll listeners to update arrow states
+      const productGrids = document.querySelectorAll('.products-grid:not(.explore-more)');
+      productGrids.forEach(grid => {
+        grid.addEventListener('scroll', updateArrowStates);
+      });
+      
+      // Initial arrow state update
+      updateArrowStates();
     }
   });
+
+  // Arrow scroll function
+  function scrollSection(button, direction) {
+    const section = button.closest('.category-section');
+    const grid = section.querySelector('.products-grid');
+    const cardWidth = grid.querySelector('.product-card')?.offsetWidth || 0;
+    const gap = 16; // 1rem gap
+    const scrollAmount = cardWidth + gap;
+    
+    if (direction === 'left') {
+      grid.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+      });
+    } else {
+      grid.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+    
+    // Update arrow states after scroll
+    setTimeout(() => {
+      const leftArrow = section.querySelector('.scroll-arrow.left');
+      const rightArrow = section.querySelector('.scroll-arrow.right');
+      
+      if (leftArrow && rightArrow) {
+        leftArrow.disabled = grid.scrollLeft <= 0;
+        rightArrow.disabled = grid.scrollLeft >= (grid.scrollWidth - grid.clientWidth);
+      }
+    }, 300);
+  }
   </script>
   <script>
     (function(){
