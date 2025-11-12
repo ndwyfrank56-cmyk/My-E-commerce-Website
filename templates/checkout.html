@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Checkout - eMarket</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='28') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='29') }}">
   <!-- Pure OpenStreetMap - No Leaflet -->
   <style>
     :root {
@@ -69,8 +69,8 @@
     .nav-center { flex: 1; display: flex; justify-content: center; }
     .search-container { position: relative; width: 100%; max-width: 520px; }
     .search-container .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
-    .search-input { width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); }
-    .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(199,169,106,0.15); }
+    .search-input { width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; background: var(--panel-2); border: none; border-radius: 8px; color: var(--text-primary); }
+    .search-input:focus { outline: none; box-shadow: 0 0 0 2px rgba(199,169,106,0.15); }
     .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
     .nav-btn {
       position: relative;

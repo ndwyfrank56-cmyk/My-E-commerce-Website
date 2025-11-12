@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='28') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='29') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -382,13 +382,12 @@
       font-size: 0.8rem;
       font-weight: 600;
       transition: all 0.2s ease;
-      width: 110px;
+      width: 80px;
       height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      text-transform: uppercase;
     }
 
     .btn-view-cart-header:hover {
@@ -4075,8 +4074,17 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="mini-cart" id="miniCart">
     <div class="mini-cart-header">
       <div class="mini-cart-title">
+        {% if cart_items %}
+          {% set total = namespace(value=0) %}
+          {% for item in cart_items %}
+            {% set total.value = total.value + (item.price * item.quantity) %}
+          {% endfor %}
+          <div class="cart-total-display" style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">
+            Total: RWF {{ '{:,.0f}'.format(total.value) }}
+          </div>
+        {% endif %}
         <div class="cart-header-buttons">
-          <a href="/addtocart" class="btn-view-cart-header">View Cart</a>
+          <a href="/addtocart" class="btn-view-cart-header">cart</a>
           <button class="btn-checkout-header" onclick="window.location.href='/checkout'">Checkout</button>
         </div>
       </div>
