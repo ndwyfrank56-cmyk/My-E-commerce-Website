@@ -244,6 +244,37 @@ button.is-loading > .loading-dot,
   border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
+/* Fix star ratings display */
+.stars {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 2px !important;
+  font-size: 14px !important;
+}
+
+.stars .fa-star,
+.stars .fa-star-half-stroke {
+  color: #fbbf24 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.stars .fa-regular {
+  color: rgba(255,255,255,0.3) !important;
+}
+
+.rating {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-top: 4px !important;
+}
+
+.rating .value {
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
 @media (max-width: 768px) {
   .mini-cart-body { padding-bottom: 0 !important; }
   .cart-buttons { gap: 0.75rem !important; }

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='12') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='16') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -3949,13 +3949,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="item-price-qty">
                   <span class="item-price">RWF {{ "{:,.0f}".format(item.price) }}</span>
                   <div class="item-quantity">
-                    <button class="qty-btn" onclick="updateCartQty('{{ item.id }}', {{ item.quantity - 1 }})">
-                      <i class="fas fa-minus"></i>
-                    </button>
-                    <span class="qty-value">{{ item.quantity }}</span>
-                    <button class="qty-btn" onclick="updateCartQty('{{ item.id }}', {{ item.quantity + 1 }})">
-                      <i class="fas fa-plus"></i>
-                    </button>
+                    <span class="qty-display">Qty: {{ item.quantity }}</span>
                   </div>
                 </div>
               </div>
@@ -3976,11 +3970,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="subtotal-amount">RWF {{ '{:,.0f}'.format(total.value) }}</span>
       </div>
       <div class="cart-buttons">
-        <a href="/addtocart" class="btn-view-cart">View Cart</a>
-        <button class="btn-checkout" onclick="window.location.href='/checkout'">
-          <span>Checkout</span>
-          <i class="fas fa-arrow-right"></i>
-        </button>
+        <a href="/addtocart" class="btn-view-cart" style="width: 100%; text-align: center;">View Cart</a>
       </div>
     </div>
     {% endif %}
