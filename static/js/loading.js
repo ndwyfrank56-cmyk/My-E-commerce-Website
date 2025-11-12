@@ -93,24 +93,119 @@
     window.addEventListener('pageshow', function(){ hideOverlay(); });
     window.addEventListener('load', function(){ hideOverlay(); });
 
-    var containers = document.querySelectorAll('.search-container');
-    containers.forEach(function(c){
-      c.addEventListener('click', function(e){
-        c.classList.add('expanded');
-        var input = c.querySelector('input, .search-input');
-        if(input){ 
-          input.focus(); 
-          e.stopPropagation();
-        }
-      }, true);
+    // Mobile search overlay functionality
+    function initMobileSearch() {
+      // Create mobile search overlay if it doesn't exist
+      if (!document.querySelector('.mobile-search-overlay')) {
+        var overlay = document.createElement('div');
+        overlay.className = 'mobile-search-overlay';
+        overlay.innerHTML = `
+          <div class="mobile-search-container">
+            <div class="mobile-search-input-wrapper">
+              <i class="fas fa-search mobile-search-icon"></i>
+              <input type="text" class="mobile-search-input" placeholder="Search products...">
+              <button class="mobile-search-close" type="button">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="mobile-search-results" style="display: none;"></div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        
+        // Handle mobile search input
+        var mobileInput = overlay.querySelector('.mobile-search-input');
+        var mobileResults = overlay.querySelector('.mobile-search-results');
+        var closeBtn = overlay.querySelector('.mobile-search-close');
+        
+        // Search functionality
+        mobileInput.addEventListener('input', function() {
+          var query = this.value.trim();
+          if (query.length > 0) {
+            performMobileSearch(query, mobileResults);
+          } else {
+            mobileResults.style.display = 'none';
+          }
+        });
+        
+        // Close overlay
+        closeBtn.addEventListener('click', function() {
+          overlay.classList.remove('active');
+          mobileInput.value = '';
+          mobileResults.style.display = 'none';
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            overlay.classList.remove('active');
+            mobileInput.value = '';
+            mobileResults.style.display = 'none';
+          }
+        });
+      }
       
-      // Close expanded search when clicking outside
-      document.addEventListener('click', function(e){
-        if(!c.contains(e.target)){
-          c.classList.remove('expanded');
-        }
+      // Handle search icon click on mobile
+      var searchIcons = document.querySelectorAll('.nav-center .search-icon, .search-btn');
+      searchIcons.forEach(function(icon) {
+        icon.addEventListener('click', function(e) {
+          if (window.innerWidth <= 768) {
+            e.preventDefault();
+            e.stopPropagation();
+            var overlay = document.querySelector('.mobile-search-overlay');
+            if (overlay) {
+              overlay.classList.add('active');
+              setTimeout(function() {
+                overlay.querySelector('.mobile-search-input').focus();
+              }, 300);
+            }
+          }
+        });
       });
-    });
+    }
+    
+    // Mobile search function
+    function performMobileSearch(query, resultsContainer) {
+      // Use existing search functionality if available
+      if (typeof searchProducts === 'function') {
+        searchProducts(query).then(function(results) {
+          displayMobileSearchResults(results, resultsContainer);
+        });
+      } else {
+        // Fallback: redirect to search page
+        setTimeout(function() {
+          window.location.href = '/search?q=' + encodeURIComponent(query);
+        }, 500);
+      }
+    }
+    
+    // Display mobile search results
+    function displayMobileSearchResults(results, container) {
+      if (!results || results.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #9aa3b2;">No products found</div>';
+        container.style.display = 'block';
+        return;
+      }
+      
+      var html = results.slice(0, 8).map(function(product) {
+        return `
+          <div class="mobile-search-suggestion" onclick="window.location.href='/product/${product.id}'">
+            <img src="${product.image || '/static/images/placeholder.jpg'}" alt="${product.name}">
+            <div class="mobile-search-suggestion-content">
+              <div class="mobile-search-suggestion-name">${product.name}</div>
+              <div class="mobile-search-suggestion-price">RWF ${product.price.toLocaleString()}</div>
+              <div class="mobile-search-suggestion-category">${product.category || ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html;
+      container.style.display = 'block';
+    }
+    
+    // Initialize mobile search
+    initMobileSearch();
   }
 
   if(document.readyState === 'loading'){
