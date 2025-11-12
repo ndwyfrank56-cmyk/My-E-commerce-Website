@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='12') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='14') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <style>
     :root {
@@ -1400,7 +1400,7 @@
       .sidebar-right { width: 95vw !important; max-width: 450px !important; }
     }
     @media (max-width: 768px) {
-      .sidebar-right { width: 100vw !important; max-width: none !important; }
+      .sidebar-right { width: 85vw !important; max-width: 380px !important; }
       
       /* Product cards full width */
       #rightSidebar .cart-items-list > .cart-item { 
@@ -1428,7 +1428,7 @@
     }
     
     @media (max-width: 600px) {
-      .sidebar-right { width: 100vw !important; max-width: none !important; }
+      .sidebar-right { width: 90vw !important; max-width: 360px !important; }
       
       /* Product cards full width with NO side padding */
       #rightSidebar .cart-items,
@@ -1448,7 +1448,7 @@
     /* Compact layout for small screens */
     @media (max-width: 540px) {
       .sidebar { border: none !important; }
-      .sidebar-right { width: 100vw !important; max-width: none !important; }
+      .sidebar-right { width: 95vw !important; max-width: 340px !important; }
       #rightSidebar .sidebar-header { padding: 0.9rem 1rem !important; }
       
       /* Full width product cards */
@@ -2541,10 +2541,48 @@
     padding: 1rem 0.5rem;
   }
 
-  /* Mobile: 2 products per row */
+  /* Mobile: Horizontal scrolling with 2 items visible */
   .products-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 1rem;
+    padding: 0 1rem 1rem 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .products-grid::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .products-grid .product-card {
+    flex: 0 0 calc(50% - 0.5rem);
+    min-width: calc(50% - 0.5rem);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  
+  /* Add subtle scroll indicator */
+  .section-content {
+    position: relative;
+  }
+  
+  .section-content::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 20px;
+    height: 60px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+    pointer-events: none;
+    transform: translateY(-50%);
+    border-radius: 10px 0 0 10px;
+    opacity: 0.6;
   }
 
   /* Mobile: Smaller price badges */
@@ -3382,13 +3420,7 @@
                 <div class="item-price-qty">
                   <span class="item-price">RWF {{ "{:,.0f}".format(item.price) }}</span>
                   <div class="item-quantity">
-                    <button class="qty-btn" onclick="updateCartQty('{{ item.id }}', {{ item.quantity - 1 }})">
-                      <i class="fas fa-minus"></i>
-                    </button>
-                    <span class="qty-value">{{ item.quantity }}</span>
-                    <button class="qty-btn" onclick="updateCartQty('{{ item.id }}', {{ item.quantity + 1 }})">
-                      <i class="fas fa-plus"></i>
-                    </button>
+                    <span class="qty-display">Qty: {{ item.quantity }}</span>
                   </div>
                 </div>
               </div>
@@ -3592,6 +3624,50 @@
       try { toggleSidebar('right'); } catch(e) {}
     }
   })();
+
+  // Enhanced horizontal scrolling for mobile product grids
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 768) {
+      const productGrids = document.querySelectorAll('.products-grid');
+      
+      productGrids.forEach(grid => {
+        let isScrolling = false;
+        let startX = 0;
+        let scrollLeft = 0;
+        
+        // Touch events for smooth scrolling
+        grid.addEventListener('touchstart', (e) => {
+          isScrolling = true;
+          startX = e.touches[0].pageX - grid.offsetLeft;
+          scrollLeft = grid.scrollLeft;
+        });
+        
+        grid.addEventListener('touchmove', (e) => {
+          if (!isScrolling) return;
+          e.preventDefault();
+          const x = e.touches[0].pageX - grid.offsetLeft;
+          const walk = (x - startX) * 2;
+          grid.scrollLeft = scrollLeft - walk;
+        });
+        
+        grid.addEventListener('touchend', () => {
+          isScrolling = false;
+          // Snap to nearest item
+          const cardWidth = grid.querySelector('.product-card')?.offsetWidth || 0;
+          const gap = 16; // 1rem gap
+          const itemWidth = cardWidth + gap;
+          const scrollPosition = grid.scrollLeft;
+          const targetIndex = Math.round(scrollPosition / itemWidth);
+          const targetScroll = targetIndex * itemWidth;
+          
+          grid.scrollTo({
+            left: targetScroll,
+            behavior: 'smooth'
+          });
+        });
+      });
+    }
+  });
   </script>
   <script>
     (function(){
