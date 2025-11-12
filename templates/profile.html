@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='9') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='24') }}">
   <style>
     :root {
       --bg: #0b0c10;
@@ -1144,8 +1144,8 @@
       border-bottom: none;
     }
     .order-card-header .order-info { margin-bottom: 0; }
-    .order-card-header .order-id { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; color: rgba(255,255,255,0.85); margin-bottom: 0.35rem; }
-    .order-card-header .order-date { display:flex; align-items:center; gap:.35rem; color: #AAAAAA; font-size:.7rem; font-weight: 400; }
+    .order-card-header .order-id { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; color: rgba(255,255,255,0.9); margin-bottom: 0.35rem; }
+    .order-card-header .order-date { display:flex; align-items:center; gap:.35rem; color: #AAAAAA; font-size:.8rem; font-weight: 500; }
     .order-card-header .order-date i { display:none; }
     .order-status-bar {
       display: flex;
@@ -1261,14 +1261,14 @@
     .toggle-items-btn.expanded i {
       transform: rotate(180deg);
     }
-    .cancel-btn { padding:.4rem .8rem; border-radius:6px; border:none; background: rgba(255,255,255,0.75); color: #1a1d24; font-size:.7rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; cursor:pointer; transition: all 0.2s ease; display:inline-flex; align-items:center; justify-content:center; gap: .3rem; margin-left: auto; }
+    .cancel-btn { padding:.6rem 1.2rem; border-radius:8px; border:none; background: rgba(255,255,255,0.9); color: #1a1d24; font-size:.85rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; cursor:pointer; transition: all 0.2s ease; display:inline-flex; align-items:center; justify-content:center; gap: .3rem; margin-left: auto; min-width: 80px; }
     .cancel-btn:hover { background: rgba(255,255,255,0.85); }
     .see-more-btn { display: block; margin: 1.5rem auto 0; padding: .5rem 0; background: none; border: none; color: rgba(255,255,255,0.7); font-size: .85rem; font-weight: 600; cursor: pointer; transition: color 0.2s ease; text-align: center; }
     .see-more-btn:hover { color: rgba(255,255,255,0.9); }
     /* Responsive improvements */
     @media (max-width: 1024px) {
       .tabs { display:flex; gap:.5rem; overflow-x: auto; white-space: nowrap; padding-bottom:.25rem; }
-      .tab-btn { flex: 0 0 auto; }
+      .tab-btn { flex: 1; min-width: 0; }
     }
     @media (max-width: 900px) {
       .grid { grid-template-columns: 1fr; gap: 1rem; }
@@ -1277,7 +1277,7 @@
       .order-card-header { flex-wrap: wrap; gap: .5rem; }
       .order-card-header .order-meta { margin-left: auto; flex-wrap: wrap; gap: .4rem; }
       .order-items { padding: .75rem 1rem; gap: .6rem; }
-      .cancel-btn { padding: .3rem .6rem; font-size: .85rem; }
+      .cancel-btn { padding: .5rem 1rem; font-size: .9rem; min-width: 70px; }
       .sidebar { position: relative; top: 0; }
       .form-row { grid-template-columns: 1fr; gap: .75rem; }
     }
