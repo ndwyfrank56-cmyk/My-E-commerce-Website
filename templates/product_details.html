@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='4') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='5') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -1527,7 +1527,6 @@
       if (imgVarId) params.set('img_var_id', imgVarId);
       if (currentImage) params.set('variation_image', currentImage);
       
-      try { sessionStorage.setItem('openMiniCart', '1'); } catch(_) {}
       window.location.href = '/add-to-cart?' + params.toString();
     }
 
@@ -1994,7 +1993,6 @@
       if (dropdownVarId) params.set('dropdown_var_id', dropdownVarId);
       if (currentImage) params.set('variation_image', currentImage);
 
-      try { sessionStorage.setItem('openMiniCart', '1'); } catch (_) {}
       window.location.href = '/add-to-cart?' + params.toString();
     }
     
@@ -2138,13 +2136,7 @@
         }
       }
       
-      // Check if we should open mini cart after adding item
-      try {
-        if (sessionStorage.getItem('openMiniCart') === '1') {
-          sessionStorage.removeItem('openMiniCart');
-          openMiniCart();
-        }
-      } catch(e) {}
+      // Auto mini-cart popup removed - using flash messages instead
     })();
     // Wishlist via server POST for flash banners handled by inline form submits above
     (function(){
@@ -2303,11 +2295,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       updateWishlistCount();
       
-      // Keep mini cart open after cart operations
-      if (sessionStorage.getItem('keepMiniCartOpen') === '1') {
-        sessionStorage.removeItem('keepMiniCartOpen');
-        openMiniCart();
-      }
+      // Auto mini-cart popup removed - using flash messages instead
     });
   </script>
 

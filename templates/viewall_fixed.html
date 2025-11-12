@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='4') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='5') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -4020,7 +4020,6 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
         if (!res.ok) throw new Error('Failed to update');
-        sessionStorage.setItem('keepMiniCartOpen', '1');
         location.reload();
       } catch (e) {
         console.error('Error updating quantity:', e);
@@ -4067,7 +4066,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           const res = await fetch(`/update-cart?product_id=${productId}&action=remove&ajax=1`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
           if (!res.ok) throw new Error('Failed to remove');
-          sessionStorage.setItem('keepMiniCartOpen', '1');
           location.reload();
         } catch (e) {
           console.error('Error removing item:', e);

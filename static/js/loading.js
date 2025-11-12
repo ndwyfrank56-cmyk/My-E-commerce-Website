@@ -95,10 +95,21 @@
 
     var containers = document.querySelectorAll('.search-container');
     containers.forEach(function(c){
-      c.addEventListener('click', function(){
+      c.addEventListener('click', function(e){
+        c.classList.add('expanded');
         var input = c.querySelector('input, .search-input');
-        if(input){ input.focus(); }
+        if(input){ 
+          input.focus(); 
+          e.stopPropagation();
+        }
       }, true);
+      
+      // Close expanded search when clicking outside
+      document.addEventListener('click', function(e){
+        if(!c.contains(e.target)){
+          c.classList.remove('expanded');
+        }
+      });
     });
   }
 
