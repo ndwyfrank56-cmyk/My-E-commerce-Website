@@ -152,10 +152,41 @@ button.is-loading > .loading-dot,
 
 /* Hide search bar on checkout page */
 
-/* Mobile: keep original search design */
+/* Mobile: improved search design */
 @media (max-width: 768px) {
-  .search-dropdown { max-height: 60vh; }
-  .search-suggestion { grid-template-columns: 44px 1fr auto; padding: 10px 12px; }
+  .search-dropdown { 
+    max-height: 70vh; 
+    left: -10px;
+    right: -10px;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  
+  .search-item { 
+    padding: 18px 24px; 
+    min-height: 80px;
+    gap: 18px;
+  }
+  
+  .search-item-image { 
+    width: 52px; 
+    height: 52px; 
+    border-radius: 12px;
+  }
+  
+  .search-item-name { 
+    font-size: 16px; 
+    line-height: 1.4;
+  }
+  
+  .search-item-category { 
+    font-size: 14px; 
+  }
+  
+  .search-item-price { 
+    font-size: 17px; 
+    font-weight: 800;
+  }
 }
 
 /* Mini-cart: make footer scroll with content, remove sticky */
