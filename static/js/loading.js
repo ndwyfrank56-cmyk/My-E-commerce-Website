@@ -92,6 +92,14 @@
     // Hide overlay when page fully loaded
     window.addEventListener('pageshow', function(){ hideOverlay(); });
     window.addEventListener('load', function(){ hideOverlay(); });
+
+    var containers = document.querySelectorAll('.search-container');
+    containers.forEach(function(c){
+      c.addEventListener('click', function(){
+        var input = c.querySelector('input, .search-input');
+        if(input){ input.focus(); }
+      }, true);
+    });
   }
 
   if(document.readyState === 'loading'){
