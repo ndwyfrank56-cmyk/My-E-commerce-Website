@@ -219,7 +219,7 @@
     /* Auth Container - Clean White Card */
     .auth-container {
       width: 100%;
-      max-width: 420px;
+      max-width: 380px;
       background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: var(--border-radius);
@@ -262,65 +262,38 @@
       font-weight: 400;
     }
 
-    /* Tabs - Modern Segmented Control */
+    /* Tabs - Horizontal Sections Style */
     .auth-tabs {
       display: flex;
       margin-bottom: 2rem;
-      gap: 0.5rem;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .tab-btn {
       position: relative;
       flex: 1;
-      padding: 0.7rem 1.1rem;
-      background: rgba(21,25,34,0.6);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
+      padding: 1rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
       color: var(--text-secondary);
-      font-weight: 800;
-      font-size: 0.92rem;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: transform .2s ease, box-shadow .25s ease, color .25s ease, background .25s ease, border-color .25s ease;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    .tab-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08));
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      opacity: .0;
-      transition: opacity .25s ease;
+      transition: all 0.2s ease;
+      text-align: center;
     }
 
     .tab-btn.active {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.45);
       color: var(--text-primary);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-      transform: none;
+      border-bottom-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.05);
     }
 
-    .tab-btn.active::before {
-      opacity: 1;
-    }
-
-    .tab-btn:not(.active):hover {
-      background: rgba(21,25,34,0.8);
-      border-color: rgba(255,255,255,0.2);
+    .tab-btn:hover {
       color: var(--text-primary);
-      transform: none;
+      background: rgba(255, 255, 255, 0.03);
     }
 
     /* Forms - Smooth Transitions */
@@ -359,24 +332,24 @@
 
     input {
       width: 100%;
-      padding: 0.9rem 1rem;
+      padding: 1rem 1.25rem;
       background: var(--panel-2);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       color: var(--text-primary);
       font-size: 1rem;
       font-weight: 500;
-      line-height: 1.4;
+      line-height: 1.5;
       font-family: inherit;
-      font-variant-numeric: lining-nums tabular-nums;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     input:focus {
       outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
       background: var(--panel-2);
+      transform: translateY(-1px);
     }
 
     input::placeholder {
@@ -783,8 +756,8 @@
           <button class="toggle-visibility" type="button" aria-label="Show password" onclick="togglePassword('login-password', this)"><i class="fas fa-eye"></i></button>
         </div>
         <div style="text-align: right; margin-bottom: 1rem;">
-          <a href="{{ url_for('forgot_password') }}" style="color: rgba(229, 231, 235, 0.8); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.color='rgba(229, 231, 235, 1)'" onmouseout="this.style.color='rgba(229, 231, 235, 0.8)'">
-            <i class="fas fa-key"></i> Forgot Password?
+          <a href="{{ url_for('forgot_password') }}" style="color: rgba(229, 231, 235, 0.7); text-decoration: none; font-size: 0.9rem; font-weight: 400; transition: all 0.2s ease; border: none; background: none; padding: 0;" onmouseover="this.style.color='rgba(229, 231, 235, 0.9)'" onmouseout="this.style.color='rgba(229, 231, 235, 0.7)'">
+            Forgot Password?
           </a>
         </div>
         <button type="submit" class="submit-btn">
