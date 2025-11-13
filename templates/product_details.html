@@ -628,42 +628,169 @@
     .related{ margin-top: 2.5rem; }
     .related h3{ font-size:1.2rem; font-weight:800; margin-bottom: 1rem; }
     .products-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-    /* Reviews */
-    .reviews{ margin-top: 1rem; }
-    .reviews h3{ font-size:1rem; font-weight:700; margin-bottom:.4rem; }
-    .review-item{ background: var(--panel-2); border-radius: 8px; padding:.5rem .65rem; margin-bottom:.4rem; position: relative; overflow:hidden; }
-    .review-meta{ display:flex; align-items:center; gap:.4rem; color: var(--text-secondary); font-size:.8rem; margin-bottom:.2rem; }
-    .review-text{ color: var(--text-primary); font-size:.85rem; line-height:1.4; max-width:100%; word-break:break-word; }
-    .review-text .short-text{ display:inline; }
-    .review-text .full-text{ display:block; word-wrap:break-word; overflow-wrap:break-word; word-break:break-all; white-space:normal; }
-    .admin-reply{ margin-top: .5rem; padding: .6rem .8rem .6rem 1.5rem; position: relative; max-width:100%; overflow:hidden; background: rgba(255,255,255,0.75); border-radius: 8px; }
-    .admin-reply::before{ content: '↳'; position: absolute; left: 0.4rem; top: 0; font-size: .9rem; color: #1a1d24; font-weight: 700; }
-    .reply-meta{ display:flex; align-items:center; gap:.3rem; color: #1a1d24; font-size:.75rem; margin-bottom:.2rem; font-weight: 600; letter-spacing: 0.3px; }
-    .reply-meta i{ font-size: .8rem; }
-    .reply-text{ color: #1a1d24; font-size: 0.82rem; line-height: 1.4; opacity: 1; max-width:100%; word-break:break-word; }
-    .reply-text .short-text{ display:inline; }
-    .reply-text .full-text{ display:block; word-wrap:break-word; overflow-wrap:break-word; word-break:break-all; white-space:normal; }
-    .read-more-link{ color:rgba(255,255,255,0.7); font-size:.75rem; font-weight:600; cursor:pointer; text-decoration:underline; margin-left:.2rem; }
-    .read-more-link:hover{ color:rgba(255,255,255,0.9); }
-    .admin-reply .read-more-link{ color:#1a1d24; }
-    .admin-reply .read-more-link:hover{ color:#000; }
-    .review-form{ margin-top: 1rem; background: rgba(15,18,25,0.6); border-radius: 10px; padding:1.2rem; border: 1px solid rgba(255,255,255,0.06); }
-    .review-form-label{ display:block; color:rgba(255,255,255,0.8); font-size:0.9rem; font-weight:500; margin-bottom:.5rem; text-transform:lowercase; letter-spacing:0.2px; }
-    .review-textarea{ width:100%; min-height: 80px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; background: rgba(255,255,255,0.06); color: #e5e7eb; padding:0.8rem; resize: vertical; outline: none; font-size:0.9rem; line-height:1.5; transition: all 0.2s ease; }
-    .review-textarea:focus{ border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.12); box-shadow: 0 0 0 3px rgba(255,255,255,0.05); }
-    .review-textarea::placeholder{ color:rgba(255,255,255,0.35); }
-    .review-textarea::-webkit-scrollbar{ width: 8px; }
-    .review-textarea::-webkit-scrollbar-track{ background: rgba(0,0,0,0.2); border-radius: 4px; }
-    .review-textarea::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.2); border-radius: 4px; }
-    .review-textarea::-webkit-scrollbar-thumb:hover{ background: rgba(255,255,255,0.3); }
-    .review-actions{ display:flex; justify-content:flex-end; margin-top:1rem; }
-    .review-submit{ padding:.6rem 1.2rem; border-radius:8px; border:none; background: rgba(255,255,255,0.8); color:#1a1d24; font-weight:500; font-size:0.85rem; cursor:pointer; text-transform:lowercase; }
-    .rating-input{ display:flex; align-items:center; gap:.5rem; margin:.8rem 0 1.2rem; }
-    .rating-input .star{ cursor:pointer; color: rgba(255,255,255,0.25); font-size:1.4rem; transition: all 0.2s ease; }
-    .rating-input .star:hover{ color: rgba(244,196,48,0.6); transform:scale(1.1); }
-    .rating-input .star.active{ color:#f4c430; }
-    .rating-text{ color:rgba(255,255,255,0.6); font-size:0.9rem; margin-left:.5rem; font-weight:500; }
-    .reviews-toggle{ margin:.3rem 0 .5rem; padding:.4rem .7rem; border-radius:8px; border: none; background: rgba(21,25,34,0.6); color: var(--text-primary); cursor: pointer; font-weight: 600; font-size:.8rem; }
+    /* Reviews - Clean & Simple */
+    .reviews{ margin-top: 2rem; }
+    .reviews h3{ font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary); }
+    
+    .review-item{ 
+      background: rgba(255, 255, 255, 0.02); 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
+      border-radius: 12px; 
+      padding: 1rem; 
+      margin-bottom: 1rem; 
+      transition: all 0.2s ease;
+    }
+    .review-item:hover{ background: rgba(255, 255, 255, 0.04); }
+    
+    .review-meta{ 
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      margin-bottom: 0.75rem; 
+      font-size: 0.9rem;
+    }
+    .review-meta .reviewer-name{ 
+      font-weight: 600; 
+      color: var(--text-primary);
+    }
+    .review-meta .rating{ 
+      color: #f4c430; 
+      font-size: 0.85rem;
+    }
+    
+    .review-text{ 
+      color: var(--text-primary); 
+      font-size: 0.95rem; 
+      line-height: 1.6; 
+      margin-bottom: 0.5rem;
+    }
+    
+    .admin-reply{ 
+      margin-top: 1rem; 
+      padding: 0.75rem 1rem; 
+      background: rgba(74, 222, 128, 0.1); 
+      border: 1px solid rgba(74, 222, 128, 0.2); 
+      border-radius: 8px; 
+      border-left: 3px solid #4ade80;
+    }
+    
+    .reply-meta{ 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      margin-bottom: 0.5rem; 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      color: #4ade80;
+    }
+    
+    .reply-text{ 
+      color: var(--text-primary); 
+      font-size: 0.9rem; 
+      line-height: 1.5;
+    }
+    
+    .read-more-link{ 
+      color: rgba(255, 255, 255, 0.6); 
+      font-size: 0.85rem; 
+      cursor: pointer; 
+      text-decoration: underline; 
+      margin-left: 0.5rem;
+    }
+    .read-more-link:hover{ color: rgba(255, 255, 255, 0.8); }
+    .review-form{ 
+      margin-top: 2rem; 
+      background: rgba(255, 255, 255, 0.02); 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
+      border-radius: 12px; 
+      padding: 1.5rem;
+    }
+    
+    .review-form-label{ 
+      display: block; 
+      color: var(--text-primary); 
+      font-size: 0.95rem; 
+      font-weight: 500; 
+      margin-bottom: 0.5rem;
+    }
+    
+    .review-textarea{ 
+      width: 100%; 
+      min-height: 100px; 
+      border: 1px solid rgba(255, 255, 255, 0.15); 
+      border-radius: 8px; 
+      background: rgba(255, 255, 255, 0.05); 
+      color: var(--text-primary); 
+      padding: 1rem; 
+      resize: vertical; 
+      outline: none; 
+      font-size: 0.95rem; 
+      line-height: 1.6; 
+      transition: all 0.2s ease;
+    }
+    .review-textarea:focus{ 
+      border-color: rgba(255, 255, 255, 0.3); 
+      background: rgba(255, 255, 255, 0.08); 
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+    }
+    .review-textarea::placeholder{ color: rgba(255, 255, 255, 0.4); }
+    
+    .review-actions{ 
+      display: flex; 
+      justify-content: flex-end; 
+      margin-top: 1rem;
+    }
+    .review-submit{ 
+      padding: 0.75rem 1.5rem; 
+      border-radius: 8px; 
+      border: none; 
+      background: #4ade80; 
+      color: #111318; 
+      font-weight: 600; 
+      font-size: 0.9rem; 
+      cursor: pointer; 
+      transition: all 0.2s ease;
+    }
+    .review-submit:hover{ background: #22c55e; }
+    
+    .rating-input{ 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      margin: 1rem 0;
+    }
+    .rating-input .star{ 
+      cursor: pointer; 
+      color: rgba(255, 255, 255, 0.3); 
+      font-size: 1.5rem; 
+      transition: all 0.2s ease;
+    }
+    .rating-input .star:hover{ 
+      color: #f4c430; 
+      transform: scale(1.1);
+    }
+    .rating-input .star.active{ color: #f4c430; }
+    
+    .rating-text{ 
+      color: rgba(255, 255, 255, 0.7); 
+      font-size: 0.9rem; 
+      margin-left: 0.5rem; 
+      font-weight: 500;
+    }
+    
+    .reviews-toggle{ 
+      margin: 1rem 0; 
+      padding: 0.75rem 1rem; 
+      border-radius: 8px; 
+      border: 1px solid rgba(255, 255, 255, 0.15); 
+      background: rgba(255, 255, 255, 0.05); 
+      color: var(--text-primary); 
+      cursor: pointer; 
+      font-weight: 500; 
+      font-size: 0.9rem; 
+      transition: all 0.2s ease;
+    }
+    .reviews-toggle:hover{ background: rgba(255, 255, 255, 0.08); }
     .product-card{ position:relative; background: rgba(21,25,34,0.5); border-radius: 8px; overflow: hidden; display:flex; flex-direction:column; box-shadow: none; border: 1px solid rgba(255,255,255,0.08); }
     .product-card .product-image-container{ display:flex; align-items:center; justify-content:center; aspect-ratio: 1 / 1; padding: .75rem; background: rgba(0,0,0,0.15); }
     .product-card img{ max-width:100%; height:auto; object-fit:contain; }
