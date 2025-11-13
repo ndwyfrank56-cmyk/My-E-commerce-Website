@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='29') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <style>
     :root {
@@ -1723,6 +1724,53 @@
     .empty-cart .checkout-btn i { color: #111318 !important; font-size: 1.1rem !important; }
     .empty-cart .checkout-btn .arrow { font-style: normal; opacity: .95; }
 
+    /* Dark Blurry Page Loader */
+    .page-loader { 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(10, 12, 16, 0.85); 
+      backdrop-filter: blur(8px); 
+      -webkit-backdrop-filter: blur(8px); 
+      display: none; 
+      align-items: center; 
+      justify-content: center; 
+      z-index: 9999; 
+      transition: opacity 0.3s ease;
+    }
+    .page-loader.active { 
+      display: flex; 
+      opacity: 1;
+    }
+    .page-loader.fade-out {
+      opacity: 0;
+    }
+    
+    /* Modern Spinner */
+    .spinner { 
+      width: 50px; 
+      height: 50px; 
+      border-radius: 50%; 
+      border: 4px solid rgba(255, 255, 255, 0.1); 
+      border-top-color: rgba(255, 255, 255, 0.8); 
+      animation: spin 1s linear infinite; 
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    
+    .loading-text {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      margin-top: 1rem;
+    }
+    
+    @keyframes spin { 
+      to { transform: rotate(360deg); } 
+    }
 
     /* Toast-style flash messages (glass) */
     .toast-container { position: fixed; top: 16px; right: 16px; display: grid; gap: 8px; z-index: 1400; }
@@ -2838,6 +2886,43 @@
       }
     }
 
+    /* Scroll-triggered animations - DISABLED */
+    .scroll-animate {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .scroll-animate.animate-in {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-section.scroll-animate {
+      transform: none;
+      opacity: 1;
+    }
+
+    .hero-section.scroll-animate.animate-in {
+      transform: none;
+      opacity: 1;
+    }
+
+    .category-section.scroll-animate {
+      transform: none;
+    }
+
+    .category-section.scroll-animate.animate-in {
+      transform: none;
+    }
+
+    .product-card.scroll-animate {
+      transform: none;
+    }
+
+    .product-card.scroll-animate.animate-in {
+      transform: none;
+    }
 
     .site-footer { 
       margin-top: 4rem; 
@@ -3346,7 +3431,7 @@
   <!-- Main Content Wrapper -->
   <div class="main-wrapper">
   <!-- Modern Hero Section -->
-  <section class="hero-section">
+  <section class="hero-section scroll-animate">
     <div class="hero-content">
       <h1 class="hero-title">Good Things, Fair Prices</h1>
       <p class="hero-subtitle">Everything you need for your daily life. We deliver it to you at the lowest prices possible.</p>
@@ -3366,7 +3451,7 @@
   <!-- Products Section -->
   <main class="main-content" id="products" style="padding-left: 1.5rem; padding-right: 1.5rem;">
     {% for section_key, section_data in products_sections.items() %}
-        <section class="category-section">
+        <section class="category-section scroll-animate">
           <div class="category-header">
             <h3 class="category-title">{{ section_data.name }}</h3>
           </div>
@@ -3384,7 +3469,7 @@
           
           <div class="products-grid {% if 'explore' in section_data.name.lower() %}explore-more{% endif %}">
             {% for product in section_data.products %}
-              <article class="product-card">
+              <article class="product-card scroll-animate">
                 <a class="card-link" href="/product/{{ product.id }}">View</a>
                 <div class="product-image-container">
                   <img loading="lazy" src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
@@ -3470,6 +3555,11 @@
   <!-- Modern Mini Cart Overlay -->
   <div class="mini-cart-overlay" id="miniCartOverlay" onclick="closeMiniCart()"></div>
   
+  <!-- Dark Blurry Page Loader -->
+  <div class="page-loader" id="pageLoader">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading...</div>
+  </div>
 
   <!-- Modern Mini Cart Sidebar -->
   <div class="mini-cart" id="miniCart">
@@ -3667,8 +3757,23 @@
       }
     });
 
-    // Initialize page
+    // Scroll-triggered animations
     document.addEventListener('DOMContentLoaded', function() {
+      const animateElements = document.querySelectorAll('.scroll-animate');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '50px 0px -50px 0px'
+      });
+
+      animateElements.forEach(el => observer.observe(el));
+
       updateWishlistCount();
       
       // Keep mini cart open after cart operations
@@ -3789,7 +3894,7 @@
       const debounce = (fn, ms) => { return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn.apply(null, args), ms); }; };
 
       function clearPanel(){ panel.innerHTML = ''; panel.hidden = true; }
-      function setLoading(){ panel.innerHTML = `<div class="status">Searching...</div>`; panel.hidden = false; }
+      function setLoading(){ panel.innerHTML = `<div class="status"><span class="spinner"></span>Loading…</div>`; panel.hidden = false; }
       function showNoResults(){ panel.innerHTML = `<div class="status">No results</div>`; panel.hidden = false; }
 
       async function fetchResults(q){
@@ -3888,6 +3993,7 @@
     //   document.addEventListener('DOMContentLoaded', initParallax);
   </script>
   
+  <script defer src="{{ url_for('static', filename='js/loading.js', v='3') }}"></script>
   
   <!-- Clean Search Script -->
   <script>
