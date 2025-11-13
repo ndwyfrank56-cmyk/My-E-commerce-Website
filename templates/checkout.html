@@ -1178,27 +1178,31 @@ body { padding-top: 120px; }
     
     .cod-btn {
       padding: 0.7rem 1.2rem;
-      background: #1e293b;
-      color: #fff;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s ease;
-      box-shadow: none;
-      display: inline-flex;
+      transition: all 0.2s ease;
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      text-transform: none;
       min-width: 160px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
     }
     
     .cod-btn:hover {
-      background: #334155;
-      border-color: #475569;
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
       transform: none;
-      box-shadow: none;
     }
 
     /* COD Success Modal - Floating and Prominent */
@@ -2008,14 +2012,6 @@ body { padding-top: 120px; }
               </div>
             </div>
             
-            <div class="section-actions">
-              <button type="button" class="prev-btn" onclick="prevStep()">
-                <i class="fas fa-arrow-left"></i> Back
-              </button>
-              <button type="button" class="next-btn" onclick="nextStep()">
-                Next <i class="fas fa-arrow-right"></i>
-              </button>
-            </div>
           </div>
 
           <!-- Step 3: Delivery Location (Optional) -->
@@ -2044,14 +2040,6 @@ body { padding-top: 120px; }
               </div>
             </div>
             
-            <div class="section-actions">
-              <button type="button" class="prev-btn" onclick="prevStep()">
-                <i class="fas fa-arrow-left"></i> Back
-              </button>
-              <button type="button" class="next-btn" onclick="nextStep()">
-                Next <i class="fas fa-arrow-right"></i>
-              </button>
-            </div>
           </div>
 
           <!-- Step 4: Payment Information -->
@@ -2098,19 +2086,16 @@ body { padding-top: 120px; }
               </div>
             </div>
             
-            <div class="section-actions">
-              <button type="button" class="prev-btn" onclick="prevStep()">
-                <i class="fas fa-arrow-left"></i> Back
+            <div class="payment-buttons">
+              <button type="button" id="btnMomo" class="pay-btn" onclick="initiatePayment('momo')" disabled style="opacity: 0.5; cursor: not-allowed;">
+                <img src="{{ url_for('static', filename='images/momo.png') }}" alt="Mobile Money" style="width: 20px; height: 20px; margin-right: 8px;">
+                Mobile Money
+                <span style="font-size: 0.75rem; color: #888; margin-left: 8px;">(Coming Soon)</span>
               </button>
-              <div class="payment-buttons">
-                <button type="button" id="btnMomo" class="pay-btn" onclick="initiatePayment('momo')" disabled style="opacity: 0.5; cursor: not-allowed;">
-                  <img src="https://cdn.brandfetch.io/idtdXB-ogi/theme/dark/logo.svg?c=1bxid64Mup7aczewSAYMX&t=1667849059728" alt="MTN">
-                  Pay Now
-                </button>
-                <button type="button" id="btnCOD" class="cod-btn hidden" onclick="initiatePayment('cod')">
-                  Cash on Delivery
-                </button>
-              </div>
+              <button type="button" id="btnCOD" class="pay-btn cod-btn" onclick="initiatePayment('cod')">
+                <i class="fas fa-money-bill-wave" style="margin-right: 8px;"></i>
+                Cash on Delivery
+              </button>
             </div>
           </div>
         </form>
