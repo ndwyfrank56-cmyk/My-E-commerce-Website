@@ -598,18 +598,20 @@
       }
 
       .auth-tabs {
-        flex-direction: column;
-        gap: 0.75rem;
+        /* Keep horizontal layout on mobile like desktop */
+        flex-direction: row;
+        gap: 0;
       }
 
       .tab-btn {
-        border-radius: 999px !important;
-        border-bottom: none;
+        /* Keep desktop tab styling on mobile */
+        border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+        border-bottom: 1px solid var(--border);
       }
 
       .tab-btn:last-child {
-        border-bottom: none;
-        border-radius: 999px !important;
+        border-bottom: 1px solid var(--border);
+        border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
       }
 
       .form-row {
