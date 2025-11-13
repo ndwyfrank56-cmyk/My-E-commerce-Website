@@ -4249,7 +4249,8 @@ document.addEventListener('DOMContentLoaded', () => {
         {% if cart_items %}
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set total.value = total.value + (item.price * item.quantity) %}
+            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
+            {% set total.value = total.value + (normalized_price * item.quantity) %}
           {% endfor %}
           <div class="cart-total-display" style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">
             Total: RWF {{ '{:,.0f}'.format(total.value) }}
@@ -4284,7 +4285,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mini-cart-items">
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set subtotal = item.price * item.quantity %}
+            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
+            {% set subtotal = normalized_price * item.quantity %}
             {% set total.value = total.value + subtotal %}
             <div class="mini-cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="item-image" style="display: block; text-decoration: none;">
@@ -4298,7 +4300,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p class="item-variant">{{ item.variations|fmtvars }}</p>
                 {% endif %}
                 <div class="item-price-qty">
-                  <span class="item-price">RWF {{ "{:,.0f}".format(item.price) }}</span>
+                  <span class="item-price">RWF {{ "{:,.0f}".format(normalized_price) }}</span>
                   <div class="item-quantity">
                     <span class="qty-simple">{{ item.quantity }}</span>
                   </div>

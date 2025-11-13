@@ -1737,7 +1737,8 @@
         <div class="cart-items-list">
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set subtotal = item.price * item.quantity %}
+            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
+            {% set subtotal = normalized_price * item.quantity %}
             {% set total.value = total.value + subtotal %}
             <div class="cart-item" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="cart-item-image" style="display: block; text-decoration: none;">
@@ -1765,7 +1766,7 @@
                   </button>
                 </div>
               </div>
-              <div class="cart-item-subtotal">RWF {{ '{:,.1f}'.format(subtotal) }}</div>
+              <div class="cart-item-subtotal">RWF {{ '{:,.0f}'.format(subtotal) }}</div>
             </div>
           {% endfor %}
         </div>
@@ -1773,7 +1774,7 @@
         <div class="cart-footer">
           <div class="cart-total">
             <div class="total-label">TOTAL:</div>
-            <div class="total-amount">{{ '{:,.1f}'.format(total.value) }} RWF</div>
+            <div class="total-amount">{{ '{:,.0f}'.format(total.value) }} RWF</div>
           </div>
           <button class="checkout-btn" onclick="handleCheckout(this)">
             <span class="loading-spinner"></span>
@@ -1859,7 +1860,8 @@
         <div class="mini-cart-items">
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set subtotal = item.price * item.quantity %}
+            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
+            {% set subtotal = normalized_price * item.quantity %}
             {% set total.value = total.value + subtotal %}
             <div class="mini-cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="item-image" style="display: block; text-decoration: none;">
