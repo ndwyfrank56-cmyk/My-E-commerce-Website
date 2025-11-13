@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='29') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global-loading.css') }}">
   <style>
     :root {
       --bg: #0f1115;
@@ -3779,10 +3780,11 @@
   </style>
 </head>
 <body>
-  <!-- Dark Blurry Page Loader -->
-  <div class="page-loader" id="pageLoader">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading...</div>
+  <!-- Global Loading Overlay -->
+  <div id="globalLoadingOverlay" class="global-loading-overlay">
+    <div class="global-loading-spinner"></div>
+    <div class="global-loading-text">Loading...</div>
+    <div class="global-loading-subtext">Please wait while we load the page</div>
   </div>
 
   <!-- Top Loading Bar -->
@@ -4955,5 +4957,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   </script>
+
+  <!-- Global Loading JavaScript -->
+  <script src="{{ url_for('static', filename='js/global-loading.js') }}"></script>
 </body>
 </html>

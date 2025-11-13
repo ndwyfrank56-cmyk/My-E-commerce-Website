@@ -1,0 +1,188 @@
+/* Global Loading Overlay - Prevents all interactions during page loads */
+
+/* Main loading overlay that covers entire screen */
+.global-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 12, 16, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.3s ease;
+  pointer-events: all;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Active state - shows the overlay */
+.global-loading-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Fade out animation */
+.global-loading-overlay.fade-out {
+  opacity: 0;
+}
+
+/* Loading spinner */
+.global-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  animation: globalSpin 1s linear infinite;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+/* Loading text */
+.global-loading-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Loading subtext */
+.global-loading-subtext {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Spin animation */
+@keyframes globalSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Prevent scrolling when loading */
+body.loading-active {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Allow loading overlay to receive events */
+body.loading-active .global-loading-overlay {
+  pointer-events: all;
+}
+
+/* Disable all interactions when loading */
+body.loading-active * {
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Re-enable loading overlay interactions */
+body.loading-active .global-loading-overlay,
+body.loading-active .global-loading-overlay * {
+  pointer-events: all !important;
+}
+
+/* Form loading states */
+.form-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.form-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  border-radius: inherit;
+}
+
+/* Button loading states */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-loading .btn-text {
+  opacity: 0.5;
+}
+
+.btn-loading .btn-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  animation: globalSpin 0.8s linear infinite;
+}
+
+/* Link loading states */
+a.link-loading {
+  pointer-events: none;
+  opacity: 0.6;
+  position: relative;
+}
+
+a.link-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: globalSpin 0.8s linear infinite;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .global-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border-width: 3px;
+  }
+  
+  .global-loading-text {
+    font-size: 0.9rem;
+  }
+  
+  .global-loading-subtext {
+    font-size: 0.8rem;
+  }
+}
+
+/* Accessibility - Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .global-loading-spinner,
+  .btn-spinner,
+  a.link-loading::after {
+    animation: none;
+  }
+  
+  .global-loading-spinner {
+    border-top-color: rgba(255, 255, 255, 0.9);
+  }
+}
