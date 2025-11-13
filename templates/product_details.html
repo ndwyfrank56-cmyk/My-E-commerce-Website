@@ -804,14 +804,48 @@
       .related .products-grid {
         gap: 0.75rem;
         max-width: 350px;
+        margin: 0 auto;
       }
       
-      .related .product-card .product-details h3 {
-        font-size: 0.75rem;
+      /* Tighter spacing for product info on mobile */
+      .product-info {
+        gap: 0.75rem !important;
       }
       
-      .related .product-card .product-details .price {
-        font-size: 0.85rem;
+      .product-title {
+        margin-bottom: 0.5rem !important;
+      }
+      
+      .price-stock {
+        margin: 0.5rem 0 !important;
+      }
+      
+      .description {
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+      }
+      
+      .rating {
+        margin: 0.5rem 0 !important;
+      }
+      
+      .dropdown-variations-container {
+        margin: 0.75rem 0 0.5rem 0 !important;
+        gap: 0.75rem !important;
+      }
+      
+      .variation-group {
+        gap: 0.4rem !important;
+      }
+      
+      .actions {
+        margin-top: 1rem !important;
+        gap: 0.75rem !important;
+      }
+      
+      /* Reduce padding in product info container */
+      .product-layout > div:last-child {
+        padding: 1rem !important;
       }
       
       /* Constrain product layout to prevent overflow */
