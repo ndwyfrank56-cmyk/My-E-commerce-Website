@@ -4959,19 +4959,71 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    function showPageLoader() {
+      const pageLoader = document.getElementById('pageLoader');
+      if (pageLoader) {
+        pageLoader.classList.add('active');
+      }
+    }
+
+    function hidePageLoader() {
+      const pageLoader = document.getElementById('pageLoader');
+      if (pageLoader) {
+        pageLoader.classList.remove('active');
+      }
+    }
+
     // Show loading bar on page navigation
-    window.addEventListener('beforeunload', showLoadingBar);
+    window.addEventListener('beforeunload', () => {
+      showLoadingBar();
+      showPageLoader();
+    });
     
-    // Show loading bar on link clicks
+    // Show loading on ALL navigation clicks
     document.addEventListener('click', function(e) {
-      const link = e.target.closest('a');
-      if (link && link.href && !link.href.includes('#') && !link.target) {
-        showLoadingBar();
+      const clickedElement = e.target.closest('a, button[onclick], .product-card, .category-link, .nav-btn, .menu-btn, .logo');
+      
+      if (clickedElement) {
+        // Skip if it's a no-loader element or has specific exclusions
+        if (clickedElement.classList.contains('no-loader') || 
+            clickedElement.classList.contains('close-btn') ||
+            clickedElement.classList.contains('qty-btn') ||
+            clickedElement.classList.contains('remove-btn') ||
+            clickedElement.onclick?.toString().includes('openMiniCart') ||
+            clickedElement.onclick?.toString().includes('closeMiniCart') ||
+            clickedElement.onclick?.toString().includes('toggleSidebar') ||
+            clickedElement.onclick?.toString().includes('closeAllSidebars')) {
+          return;
+        }
+
+        // Show loading for navigation links
+        if (clickedElement.href && !clickedElement.href.includes('#') && !clickedElement.target) {
+          showLoadingBar();
+          showPageLoader();
+        }
+        
+        // Show loading for onclick navigation buttons
+        if (clickedElement.onclick && 
+            (clickedElement.onclick.toString().includes('window.location') ||
+             clickedElement.onclick.toString().includes('href') ||
+             clickedElement.onclick.toString().includes('navigate'))) {
+          showLoadingBar();
+          showPageLoader();
+        }
+        
+        // Show loading for product cards and category links
+        if (clickedElement.classList.contains('product-card') || 
+            clickedElement.classList.contains('category-link') ||
+            clickedElement.classList.contains('logo')) {
+          showLoadingBar();
+          showPageLoader();
+        }
       }
     });
 
     document.addEventListener('DOMContentLoaded', function() {
       hideLoadingBar();
+      hidePageLoader();
       updateWishlistCount();
       
       // Keep mini cart open after cart operations

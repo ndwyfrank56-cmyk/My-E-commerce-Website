@@ -2165,6 +2165,76 @@
       backdrop.onclick = () => document.body.removeChild(overlay);
     }
 
+    // Page Loader Functions
+    function showPageLoader() {
+      const loader = document.getElementById('pageLoader');
+      if (loader) {
+        loader.classList.add('active');
+        loader.classList.remove('fade-out');
+      }
+    }
+
+    function hidePageLoader() {
+      const loader = document.getElementById('pageLoader');
+      if (loader) {
+        loader.classList.add('fade-out');
+        setTimeout(() => {
+          loader.classList.remove('active', 'fade-out');
+        }, 300);
+      }
+    }
+
+    // Show loading on ALL navigation clicks
+    document.addEventListener('click', function(e) {
+      const clickedElement = e.target.closest('a, button[onclick], .product-card, .category-link, .nav-btn, .menu-btn, .logo');
+      
+      if (clickedElement) {
+        // Skip if it's a no-loader element or has specific exclusions
+        if (clickedElement.classList.contains('no-loader') || 
+            clickedElement.classList.contains('close-btn') ||
+            clickedElement.classList.contains('qty-btn') ||
+            clickedElement.classList.contains('remove-btn') ||
+            clickedElement.classList.contains('checkout-btn') ||
+            clickedElement.onclick?.toString().includes('openMiniCart') ||
+            clickedElement.onclick?.toString().includes('closeMiniCart') ||
+            clickedElement.onclick?.toString().includes('toggleSidebar') ||
+            clickedElement.onclick?.toString().includes('closeAllSidebars') ||
+            clickedElement.onclick?.toString().includes('handleCheckout')) {
+          return;
+        }
+
+        // Show loading for navigation links
+        if (clickedElement.href && !clickedElement.href.includes('#') && !clickedElement.target) {
+          showPageLoader();
+        }
+        
+        // Show loading for onclick navigation buttons
+        if (clickedElement.onclick && 
+            (clickedElement.onclick.toString().includes('window.location') ||
+             clickedElement.onclick.toString().includes('href') ||
+             clickedElement.onclick.toString().includes('navigate'))) {
+          showPageLoader();
+        }
+        
+        // Show loading for product cards and category links
+        if (clickedElement.classList.contains('product-card') || 
+            clickedElement.classList.contains('category-link') ||
+            clickedElement.classList.contains('logo')) {
+          showPageLoader();
+        }
+      }
+    });
+
+    // Show loading on form submissions
+    document.addEventListener('submit', function(e) {
+      if (!e.target.classList.contains('no-loader')) {
+        showPageLoader();
+      }
+    });
+
+    // Show loading on page navigation
+    window.addEventListener('beforeunload', showPageLoader);
+
     // Handle checkout button with loading
     function handleCheckout(button) {
       // Add loading state
@@ -2267,6 +2337,15 @@
   <script>
     // Scroll-triggered animations
     document.addEventListener('DOMContentLoaded', function() {
+      hidePageLoader();
+      updateWishlistCount();
+      
+      // Keep mini cart open after cart operations
+      if (sessionStorage.getItem('keepMiniCartOpen') === '1') {
+        sessionStorage.removeItem('keepMiniCartOpen');
+        openMiniCart();
+      }
+      
       const animateElements = document.querySelectorAll('.scroll-animate');
 
       const observer = new IntersectionObserver((entries) => {
