@@ -315,33 +315,32 @@
 
     .nav-btn {
       position: relative;
-      padding: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(27, 32, 43, 0.8);
-      border-radius: 12px;
+      padding: 0.55rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--panel-2);
+      border-radius: var(--border-radius);
       cursor: pointer;
-      color: rgba(255,255,255,0.7);
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      transition: var(--transition);
+      text-decoration: none;
+      box-shadow: none;
     }
 
     .nav-btn.profile {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.4);
-      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.85);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.6),
-        inset 0 -1px 0 rgba(0,0,0,0.1),
-        0 8px 16px rgba(0,0,0,0.25);
+        inset 0 1px 0 rgba(255,255,255,0.55),
+        inset 0 -1px 0 rgba(0,0,0,0.08),
+        0 6px 14px rgba(0,0,0,0.20);
     }
     .nav-btn.profile i { color: #111318; }
     .nav-btn.profile:hover { background: rgba(255,255,255,0.92); border-color: rgba(255,255,255,0.45); box-shadow: 0 10px 22px rgba(0,0,0,0.22); }
