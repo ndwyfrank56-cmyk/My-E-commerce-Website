@@ -1753,7 +1753,7 @@
                   {{ item.variations|fmtvars }}
                 </div>
                 {% endif %}
-                <div class="cart-item-price">RWF {{ '{:,.0f}'.format(normalized_price) }}</div>
+                <div class="cart-item-price">RWF {{ '{:,.0f}'.format(item.price) }}</div>
                 <div class="cart-item-controls">
                   <div class="qty-control">
                     <button class="qty-btn" onclick="stepQty(this,-1,this.dataset.max)" data-id="{{ item.id }}" data-max="{{ item.stock }}">−</button>
