@@ -4169,30 +4169,24 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- Modern Mini Cart Sidebar -->
   <div class="mini-cart" id="miniCart">
     <div class="mini-cart-header">
+      <div class="mini-cart-title">
+        {% if cart_items %}
+          {% set total = namespace(value=0) %}
+          {% for item in cart_items %}
+            {% set total.value = total.value + (item.price * item.quantity) %}
+          {% endfor %}
+          <div class="cart-total-display" style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">
+            Total: RWF {{ '{:,.0f}'.format(total.value) }}
+          </div>
+        {% endif %}
+        <div class="cart-header-buttons">
+          <a href="/addtocart" class="btn-view-cart-header"><i class="fas fa-shopping-cart"></i> cart</a>
+          <button class="btn-checkout-header" onclick="window.location.href='/checkout'"><i class="fas fa-credit-card"></i> checkout</button>
+        </div>
+      </div>
       <button class="mini-cart-close" onclick="closeMiniCart()" aria-label="Close cart">
         <i class="fas fa-times"></i>
       </button>
-      
-      <div class="mini-cart-title">
-        <i class="fas fa-shopping-bag"></i>
-        <span>Shopping Cart</span>
-        <span class="mini-cart-count">({{ cart_items|length if cart_items else 0 }})</span>
-      </div>
-      
-      {% if cart_items %}
-        {% set total = namespace(value=0) %}
-        {% for item in cart_items %}
-          {% set total.value = total.value + (item.price * item.quantity) %}
-        {% endfor %}
-        <div class="cart-total-display" style="color: rgba(255, 255, 255, 0.95); font-size: 0.9rem; font-weight: 600; text-align: center; padding: 0.5rem 0.75rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          Total: RWF {{ '{:,.0f}'.format(total.value) }}
-        </div>
-      {% endif %}
-      
-      <div class="cart-header-buttons">
-        <a href="/addtocart" class="btn-view-cart-header"><i class="fas fa-shopping-cart"></i> cart</a>
-        <button class="btn-checkout-header" onclick="window.location.href='/checkout'"><i class="fas fa-credit-card"></i> checkout</button>
-      </div>
     </div>
 
     <div class="mini-cart-body">
