@@ -797,8 +797,9 @@
     }
 
     .open-cart-btn:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.12);
+      transform: none;
     }
 
     .checkout-btn {
@@ -1002,36 +1003,6 @@
 
     .site-footer.scroll-animate.animate-in {
       transform: scale(1);
-    }
-
-    /* Loading overlay hidden by default */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: none; /* Hidden by default */
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-    .loading-overlay .loading-spinner {
-      border: 4px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 4px solid #3498db;
-      width: 30px;
-      height: 30px;
-      animation: spin 2s linear infinite;
-    }
-    @-webkit-keyframes spin {
-      0% { -webkit-transform: rotate(0deg); }
-      100% { -webkit-transform: rotate(360deg); }
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     @media (max-width: 1024px) {
@@ -2160,76 +2131,6 @@
       backdrop.onclick = () => document.body.removeChild(overlay);
     }
 
-    // Page Loader Functions
-    function showPageLoader() {
-      const loader = document.getElementById('pageLoader');
-      if (loader) {
-        loader.classList.add('active');
-        loader.classList.remove('fade-out');
-      }
-    }
-
-    function hidePageLoader() {
-      const loader = document.getElementById('pageLoader');
-      if (loader) {
-        loader.classList.add('fade-out');
-        setTimeout(() => {
-          loader.classList.remove('active', 'fade-out');
-        }, 300);
-      }
-    }
-
-    // Show loading on ALL navigation clicks
-    document.addEventListener('click', function(e) {
-      const clickedElement = e.target.closest('a, button[onclick], .product-card, .category-link, .nav-btn, .menu-btn, .logo');
-      
-      if (clickedElement) {
-        // Skip if it's a no-loader element or has specific exclusions
-        if (clickedElement.classList.contains('no-loader') || 
-            clickedElement.classList.contains('close-btn') ||
-            clickedElement.classList.contains('qty-btn') ||
-            clickedElement.classList.contains('remove-btn') ||
-            clickedElement.classList.contains('checkout-btn') ||
-            clickedElement.onclick?.toString().includes('openMiniCart') ||
-            clickedElement.onclick?.toString().includes('closeMiniCart') ||
-            clickedElement.onclick?.toString().includes('toggleSidebar') ||
-            clickedElement.onclick?.toString().includes('closeAllSidebars') ||
-            clickedElement.onclick?.toString().includes('handleCheckout')) {
-          return;
-        }
-
-        // Show loading for navigation links
-        if (clickedElement.href && !clickedElement.href.includes('#') && !clickedElement.target) {
-          showPageLoader();
-        }
-        
-        // Show loading for onclick navigation buttons
-        if (clickedElement.onclick && 
-            (clickedElement.onclick.toString().includes('window.location') ||
-             clickedElement.onclick.toString().includes('href') ||
-             clickedElement.onclick.toString().includes('navigate'))) {
-          showPageLoader();
-        }
-        
-        // Show loading for product cards and category links
-        if (clickedElement.classList.contains('product-card') || 
-            clickedElement.classList.contains('category-link') ||
-            clickedElement.classList.contains('logo')) {
-          showPageLoader();
-        }
-      }
-    });
-
-    // Show loading on form submissions
-    document.addEventListener('submit', function(e) {
-      if (!e.target.classList.contains('no-loader')) {
-        showPageLoader();
-      }
-    });
-
-    // Show loading on page navigation
-    window.addEventListener('beforeunload', showPageLoader);
-
     // Handle checkout button with loading
     function handleCheckout(button) {
       // Add loading state
@@ -2332,7 +2233,6 @@
   <script>
     // Scroll-triggered animations
     document.addEventListener('DOMContentLoaded', function() {
-      hidePageLoader();
       updateWishlistCount();
       
       // Keep mini cart open after cart operations

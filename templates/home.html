@@ -822,9 +822,9 @@
     }
 
     .btn-view-cart-header:hover {
-      background: rgba(229, 231, 235, 1);
-      color: #000;
-      transform: translateY(-1px);
+      background: rgba(229, 231, 235, 0.9);
+      color: #111318;
+      transform: none;
     }
 
     .btn-checkout-header {
@@ -1640,8 +1640,9 @@
     }
 
     .remove-btn:hover {
-      background: var(--danger);
-      color: #111318;
+      background: transparent;
+      color: #f87171;
+      transform: none;
     }
 
     .cart-item-subtotal {
@@ -3772,72 +3773,6 @@
 
       animateElements.forEach(el => observer.observe(el));
 
-      // Dark Blurry Loading Functions
-      function showPageLoader() {
-        const loader = document.getElementById('pageLoader');
-        if (loader) {
-          loader.classList.add('active');
-          loader.classList.remove('fade-out');
-        }
-      }
-
-      function hidePageLoader() {
-        const loader = document.getElementById('pageLoader');
-        if (loader) {
-          loader.classList.add('fade-out');
-          setTimeout(() => {
-            loader.classList.remove('active', 'fade-out');
-          }, 300);
-        }
-      }
-
-      // Show loading on ALL navigation clicks
-      document.addEventListener('click', function(e) {
-        const clickedElement = e.target.closest('a, button[onclick], .product-card, .category-link, .nav-btn, .menu-btn, .logo');
-        
-        if (clickedElement) {
-          // Skip if it's a no-loader element or has specific exclusions
-          if (clickedElement.classList.contains('no-loader') || 
-              clickedElement.classList.contains('close-btn') ||
-              clickedElement.classList.contains('qty-btn') ||
-              clickedElement.classList.contains('remove-btn') ||
-              clickedElement.onclick?.toString().includes('openMiniCart') ||
-              clickedElement.onclick?.toString().includes('closeMiniCart') ||
-              clickedElement.onclick?.toString().includes('toggleSidebar') ||
-              clickedElement.onclick?.toString().includes('closeAllSidebars')) {
-            return;
-          }
-
-          // Show loading for navigation links
-          if (clickedElement.href && !clickedElement.href.includes('#') && !clickedElement.target) {
-            showPageLoader();
-          }
-          
-          // Show loading for onclick navigation buttons
-          if (clickedElement.onclick && 
-              (clickedElement.onclick.toString().includes('window.location') ||
-               clickedElement.onclick.toString().includes('href') ||
-               clickedElement.onclick.toString().includes('navigate'))) {
-            showPageLoader();
-          }
-          
-          // Show loading for product cards and category links
-          if (clickedElement.classList.contains('product-card') || 
-              clickedElement.classList.contains('category-link') ||
-              clickedElement.classList.contains('logo')) {
-            showPageLoader();
-          }
-        }
-      });
-
-      // Show loading on form submissions
-      document.addEventListener('submit', function(e) {
-        if (!e.target.classList.contains('no-loader')) {
-          showPageLoader();
-        }
-      });
-
-      hidePageLoader();
       updateWishlistCount();
       
       // Keep mini cart open after cart operations

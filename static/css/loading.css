@@ -1,67 +1,18 @@
-/* Global loading overlay */
-/* Mobile: remove tap highlight and accidental selection */
-html, body, *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
-*:not(input):not(textarea):not([contenteditable="true"]) { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
-input, textarea, [contenteditable="true"] { -webkit-user-select: text; -ms-user-select: text; user-select: text; -webkit-touch-callout: default; }
-a:focus, button:focus, [role="button"]:focus, [tabindex]:focus { outline: none !important; box-shadow: none !important; }
-
-/* Top Navbar Loading Bar */
-#global-loading-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: transparent;
-  z-index: 10000;
-  display: none;
-}
-
-#global-loading-bar.active {
-  display: block;
-}
-
-#global-loading-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: linear-gradient(90deg, #22c55e, #16a34a, #15803d);
-  border-radius: 0 2px 2px 0;
-  animation: loading-progress 2s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
-}
-
-@keyframes loading-progress {
-  0% { width: 0%; }
-  50% { width: 70%; }
-  100% { width: 100%; }
-}
-
-/* Hide old loading overlay */
-#global-loading-overlay {
-  display: none !important;
-}
-
-.loading-spinner {
-  display: none !important;
-}
-
+/* Button loading state for Add to Cart and Buy Now buttons only */
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Button loading state */
-button.is-loading,
-.button.is-loading,
-.submit-btn.is-loading,
-.checkout-btn.is-loading,
-.nav-btn.is-loading {
+/* Button loading state - only for specific buttons */
+button.is-loading.add-to-cart-btn,
+button.is-loading.buy-now-btn,
+button.is-loading#addToCartBtn {
   position: relative;
   pointer-events: none;
   opacity: 0.85;
 }
-button.is-loading > .loading-dot,
-.button.is-loading > .loading-dot {
+
+button.is-loading.add-to-cart-btn > .loading-dot,
+button.is-loading.buy-now-btn > .loading-dot,
+button.is-loading#addToCartBtn > .loading-dot {
   width: 1em;
   height: 1em;
   border: 2px solid rgba(255,255,255,0.4);
