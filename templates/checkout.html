@@ -1724,14 +1724,10 @@ body { padding-top: 120px; }
       top: -8px;
     }
 
-    /* Checkout Section Styles */
+    /* Checkout sections - show all */
     .checkout-section {
-      display: none;
-      animation: slideInRight 0.3s ease;
-    }
-
-    .checkout-section.active {
       display: block;
+      margin-bottom: 2rem;
     }
 
     @keyframes slideInRight {
@@ -1959,36 +1955,14 @@ body { padding-top: 120px; }
           Your cart is empty. <a href="/" style="color: var(--accent); text-decoration: none; font-weight: 700;">Continue shopping</a>
         </div>
       {% else %}
-        <!-- Checkout Steps Progress -->
-        <div class="checkout-steps">
-          <div class="step active" data-step="1">
-            <div class="step-number">1</div>
-            <div class="step-label">Contact</div>
-          </div>
-          <div class="step-connector"></div>
-          <div class="step" data-step="2">
-            <div class="step-number">2</div>
-            <div class="step-label">Address</div>
-          </div>
-          <div class="step-connector"></div>
-          <div class="step" data-step="3">
-            <div class="step-number">3</div>
-            <div class="step-label">Location</div>
-          </div>
-          <div class="step-connector"></div>
-          <div class="step" data-step="4">
-            <div class="step-number">4</div>
-            <div class="step-label">Payment</div>
-          </div>
-        </div>
 
         <form method="POST" action="/checkout" class="form">
           <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
           <input type="hidden" id="latitude" name="latitude" value="{{ request.form.get('latitude','') }}">
           <input type="hidden" id="longitude" name="longitude" value="{{ request.form.get('longitude','') }}">
           
-          <!-- Step 1: Contact Information -->
-          <div class="checkout-section active" data-section="1">
+          <!-- Contact Information -->
+          <div class="checkout-section">
             <div class="section-header">
               <h3>Contact</h3>
             </div>
@@ -2013,15 +1987,10 @@ body { padding-top: 120px; }
               {% endif %}
             </div>
             
-            <div class="section-actions">
-              <button type="button" class="next-btn" onclick="nextStep()">
-                Next <i class="fas fa-arrow-right"></i>
-              </button>
-            </div>
           </div>
 
-          <!-- Step 2: Address Information -->
-          <div class="checkout-section" data-section="2">
+          <!-- Address Information -->
+          <div class="checkout-section">
             <div class="section-header">
               <h3>Address</h3>
             </div>
@@ -2086,7 +2055,7 @@ body { padding-top: 120px; }
           </div>
 
           <!-- Step 4: Payment Information -->
-          <div class="checkout-section" data-section="4">
+          <div class="checkout-section">
             <div class="section-header">
               <h3>Payment</h3>
             </div>
