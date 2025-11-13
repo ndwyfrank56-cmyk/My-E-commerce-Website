@@ -1392,20 +1392,15 @@
 
     /* HORIZONTAL CATEGORY NAVIGATION - MODERN DESIGN */
     .categories-nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(17, 21, 29, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+      background: transparent;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 0;
+      padding: 1rem 0;
       margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .categories-nav .category-link {
@@ -3432,15 +3427,16 @@
     </div>
   </section>
 
-  <!-- Modern Horizontal Categories Navigation -->
-  <nav class="categories-nav">
-    {% for category in categories %}
-      <a href="/viewall?category={{ category.id }}" class="category-link">{{ category.name|upper }}</a>
-    {% endfor %}
-  </nav>
-
   <!-- Products Section -->
   <main class="main-content" id="products" style="padding-left: 1.5rem; padding-right: 1.5rem;">
+    
+    <!-- Modern Horizontal Categories Navigation -->
+    <nav class="categories-nav" style="margin-bottom: 2rem;">
+      {% for category in categories %}
+        <a href="/viewall?category={{ category.id }}" class="category-link">{{ category.name|upper }}</a>
+      {% endfor %}
+    </nav>
+
     {% for section_key, section_data in products_sections.items() %}
         <section class="category-section scroll-animate">
           <div class="category-header">
