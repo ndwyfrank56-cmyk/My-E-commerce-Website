@@ -159,7 +159,7 @@
       top: 80px; 
       height: fit-content; 
       box-shadow: var(--shadow); 
-      transition: transform 0.3s ease, padding 0.3s ease; 
+      transition: transform 0.15s ease, padding 0.15s ease; 
       z-index: 1; /* Ensure sidebar is below navbar */
     }
     @media (max-width: 900px) { 
@@ -186,7 +186,7 @@
       text-transform: uppercase;
       letter-spacing: .03em;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.15s ease;
       box-shadow: none;
     }
     .sidebar-toggle .label { display: inline-flex; align-items: center; gap: .5rem; }
@@ -196,7 +196,7 @@
     .sidebar-collapsible {
       overflow: hidden;
       max-height: 0;
-      transition: max-height .3s ease;
+      transition: max-height .15s ease;
       will-change: max-height;
     }
     .sidebar.expanded .sidebar-collapsible { max-height: 1200px; }
@@ -1069,7 +1069,7 @@
       flex: 1; 
       max-height: 0; 
       overflow: hidden; 
-      transition: max-height 0.3s ease;
+      transition: max-height 0.15s ease;
       opacity: 0;
       visibility: hidden;
     }
