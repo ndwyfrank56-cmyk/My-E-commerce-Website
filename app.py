@@ -2261,10 +2261,11 @@ def home():
         # Get curated product sections
         products_sections = {}
         
-        # 1. Top Selling - 8 products with highest rating
+        # 1. Top Selling - 8 products (prioritize rated products, then show any products)
         cur.execute("""
             SELECT * FROM products 
-            ORDER BY rate DESC, id DESC
+            WHERE stock > 0
+            ORDER BY COALESCE(rate, 0) DESC, id DESC
             LIMIT 8
         """)
         top_selling_data = cur.fetchall()
@@ -2273,6 +2274,8 @@ def home():
             product_with_discount = get_product_with_discount(prod)
             if product_with_discount:
                 top_selling.append(product_with_discount)
+        
+        # Always show Top Selling section, even if no rated products
         if top_selling:
             products_sections['top_selling'] = {
                 'name': 'Top Selling',
@@ -2283,6 +2286,7 @@ def home():
         # 2. New Arrivals - 8 newest products
         cur.execute("""
             SELECT * FROM products 
+            WHERE stock > 0
             ORDER BY id DESC
             LIMIT 8
         """)
