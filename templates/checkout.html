@@ -2113,8 +2113,11 @@ body { padding-top: 120px; }
         <div class="empty">No items to show.</div>
       {% else %}
         <div class="order-items">
+          {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set subtotal = item.price * item.quantity %}
+            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
+            {% set subtotal = normalized_price * item.quantity %}
+            {% set total.value = total.value + subtotal %}
             <div class="order-item scroll-animate" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="order-thumb" style="display: block; text-decoration: none;"><img src="{{ item.image }}" alt="{{ item.name }}"></a>
               <div class="order-info">
@@ -2135,7 +2138,7 @@ body { padding-top: 120px; }
         <div class="cost-breakdown scroll-animate" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
           <div class="cost-row" style="display: flex; justify-content: space-between; margin-bottom: 0.65rem;">
             <div style="color: #888888; font-size: 0.9rem; font-weight: 400;">Subtotal</div>
-            <div style="color: var(--text-primary); font-size: 0.9rem; font-weight: 600;">RWF {{ '{:,.1f}'.format(total) }}</div>
+            <div style="color: var(--text-primary); font-size: 0.9rem; font-weight: 600;">RWF {{ '{:,.1f}'.format(total.value) }}</div>
           </div>
           <div class="cost-row" style="display: flex; justify-content: space-between; margin-bottom: 0.65rem;">
             <div style="color: #888888; font-size: 0.9rem; font-weight: 400;">Delivery Fee</div>
@@ -2145,7 +2148,7 @@ body { padding-top: 120px; }
         
         <div class="total scroll-animate" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #333;">
           <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Total Amount</div>
-          <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.1f}'.format(total + 2000) }}</div>
+          <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.1f}'.format(total.value + 2000) }}</div>
         </div>
       {% endif %}
     </aside>
