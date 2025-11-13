@@ -459,15 +459,15 @@
       border: none;
       border-radius: 12px;
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      text-transform: none;
+      letter-spacing: 0.3px;
       text-decoration: none;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
@@ -1197,36 +1197,54 @@
         width: 100% !important;
         min-width: unset !important;
         max-width: unset !important;
-        padding: 1.2rem 1.5rem;
-        font-size: 1rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: none;
+        letter-spacing: 0.3px;
       }
       
-      /* Smaller cart cards on mobile */
+      /* Better mobile cart layout */
       .cart-item {
-        padding: 1rem !important;
-        gap: 0.8rem !important;
-        border-radius: 12px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 1.2rem !important;
+        gap: 1rem !important;
       }
       
       .cart-item-image {
-        width: 70px !important;
-        height: 70px !important;
+        width: 100% !important;
+        height: 120px !important;
+        align-self: center !important;
+        max-width: 200px !important;
       }
       
-      .cart-item-name {
-        font-size: 0.9rem !important;
+      .cart-item-details {
+        width: 100% !important;
+        text-align: center !important;
       }
       
-      .cart-item-price {
-        font-size: 0.85rem !important;
+      .cart-item-controls {
+        justify-content: center !important;
+        width: 100% !important;
       }
       
       .cart-item-subtotal {
-        font-size: 1rem !important;
-        min-width: 100px !important;
+        text-align: center !important;
+        width: 100% !important;
+        min-width: unset !important;
+        font-size: 1.2rem !important;
+        margin-top: 0.5rem !important;
+      }
+      
+      /* Better mobile spacing */
+      .main-content {
+        padding: 1rem 0.75rem !important;
+      }
+      
+      .cart-footer {
+        margin-top: 1.5rem !important;
+        padding: 1.5rem !important;
       }
       
       .total-amount {
