@@ -1560,7 +1560,7 @@
                   {% if r.review|length > 20 %}
                     <span class="short-text">{{ r.review[:20] }}...</span>
                     <span class="full-text" style="display:none;">{{ r.review }}</span>
-                    <a class="read-more-link" onclick="toggleReview('review-{{ loop.index0 }}', this)">Read More</a>
+                    <a class="read-more-link no-loading" onclick="toggleReview('review-{{ loop.index0 }}', this)">Read More</a>
                   {% else %}
                     {{ r.review }}
                   {% endif %}
@@ -1574,7 +1574,7 @@
                       {% if r.reply|length > 20 %}
                         <span class="short-text">{{ r.reply[:20] }}...</span>
                         <span class="full-text" style="display:none;">{{ r.reply }}</span>
-                        <a class="read-more-link" onclick="toggleReview('reply-{{ loop.index0 }}', this)">Read More</a>
+                        <a class="read-more-link no-loading" onclick="toggleReview('reply-{{ loop.index0 }}', this)">Read More</a>
                       {% else %}
                         {{ r.reply }}
                       {% endif %}
