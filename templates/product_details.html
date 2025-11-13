@@ -647,9 +647,9 @@
     .read-more-link:hover{ color:rgba(255,255,255,0.9); }
     .admin-reply .read-more-link{ color:#1a1d24; }
     .admin-reply .read-more-link:hover{ color:#000; }
-    .review-form{ margin-top: 1.5rem; background: rgba(15,18,25,0.8); border-radius: 12px; padding:1.5rem; border: 1px solid rgba(255,255,255,0.08); }
-    .review-form-label{ display:block; color:rgba(255,255,255,0.7); font-size:0.88rem; font-weight:600; margin-bottom:.6rem; text-transform:uppercase; letter-spacing:0.5px; }
-    .review-textarea{ width:100%; min-height: 120px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background: rgba(255,255,255,0.08); color: #e5e7eb; padding:1rem; resize: vertical; outline: none; font-size:0.95rem; line-height:1.6; transition: all 0.2s ease; }
+    .review-form{ margin-top: 1rem; background: rgba(15,18,25,0.6); border-radius: 10px; padding:1.2rem; border: 1px solid rgba(255,255,255,0.06); }
+    .review-form-label{ display:block; color:rgba(255,255,255,0.8); font-size:0.9rem; font-weight:500; margin-bottom:.5rem; text-transform:lowercase; letter-spacing:0.2px; }
+    .review-textarea{ width:100%; min-height: 80px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; background: rgba(255,255,255,0.06); color: #e5e7eb; padding:0.8rem; resize: vertical; outline: none; font-size:0.9rem; line-height:1.5; transition: all 0.2s ease; }
     .review-textarea:focus{ border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.12); box-shadow: 0 0 0 3px rgba(255,255,255,0.05); }
     .review-textarea::placeholder{ color:rgba(255,255,255,0.35); }
     .review-textarea::-webkit-scrollbar{ width: 8px; }
@@ -657,7 +657,7 @@
     .review-textarea::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.2); border-radius: 4px; }
     .review-textarea::-webkit-scrollbar-thumb:hover{ background: rgba(255,255,255,0.3); }
     .review-actions{ display:flex; justify-content:flex-end; margin-top:1rem; }
-    .review-submit{ padding:.75rem 1.5rem; border-radius:8px; border:none; background: rgba(255,255,255,0.7); color:#1a1d24; font-weight:600; font-size:0.95rem; cursor:pointer; }
+    .review-submit{ padding:.6rem 1.2rem; border-radius:8px; border:none; background: rgba(255,255,255,0.8); color:#1a1d24; font-weight:500; font-size:0.85rem; cursor:pointer; text-transform:lowercase; }
     .rating-input{ display:flex; align-items:center; gap:.5rem; margin:.8rem 0 1.2rem; }
     .rating-input .star{ cursor:pointer; color: rgba(255,255,255,0.25); font-size:1.4rem; transition: all 0.2s ease; }
     .rating-input .star:hover{ color: rgba(244,196,48,0.6); transform:scale(1.1); }
@@ -1476,7 +1476,7 @@
             <form class="review-form" method="post" action="{{ url_for('add_review') }}" id="reviewForm">
               <input type="hidden" name="product_id" value="{{ product.id }}"/>
               <input type="hidden" id="ratingValue" name="rating" value="" />
-              <label class="review-form-label">Rate this product <span style="color:#ef4444">*</span></label>
+              <label class="review-form-label">rate it <span style="color:#ef4444">*</span></label>
               <div class="rating-input" id="ratingInput" aria-label="Choose rating from 1 to 5">
                 <i class="fa-star fa-regular star" data-val="1"></i>
                 <i class="fa-star fa-regular star" data-val="2"></i>
@@ -1485,11 +1485,11 @@
                 <i class="fa-star fa-regular star" data-val="5"></i>
                 <span id="ratingText" class="rating-text"></span>
               </div>
-              <span id="ratingError" style="display:none;color:#ef4444;font-size:0.85rem;margin-top:-0.75rem;margin-bottom:0.5rem;">Please select a rating</span>
-              <label for="review" class="review-form-label">Your Review</label>
-              <textarea required maxlength="2000" class="review-textarea" id="review" name="review" placeholder="Share your experience with this product..."></textarea>
+              <span id="ratingError" style="display:none;color:#ef4444;font-size:0.85rem;margin-top:-0.75rem;margin-bottom:0.5rem;">please pick a rating</span>
+              <label for="review" class="review-form-label">your thoughts</label>
+              <textarea required maxlength="500" class="review-textarea" id="review" name="review" placeholder="what do you think about this product?" style="min-height: 80px;"></textarea>
               <div class="review-actions">
-                <button type="submit" class="review-submit">Post Review</button>
+                <button type="submit" class="review-submit">share review</button>
               </div>
             </form>
           {% else %}
