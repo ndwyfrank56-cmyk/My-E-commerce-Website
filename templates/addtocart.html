@@ -536,11 +536,11 @@
       overflow: hidden;
       transition: none;
       cursor: default;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: none;
     }
     .cart-item:hover { 
       transform: none; 
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: none;
       border-color: transparent;
     }
 
@@ -1659,7 +1659,7 @@
         <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist" style="position:relative">
             <i class="fas fa-heart"></i>
-            <span class="wishlist-badge" id="wishlistBadge">0</span>
+            <span class="wishlist-badge" id="wishlistBadge">{% if session and session.get('user_id') %}{{ session.get('wishlist_count', 0) }}{% else %}0{% endif %}</span>
           </a>
           <a href="/addtocart" class="nav-btn cart" aria-label="Cart">
             <i class="fas fa-shopping-cart"></i>
@@ -1776,18 +1776,6 @@
         </ul>
       </div>
       
-      <!-- Login/Logout Button - Fixed at Bottom -->
-      <div class="sidebar-login-section">
-        {% if session.get('user_id') %}
-          <a href="/logout" class="sidebar-login-btn">
-            <i class="fas fa-sign-out-alt"></i>Logout
-          </a>
-        {% else %}
-          <a href="/login" class="sidebar-login-btn">
-            <i class="fas fa-sign-in-alt"></i>Login
-          </a>
-        {% endif %}
-      </div>
     </div>
   </aside>
 
