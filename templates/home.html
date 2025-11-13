@@ -3325,6 +3325,8 @@
   </style>
 </head>
 <body>
+  <!-- Top Loading Bar -->
+  <div id="global-loading-bar"></div>
   {% include "flash_messages.html" %}
 
   <!-- Modern Navigation (Two Bars) -->
@@ -4203,8 +4205,37 @@
       window.location.href = `/product/${productId}`;
     }
 
+    // Loading Bar Functions
+    function showLoadingBar() {
+      const loadingBar = document.getElementById('global-loading-bar');
+      if (loadingBar) {
+        loadingBar.classList.add('active');
+      }
+    }
+
+    function hideLoadingBar() {
+      const loadingBar = document.getElementById('global-loading-bar');
+      if (loadingBar) {
+        loadingBar.classList.remove('active');
+      }
+    }
+
+    // Show loading bar on page navigation
+    window.addEventListener('beforeunload', showLoadingBar);
+    
+    // Show loading bar on link clicks
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (link && link.href && !link.href.includes('#') && !link.target) {
+        showLoadingBar();
+      }
+    });
+
     // Update count on page load
-    document.addEventListener('DOMContentLoaded', updateWishlistCount);
+    document.addEventListener('DOMContentLoaded', function() {
+      hideLoadingBar();
+      updateWishlistCount();
+    });
   </script>
 </body>
 </html>
