@@ -675,6 +675,9 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border-left: 3px solid rgba(255, 255, 255, 0.6);
+      transition: all 0.3s ease;
+      overflow: visible;
+      min-height: auto;
     }
     
     .reply-meta{ 
@@ -691,6 +694,21 @@
       color: #111318; 
       font-size: 0.9rem; 
       line-height: 1.5;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .admin-reply .read-more-link{ 
+      color: #666; 
+      font-size: 0.85rem; 
+      cursor: pointer; 
+      text-decoration: underline; 
+      margin-left: 0.5rem;
+      display: inline-block;
+      margin-top: 0.25rem;
+    }
+    .admin-reply .read-more-link:hover{ 
+      color: #333; 
     }
     
     .read-more-link{ 
