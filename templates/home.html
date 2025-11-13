@@ -3567,8 +3567,7 @@
         {% if cart_items %}
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
-            {% set total.value = total.value + (normalized_price * item.quantity) %}
+            {% set total.value = total.value + (item.price * item.quantity) %}
           {% endfor %}
           <div class="cart-total-display" style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">
             Total: RWF {{ '{:,.0f}'.format(total.value) }}

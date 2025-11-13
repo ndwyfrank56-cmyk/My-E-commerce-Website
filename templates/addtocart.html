@@ -1737,8 +1737,7 @@
         <div class="cart-items-list">
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
-            {% set subtotal = normalized_price * item.quantity %}
+            {% set subtotal = item.price * item.quantity %}
             {% set total.value = total.value + subtotal %}
             <div class="cart-item" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="cart-item-image" style="display: block; text-decoration: none;">
@@ -1860,8 +1859,7 @@
         <div class="mini-cart-items">
           {% set total = namespace(value=0) %}
           {% for item in cart_items %}
-            {% set normalized_price = item.price / 1000 if item.price > 10000 else item.price %}
-            {% set subtotal = normalized_price * item.quantity %}
+            {% set subtotal = item.price * item.quantity %}
             {% set total.value = total.value + subtotal %}
             <div class="mini-cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="item-image" style="display: block; text-decoration: none;">
