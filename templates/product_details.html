@@ -2195,17 +2195,43 @@
         const isGlobal = linkId === '' || linkId === 'null' || linkId === 'undefined';
         const matchesImage = linkId === String(imgVarId);
 
-        if ((isGlobal || matchesImage) && stock > 0) {
-          box.style.display = '';
-          box.disabled = false;
-          hasAnyAvailable = true;
+        // If an image variation is selected, ONLY show options linked to that specific image
+        // Do NOT show global options when a specific image is selected
+        if (imgVarId && imgVarId !== '' && imgVarId !== 'null') {
+          // Strict filtering: only show options specifically linked to this image variation
+          if (matchesImage && stock > 0) {
+            box.style.display = '';
+            box.disabled = false;
+            hasAnyAvailable = true;
+          } else {
+            box.style.display = 'none';
+            box.disabled = true;
+          }
         } else {
-          box.style.display = 'none';
-          box.disabled = true;
+          // No image variation selected: show global options and any with stock
+          if ((isGlobal || matchesImage) && stock > 0) {
+            box.style.display = '';
+            box.disabled = false;
+            hasAnyAvailable = true;
+          } else {
+            box.style.display = 'none';
+            box.disabled = true;
+          }
         }
       });
 
       // If no dropdowns are available, allow add-to-cart anyway (validation will handle it)
+      
+      // Clear any incompatible dropdown selections
+      if (imgVarId && imgVarId !== '' && imgVarId !== 'null') {
+        document.querySelectorAll('.variation-box.active').forEach(function(activeBox) {
+          const linkedImgVarId = activeBox.getAttribute('data-img-var-id') || '';
+          // If this dropdown is linked to a different image variation, deselect it
+          if (linkedImgVarId && linkedImgVarId !== '' && linkedImgVarId !== 'null' && linkedImgVarId !== String(imgVarId)) {
+            activeBox.classList.remove('active');
+          }
+        });
+      }
       
       // Refresh hidden input for dropdowns
       updateSelectedDropdownVariations();
@@ -2414,6 +2440,19 @@
       if (hasDropdownVars && hasVisibleDropdowns && !dropdownVarId) {
         showCustomAlert('Please select a size.');
         return;
+      }
+
+      // === CROSS-VALIDATION: Check if selected dropdown is compatible with selected image ===
+      if (imgVarId && dropdownVarId) {
+        const selectedDropdownBox = document.querySelector(`.variation-box[data-variation-id="${dropdownVarId}"]`);
+        if (selectedDropdownBox) {
+          const linkedImgVarId = selectedDropdownBox.getAttribute('data-img-var-id') || '';
+          // If the dropdown is linked to a specific image, it must match the selected image
+          if (linkedImgVarId && linkedImgVarId !== '' && linkedImgVarId !== 'null' && linkedImgVarId !== String(imgVarId)) {
+            showCustomAlert('This size is not available for the selected color. Please choose a different size or color.');
+            return;
+          }
+        }
       }
 
       // === ALLOW ADD TO CART IF NO OPTIONS ARE VISIBLE (but product has stock) ===
