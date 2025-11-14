@@ -3069,8 +3069,8 @@ def update_cart():
         session['cart'] = current_cart
         session.modified = True
         
-        # Handle AJAX requests
-        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
+        # Handle AJAX requests (only if explicitly marked as AJAX)
+        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             cart_count = sum(item['quantity'] for item in current_cart.values())
             cart_total = sum(item['quantity'] * item['price'] for item in current_cart.values())
             
@@ -3089,7 +3089,7 @@ def update_cart():
         traceback.print_exc()
         
         # Handle AJAX error response
-        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
+        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return jsonify(success=False, error=str(e))
         
         flash('Error updating cart', 'error')
