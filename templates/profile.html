@@ -34,6 +34,7 @@
       --border-radius: 12px;
       --transition: all 0.25s ease;
     }
+
     * { 
       box-sizing: border-box; 
       margin: 0; 
@@ -1416,7 +1417,7 @@
                   <h4>Sign Out</h4>
                   <p>Log out of your account securely</p>
                 </div>
-                <a href="/logout" class="btn btn-logout no-loading" onclick="if(!confirm('Are you sure you want to sign out?')) { event.preventDefault(); return false; }">
+                <a href="/logout" class="btn btn-logout no-loading" onclick="event.preventDefault(); showSignOutModal();">
                   <i class="fas fa-sign-out-alt"></i> Sign Out
                 </a>
               </div>
