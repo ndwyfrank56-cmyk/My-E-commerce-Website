@@ -1935,37 +1935,55 @@
     function updateQuantity(productId, quantity) {
       console.log('Updating quantity:', productId, quantity);
       
-      fetch('/update-cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: `product_id=${encodeURIComponent(productId)}&quantity=${quantity}&action=update&ajax=1`
-      })
-      .then(response => {
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Response data:', data);
-        if (data.success) {
-          // Update the cart display without reloading
-          updateCartDisplay();
-          if (data.message) {
-            showToast(data.message, 'success');
+      try {
+        const xhr = new XMLHttpRequest();
+        const url = '/update-cart';
+        const data = `product_id=${encodeURIComponent(productId)}&quantity=${quantity}&action=update&ajax=1`;
+        
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            console.log('Response status:', xhr.status);
+            
+            if (xhr.status === 200) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                  // Update the cart display without reloading
+                  updateCartDisplay();
+                  if (data.message) {
+                    showToast(data.message, 'success');
+                  }
+                } else {
+                  showToast(data.error || 'Failed to update cart', 'error');
+                }
+              } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                showToast('Error parsing server response', 'error');
+              }
+            } else {
+              console.error('HTTP error:', xhr.status);
+              showToast('Failed to update cart (HTTP ' + xhr.status + ')', 'error');
+            }
           }
-        } else {
-          showToast(data.error || 'Failed to update cart', 'error');
-        }
-      })
-      .catch(error => {
-        console.error('Error updating quantity:', error);
-        showToast('Error updating cart: ' + error.message, 'error');
-      });
+        };
+        
+        xhr.onerror = function() {
+          console.error('Network error');
+          showToast('Network error updating cart', 'error');
+        };
+        
+        xhr.send(data);
+        
+      } catch (e) {
+        console.error('Error:', e);
+        showToast('Error updating cart: ' + e.message, 'error');
+      }
     }
 
     function stepQty(btn, delta, max){
@@ -1993,42 +2011,63 @@
       confirmBtn.onclick = () => {
         console.log('Removing item:', productId);
         
-        fetch('/update-cart', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          body: `product_id=${encodeURIComponent(productId)}&action=remove&ajax=1`
-        })
-        .then(response => {
-          console.log('Remove response status:', response.status);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('Remove response data:', data);
-          if (data.success) {
-            // Remove the item from display
-            const cartItem = document.querySelector(`[data-id="${productId}"]`).closest('.cart-item');
-            if (cartItem) {
-              cartItem.remove();
+        try {
+          const xhr = new XMLHttpRequest();
+          const url = '/update-cart';
+          const data = `product_id=${encodeURIComponent(productId)}&action=remove&ajax=1`;
+          
+          xhr.open('POST', url, true);
+          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+          
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              console.log('Remove response status:', xhr.status);
+              
+              if (xhr.status === 200) {
+                try {
+                  const data = JSON.parse(xhr.responseText);
+                  console.log('Remove response data:', data);
+                  
+                  if (data.success) {
+                    // Remove the item from display
+                    const cartItem = document.querySelector(`[data-id="${productId}"]`).closest('.cart-item');
+                    if (cartItem) {
+                      cartItem.remove();
+                    }
+                    updateCartDisplay();
+                    showToast(data.message || 'Item removed from cart', 'success');
+                    closeModal();
+                  } else {
+                    showToast(data.error || 'Failed to remove item', 'error');
+                    closeModal();
+                  }
+                } catch (parseError) {
+                  console.error('JSON parse error:', parseError);
+                  showToast('Error parsing server response', 'error');
+                  closeModal();
+                }
+              } else {
+                console.error('HTTP error:', xhr.status);
+                showToast('Failed to remove item (HTTP ' + xhr.status + ')', 'error');
+                closeModal();
+              }
             }
-            updateCartDisplay();
-            showToast(data.message || 'Item removed from cart', 'success');
+          };
+          
+          xhr.onerror = function() {
+            console.error('Network error');
+            showToast('Network error removing item', 'error');
             closeModal();
-          } else {
-            showToast(data.error || 'Failed to remove item', 'error');
-            closeModal();
-          }
-        })
-        .catch(error => {
-          console.error('Error removing item:', error);
-          showToast('Error removing item: ' + error.message, 'error');
+          };
+          
+          xhr.send(data);
+          
+        } catch (e) {
+          console.error('Error:', e);
+          showToast('Error removing item: ' + e.message, 'error');
           closeModal();
-        });
+        }
       };
       
       // Show modal
