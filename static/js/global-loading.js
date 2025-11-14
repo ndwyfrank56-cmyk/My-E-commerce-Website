@@ -104,6 +104,8 @@ class GlobalLoadingManager {
   setupNavigationListeners() {
     // Show loading on link clicks (except for specific exclusions)
     document.addEventListener('click', (e) => {
+      // If another handler prevented default (e.g., user cancelled a confirm), do nothing
+      if (e.defaultPrevented) return;
       const link = e.target.closest('a');
       if (!link) return;
       
