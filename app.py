@@ -3033,7 +3033,7 @@ def update_cart():
         session.modified = True
         
         # Handle AJAX requests
-        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
             cart_count = sum(item['quantity'] for item in current_cart.values())
             cart_total = sum(item['quantity'] * item['price'] for item in current_cart.values())
             return jsonify(success=True, cart_count=cart_count, cart_total=cart_total)
@@ -3045,6 +3045,13 @@ def update_cart():
         
     except Exception as e:
         print(f"Update cart error: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # Handle AJAX error response
+        if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
+            return jsonify(success=False, error=str(e))
+        
         flash('Error updating cart', 'error')
         return redirect(url_for('addtocart'))
 
