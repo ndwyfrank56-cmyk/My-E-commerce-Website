@@ -1498,6 +1498,22 @@ body { padding-top: 120px; }
       font-weight: 600;
     }
 
+    /* Disabled Payment Tab */
+    .payment-tab-btn.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      position: relative;
+    }
+
+    .payment-tab-btn.disabled:hover {
+      color: var(--text-secondary);
+      background: transparent;
+    }
+
+    .payment-tab-btn.disabled i {
+      opacity: 0.4;
+    }
+
     /* MTN logo inside payment option */
     .payment-option img.payment-logo {
       height: 18px;
@@ -2112,8 +2128,8 @@ body { padding-top: 120px; }
                     <i class="fas fa-truck"></i>
                     <span>Cash on Delivery</span>
                   </button>
-                  <button class="payment-tab-btn" role="tab" aria-selected="false" onclick="switchPaymentTab('momo')" data-method="momo">
-                    <input type="radio" id="pay_momo" name="payment_method" value="momo" hidden>
+                  <button class="payment-tab-btn disabled" role="tab" aria-selected="false" onclick="switchPaymentTab('momo')" data-method="momo">
+                    <input type="radio" id="pay_momo" name="payment_method" value="momo" hidden disabled>
                     <i class="fas fa-mobile-alt"></i>
                     <span>Mobile Money</span>
                     <span class="coming-soon-badge">Coming Soon</span>
@@ -2323,6 +2339,46 @@ body { padding-top: 120px; }
 
     // Payment Tab Switching Function
     function switchPaymentTab(method) {
+      const targetTab = document.querySelector(`[data-method="${method}"]`);
+      
+      // Check if the payment method is disabled
+      if (targetTab && targetTab.classList.contains('disabled')) {
+        // Show a friendly message for disabled payment methods
+        if (method === 'momo') {
+          // Create a temporary notification
+          const notification = document.createElement('div');
+          notification.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(21, 25, 34, 0.95);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10000;
+            font-size: 0.9rem;
+            text-align: center;
+            backdrop-filter: blur(8px);
+          `;
+          notification.innerHTML = `
+            <i class="fas fa-clock" style="margin-right: 0.5rem; color: #f59e0b;"></i>
+            Mobile Money payment is coming soon!
+          `;
+          
+          document.body.appendChild(notification);
+          
+          // Remove notification after 2 seconds
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.remove();
+            }
+          }, 2000);
+        }
+        return; // Don't switch to disabled payment method
+      }
+      
       // Remove active class from all tabs
       document.querySelectorAll('.payment-tab-btn').forEach(tab => {
         tab.classList.remove('active');
@@ -2330,15 +2386,14 @@ body { padding-top: 120px; }
       });
       
       // Add active class to clicked tab
-      const activeTab = document.querySelector(`[data-method="${method}"]`);
-      if (activeTab) {
-        activeTab.classList.add('active');
-        activeTab.setAttribute('aria-selected', 'true');
+      if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.setAttribute('aria-selected', 'true');
       }
       
       // Check the corresponding radio button
       const radio = document.querySelector(`input[value="${method}"]`);
-      if (radio) {
+      if (radio && !radio.disabled) {
         radio.checked = true;
         updatePaymentMethodVisibility();
       }
