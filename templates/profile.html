@@ -723,17 +723,17 @@
     }
     
     .wishlist-item-actions .btn-danger {
-      background: transparent;
-      color: #f87171;
-      border-color: rgba(248, 113, 113, 0.35);
-      box-shadow: none;
+      background: rgba(255,255,255,0.85);
+      color: #111318;
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
     }
     
     .wishlist-item-actions .btn-danger:hover { 
-      background: rgba(248,113,113,0.08); 
-      border-color: rgba(248,113,113,0.5); 
+      background: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.35);
       transform: none; 
-      box-shadow: none; 
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
     }
     
     .wishlist-price-badge {
@@ -965,18 +965,29 @@
 
     .wishlist-card-actions .btn-remove {
       padding: 0.7rem 1rem;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #111318;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.9rem;
-      font-weight: 600;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
     }
+    .wishlist-card-actions .btn-remove:hover { background: rgba(255,255,255,0.9); }
+
+    /* Ensure form-based remove buttons inside wishlist use smoky white */
+    .wishlist-grid .btn-danger { 
+      background: rgba(255,255,255,0.85) !important;
+      color: #111318 !important;
+      border: 1px solid rgba(255,255,255,0.35) !important;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
+    }
+    .wishlist-grid .btn-danger:hover { background: rgba(255,255,255,0.9) !important; }
     .empty-wishlist {
       text-align: center;
       padding: 4rem 2rem;
