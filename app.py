@@ -825,16 +825,20 @@ def calculate_discounted_price(original_price, discount_percent):
     return original_price
 
 def resolve_image_url(image_value):
-    """Normalize image path to the Flask static images folder.
+    """Normalize image path to the Flask static images folder or pass through Cloudinary URLs.
     Accepts values like:
     - 'cooler-bag-xxx.jpg' -> '/static/images/cooler-bag-xxx.jpg'
     - '/images/xyz.jpg'    -> '/static/images/xyz.jpg'
     - '/static/images/..'  -> kept as-is
+    - 'https://res.cloudinary.com/...' -> kept as-is (Cloudinary URL)
     """
     try:
         if not image_value:
             return image_value
         s = str(image_value).strip()
+        # Pass through Cloudinary URLs and any HTTPS URLs
+        if s.startswith('https://') or s.startswith('http://'):
+            return s
         if s.startswith('/static/'):
             return s
         if s.startswith('/images/'):
