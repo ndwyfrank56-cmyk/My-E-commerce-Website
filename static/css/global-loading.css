@@ -1,13 +1,13 @@
 /* Global Loading Overlay - Animated Cart Preloader */
 
-/* CSS Variables for Forest Green Theme */
+/* CSS Variables for Dark Theme */
 :root {
-  --forest-green: #2e4d2c;
-  --forest-green-light: #4a7c4a;
-  --forest-green-dark: #1a3d1a;
-  --loading-bg: rgba(46, 77, 44, 0.85);
-  --loading-text: #e8f5e8;
-  --loading-text-secondary: #a8c8a8;
+  --loading-primary: #0c0d11;
+  --loading-secondary: #111827;
+  --loading-accent: #2e4d2c;
+  --loading-bg: rgba(12, 13, 17, 0.9);
+  --loading-text: #f5f5f5;
+  --loading-text-secondary: rgba(245, 245, 245, 0.7);
 }
 
 /* Main loading overlay that covers entire screen */
@@ -17,7 +17,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: var(--loading-bg);
+  background: linear-gradient(135deg, var(--loading-bg) 0%, rgba(17, 24, 39, 0.95) 100%);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
@@ -59,11 +59,11 @@
 }
 
 .cart__track {
-  stroke: rgba(46, 77, 44, 0.3);
+  stroke: var(--loading-secondary);
 }
 
 .cart__lines {
-  stroke: var(--forest-green);
+  stroke: var(--loading-text);
 }
 
 .cart__lines,
@@ -102,6 +102,7 @@
   letter-spacing: 0.5px;
   text-align: center;
   margin-bottom: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Loading subtext */
@@ -110,6 +111,7 @@
   font-size: 0.85rem;
   font-weight: 400;
   text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Cart Animation Keyframes */
