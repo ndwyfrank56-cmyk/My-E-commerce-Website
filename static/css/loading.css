@@ -357,9 +357,11 @@ body:has([action="/checkout/momo"]) .search-container {
 }
 .checkout-btn:hover,
 .pay-btn:hover { 
-  background: rgba(255, 255, 255, 0.92) !important; 
-  border-color: rgba(255,255,255,0.45) !important; 
-  box-shadow: 0 10px 22px rgba(0,0,0,0.24) !important; 
+  /* Neutralized hover: keep same as default */
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(255,255,255,0.35) !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
+  transform: none !important;
 }
 .checkout-btn:active,
 .pay-btn:active { 
@@ -392,3 +394,13 @@ body:has([action="/checkout/momo"]) .search-container {
   border-radius: 10px; border: 2px solid rgba(21,25,34,0.8);
 }
 .sidebar .sidebar-scrollable::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.18)); }
+
+/* Neutralize hover for mini-cart close and generic close buttons */
+.mini-cart-close:hover,
+.close-btn:hover {
+  background: transparent !important;
+  color: inherit !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
