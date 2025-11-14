@@ -4290,7 +4290,7 @@ document.addEventListener('DOMContentLoaded', () => {
           {% for item in cart_items %}
             {% set subtotal = item.price * item.quantity %}
             {% set total.value = total.value + subtotal %}
-            <div class="mini-cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
+            <div class="mini-cart-item" data-cart-id="{{ item.id }}" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="item-image" style="display: block; text-decoration: none;">
                 <img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy" onerror="this.src='/static/images/default-product.jpg'; this.onerror=null;">
               </a>

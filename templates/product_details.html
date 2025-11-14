@@ -1383,7 +1383,7 @@
           {% for item in cart_items %}
             {% set subtotal = item.price * item.quantity %}
             {% set total.value = total.value + subtotal %}
-            <div class="mini-cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
+            <div class="mini-cart-item" data-cart-id="{{ item.id }}" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="item-image" style="display: block; text-decoration: none;">
                 <img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy" onerror="this.src='/static/images/default-product.jpg'; this.onerror=null;">
               </a>
@@ -1908,11 +1908,34 @@
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
           });
           if (!res.ok) throw new Error('Failed to remove');
-          sessionStorage.setItem('keepMiniCartOpen', '1');
-          location.reload();
+          
+          // Remove item from mini cart UI
+          const cartItem = document.querySelector(`[data-cart-id="${productId}"]`);
+          if (cartItem) {
+            cartItem.remove();
+          }
+          
+          // Update cart count and total
+          const cartData = await res.json();
+          if (cartData.success) {
+            // Update cart count badge
+            const cartCount = document.querySelector('.cart-count');
+            if (cartCount) {
+              cartCount.textContent = cartData.cart_count || 0;
+            }
+            
+            // Update mini cart total
+            const cartTotal = document.querySelector('.mini-cart-total');
+            if (cartTotal && cartData.cart_total) {
+              cartTotal.textContent = `RWF ${cartData.cart_total.toLocaleString()}`;
+            }
+            
+            // Show success message
+            showCustomAlert('Item removed from cart');
+          }
         } catch (e) {
           console.error('Error removing item:', e);
-          showToast('Failed to remove item', 'error');
+          showCustomAlert('Failed to remove item');
         }
       };
       header.appendChild(title);
