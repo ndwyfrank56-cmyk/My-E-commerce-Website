@@ -2799,6 +2799,141 @@ body { padding-top: 120px; }
     document.addEventListener('DOMContentLoaded', updateWishlistCount);
   </script>
 
+  <!-- Success Modal -->
+  {% if show_success_modal %}
+  <div id="successModal" class="success-modal-overlay">
+    <div class="success-modal">
+      <div class="success-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#10B981" stroke-width="2" fill="#F0FDF4"/>
+          <path d="m9 12 2 2 4-4" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="success-title">Order Placed Successfully!</h2>
+      <p class="success-message">Your order #{{ order_id }} has been confirmed.<br>You will pay cash on delivery.</p>
+      <div class="success-actions">
+        <button onclick="goToProfile()" class="success-btn primary">View Order</button>
+        <button onclick="continueShopping()" class="success-btn secondary">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .success-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(4px);
+    }
+
+    .success-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-icon {
+      margin-bottom: 16px;
+    }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 8px 0;
+    }
+
+    .success-message {
+      font-size: 16px;
+      color: #6B7280;
+      margin: 0 0 24px 0;
+      line-height: 1.5;
+    }
+
+    .success-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .success-btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .success-btn.primary {
+      background: #10B981;
+      color: white;
+    }
+
+    .success-btn.primary:hover {
+      background: #059669;
+    }
+
+    .success-btn.secondary {
+      background: #F3F4F6;
+      color: #374151;
+    }
+
+    .success-btn.secondary:hover {
+      background: #E5E7EB;
+    }
+
+    @media (max-width: 480px) {
+      .success-modal {
+        padding: 24px;
+        margin: 16px;
+      }
+      
+      .success-actions {
+        flex-direction: column;
+      }
+      
+      .success-btn {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <script>
+    function goToProfile() {
+      window.location.href = '/profile';
+    }
+
+    function continueShopping() {
+      window.location.href = '/';
+    }
+  </script>
+  {% endif %}
+
   <!-- Global Loading JavaScript -->
   <script src="{{ url_for('static', filename='js/global-loading.js') }}"></script>
 </body>

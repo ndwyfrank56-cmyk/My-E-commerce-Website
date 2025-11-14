@@ -3431,8 +3431,14 @@ def checkout():
                                     session.pop('pending_order', None)
                                     session.modified = True
                                     
-                                    flash('Order placed successfully! You will pay cash on delivery.', 'success')
-                                    return redirect(url_for('profile'))
+                                    # Show success modal instead of redirect
+                                    return render_template('checkout.html', 
+                                                         categories=categories, 
+                                                         cart_items=[], 
+                                                         total=0, 
+                                                         user_data=user_data,
+                                                         show_success_modal=True,
+                                                         order_id=order_id)
                                     
                                 except Exception as e:
                                     print(f"Error creating COD order: {e}")
