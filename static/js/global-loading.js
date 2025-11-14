@@ -126,15 +126,8 @@ class GlobalLoadingManager {
       link.classList.add('link-loading');
     });
 
-    // Handle browser back/forward buttons
-    window.addEventListener('popstate', () => {
-      this.show('Loading...', 'Navigating to previous page');
-    });
-
-    // Handle page unload
-    window.addEventListener('beforeunload', () => {
-      this.show('Leaving page...', 'Please wait');
-    });
+    // Disabled - user wants selective loading only
+    // No automatic loading on browser navigation or page unload
   }
 
   setupFormListeners() {
@@ -144,6 +137,23 @@ class GlobalLoadingManager {
       
       // Skip if form has no-loading class
       if (form.classList.contains('no-loading')) return;
+      
+      // Only show loading for specific forms
+      const action = form.action || '';
+      const formId = form.id || '';
+      
+      // Show loading for: login, checkout, profile updates, order cancellation
+      const shouldShowLoading = 
+        action.includes('/login') ||
+        action.includes('/checkout') ||
+        action.includes('/profile') ||
+        action.includes('/orders/cancel') ||
+        formId.includes('login') ||
+        formId.includes('checkout') ||
+        formId.includes('profile') ||
+        formId.includes('cancel');
+      
+      if (!shouldShowLoading) return;
       
       // Show loading
       this.show('Processing...', 'Submitting your request');
@@ -199,34 +209,13 @@ class GlobalLoadingManager {
   }
 
   setupVisibilityListeners() {
-    // Handle page visibility changes
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        // Page is hidden, might be navigating away
-        this.show('Loading...', 'Please wait');
-      } else {
-        // Page is visible again
-        setTimeout(() => this.hide(), 500);
-      }
-    });
+    // Disabled - user wants selective loading only
+    // No automatic loading on visibility changes
   }
 
   handleInitialLoad() {
-    // Show loading immediately if page is still loading
-    if (document.readyState === 'loading') {
-      this.show('Loading page...', 'Setting up the interface');
-    }
-    
-    // Hide loading when page is fully loaded
-    const hideOnLoad = () => {
-      setTimeout(() => this.hide(), 300);
-    };
-    
-    if (document.readyState === 'complete') {
-      hideOnLoad();
-    } else {
-      window.addEventListener('load', hideOnLoad);
-    }
+    // Disabled - user wants selective loading only
+    // No automatic loading on page load
   }
 
   shouldSkipLink(link) {
@@ -246,24 +235,32 @@ class GlobalLoadingManager {
     // Skip if it's in a dropdown or search suggestions
     if (link.closest('.dropdown-menu, .search-suggestions, .search-dropdown')) return true;
     
-    return false;
+    // Only show loading for specific links - profile page
+    if (href.includes('/profile')) return false;
+    
+    // Skip all other navigation links (user wants selective loading)
+    return true;
   }
 
   shouldSkipAjaxLoading(url, options = {}) {
-    // Skip if it's a search request (usually fast)
-    if (typeof url === 'string' && url.includes('/search')) return true;
-    
     // Skip if it's an API request with no-loading header
     if (options.headers && options.headers['X-No-Loading']) return true;
     
-    // Skip if it's a small data request
-    if (typeof url === 'string' && (
-      url.includes('/api/') || 
-      url.includes('/count') || 
-      url.includes('/status')
-    )) return true;
+    // Only show loading for specific AJAX requests
+    if (typeof url === 'string') {
+      // Show loading for: add to cart, wishlist, reviews, filter results, cart removal
+      const shouldShowLoading = 
+        url.includes('/add-to-cart') ||
+        url.includes('/wishlist/') ||
+        url.includes('/review') ||
+        url.includes('/filter') ||
+        url.includes('/update-cart') ||
+        url.includes('/viewall') && url.includes('filter');
+      
+      return !shouldShowLoading; // Return true to skip, false to show
+    }
     
-    return false;
+    return true; // Skip by default
   }
 
   addButtonLoading(button) {

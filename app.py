@@ -3269,6 +3269,7 @@ def checkout():
             city = request.form.get('city', '').strip()
             delivery_phone = request.form.get('delivery_phone', '').strip()
             notes = request.form.get('notes', '').strip()
+            payment_method = request.form.get('payment_method', 'cod').strip().lower()  # Default to COD
             provider = request.form.get('provider', 'MTN').strip().lower()  # Default to MTN
             momo_number = request.form.get('momo_number', '').strip()
             guest_email = request.form.get('guest_email', '').strip().lower() if 'user_id' not in session else None
@@ -3280,8 +3281,10 @@ def checkout():
                 if not address_line: missing.append('Address')
                 if not city: missing.append('City')
                 if not delivery_phone: missing.append('Delivery Phone')
-                if not provider: missing.append('Mobile Money Provider')
-                if not momo_number: missing.append('Mobile Money Number')
+                # Only validate Mobile Money fields if Mobile Money payment is selected
+                if payment_method == 'momo':
+                    if not provider: missing.append('Mobile Money Provider')
+                    if not momo_number: missing.append('Mobile Money Number')
                 # For guest users, email is required
                 if 'user_id' not in session and not guest_email:
                     missing.append('Email Address')
@@ -3295,7 +3298,7 @@ def checkout():
                     flash('Please fill: ' + ', '.join(missing), 'error')
                 elif not re.match(phone_regex, delivery_phone):
                     flash('Enter a valid delivery phone number (10-15 digits)', 'error')
-                elif not re.match(phone_regex, momo_number):
+                elif payment_method == 'momo' and not re.match(phone_regex, momo_number):
                     flash('Enter a valid mobile money number (10-15 digits)', 'error')
                 else:
                     # Preserve original MoMo number for storage; map separate API number if needed
@@ -3326,17 +3329,23 @@ def checkout():
                         latitude = float(lat_raw) if lat_raw and lat_raw.strip() != '' else None
                         longitude = float(lng_raw) if lng_raw and lng_raw.strip() != '' else None
                         
-                        # Note: Sandbox uses EUR, production uses RWF
-                        currency = "EUR" if PayClass.environment_mode == "sandbox" else "RWF"
-                        
-                        # INITIATE PAYMENT FIRST - DO NOT CREATE ORDER YET
-                        payment_result = PayClass.momopay(
-                            amount=str(int(final_total)),
-                            currency=currency,
-                            txt_ref=external_id,
-                            phone_number=api_momo_number,
-                            payermessage=f"Payment from eMarket"
-                        )
+                        # Handle different payment methods
+                        if payment_method == 'momo':
+                            # Note: Sandbox uses EUR, production uses RWF
+                            currency = "EUR" if PayClass.environment_mode == "sandbox" else "RWF"
+                            
+                            # INITIATE PAYMENT FIRST - DO NOT CREATE ORDER YET
+                            payment_result = PayClass.momopay(
+                                amount=str(int(final_total)),
+                                currency=currency,
+                                txt_ref=external_id,
+                                phone_number=api_momo_number,
+                                payermessage=f"Payment from eMarket"
+                            )
+                        else:
+                            # Cash on Delivery - no payment processing needed
+                            currency = "RWF"  # Always RWF for COD
+                            payment_result = {'response': 200, 'status': 'success', 'message': 'Cash on Delivery order'}
                         
                         if payment_result['response'] in [200, 202]:
                             # Payment initiated successfully - store pending order data in session
@@ -3351,25 +3360,72 @@ def checkout():
                                 'address_line': address_line,
                                 'city': city,
                                 'delivery_phone': delivery_phone,
-                                'provider': provider,
-                                'momo_number': original_momo_number,
+                                'payment_method': payment_method,
+                                'provider': provider if payment_method == 'momo' else None,
+                                'momo_number': original_momo_number if payment_method == 'momo' else None,
                                 'notes': notes,
                                 'latitude': latitude,
                                 'longitude': longitude,
                                 'total_amount': final_total,
                                 'cart_items': cart_items,
-                                'currency': currency
+                                'currency': currency if payment_method == 'momo' else 'RWF'
                             }
                             session['payment_ref'] = external_id
-                            session['provider'] = provider
-                            session['momo_number'] = original_momo_number
-                            session['currency'] = currency
+                            session['provider'] = provider if payment_method == 'momo' else None
+                            session['momo_number'] = original_momo_number if payment_method == 'momo' else None
+                            session['currency'] = currency if payment_method == 'momo' else 'RWF'
                             session['final_total'] = float(final_total)
                             session.modified = True
                             
-                            payment_initiated = True
-                            payment_message = f'Payment requested! Check your phone ({momo_number}) to approve.'
-                            flash(payment_message, 'success')
+                            if payment_method == 'cod':
+                                # For Cash on Delivery, create order immediately
+                                try:
+                                    # Create the order directly
+                                    from datetime import datetime
+                                    cur = mysql.connection.cursor()
+                                    
+                                    # Insert order
+                                    cur.execute("""
+                                        INSERT INTO orders (user_id, guest_email, full_name, address_line, city, 
+                                                          delivery_phone, provider, momo_number, notes, latitude, 
+                                                          longitude, total_amount, payment_status, order_status, 
+                                                          payment_method, currency, created_at)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                    """, (
+                                        user_id, guest_email, full_name, address_line, city,
+                                        delivery_phone, None, None, notes, latitude,
+                                        longitude, final_total, 'pending', 'pending',
+                                        'cod', 'RWF', datetime.now()
+                                    ))
+                                    
+                                    order_id = cur.lastrowid
+                                    
+                                    # Insert order items
+                                    for item in cart_items:
+                                        cur.execute("""
+                                            INSERT INTO order_items (order_id, product_id, quantity, price, variations)
+                                            VALUES (%s, %s, %s, %s, %s)
+                                        """, (order_id, item['product_id'], item['quantity'], item['price'], item.get('variations', '')))
+                                    
+                                    mysql.connection.commit()
+                                    cur.close()
+                                    
+                                    # Clear cart and pending order
+                                    session['cart'] = {}
+                                    session.pop('pending_order', None)
+                                    session.modified = True
+                                    
+                                    flash('Order placed successfully! You will pay cash on delivery.', 'success')
+                                    return redirect(url_for('profile'))
+                                    
+                                except Exception as e:
+                                    print(f"Error creating COD order: {e}")
+                                    flash('Error creating order. Please try again.', 'error')
+                            else:
+                                # Mobile Money payment
+                                payment_initiated = True
+                                payment_message = f'Payment requested! Check your phone ({original_momo_number}) to approve.'
+                                flash(payment_message, 'success')
                         else:
                             # Payment initiation failed - do not create order
                             user_message = payment_result.get('user_message', 'Payment initiation failed. Please try again.')
