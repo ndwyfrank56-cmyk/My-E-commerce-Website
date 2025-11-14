@@ -2721,13 +2721,13 @@ def add_to_cart():
                 flash(f'Only {final_quantity} available in stock. Added {final_quantity} to cart.', 'warning')
             elif final_quantity > 1:
                 flash(f'Added {final_quantity} items to cart', 'success')
+            else:
+                flash('Product added to cart', 'success')
         
         session.modified = True
         cur.close()
         
-        # Show success message
-        if not is_buy_now:
-            flash('Product added to cart', 'success')
+        # Success message already shown above based on quantity
         
         # Handle buy now or AJAX
         if is_buy_now or request.args.get('ajax') == '1':
