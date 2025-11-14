@@ -1494,49 +1494,56 @@ body { padding-top: 120px; }
       transform: translateY(-1px) !important;
     }
 
-    /* Simple & Professional Payment Method Selection */
-    .payment-methods-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
+    /* Payment Method Tabs - Like Login/Register */
+    .payment-tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .payment-option {
+    .payment-tab-btn {
+      position: relative;
+      flex: 1;
+      padding: 1rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.85rem 1.5rem;
-      border: 1px solid #444444;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: none;
-      background: transparent;
-      color: var(--text-secondary);
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .payment-option:hover {
-      border-color: #444444;
-    }
-
-    .payment-option.active {
-      border-color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.12);
+    .payment-tab-btn.active {
       color: var(--text-primary);
+      border-bottom-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.05);
     }
 
-    .payment-option i {
+    .payment-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .payment-tab-btn i {
       font-size: 1rem;
       opacity: 0.7;
-      transition: none;
+      transition: all 0.2s ease;
     }
 
-    .payment-option.active i {
+    .payment-tab-btn.active i {
       opacity: 1;
       color: rgba(255,255,255,0.85);
     }
 
-    .payment-option span {
+    .payment-tab-btn span {
       font-size: 0.9rem;
       font-weight: 600;
     }
@@ -1721,23 +1728,24 @@ body { padding-top: 120px; }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .payment-methods-container {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
+      .payment-tabs {
+        /* Keep horizontal layout on mobile like desktop */
+        flex-direction: row;
+        gap: 0;
       }
       
-      .payment-method-card {
-        padding: 1.25rem;
+      .payment-tab-btn {
+        padding: 0.875rem 1rem;
+        font-size: 0.85rem;
+        gap: 0.4rem;
       }
       
-      .payment-card-content {
-        gap: 0.75rem;
+      .payment-tab-btn i {
+        font-size: 0.9rem;
       }
       
-      .payment-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
+      .payment-tab-btn span {
+        font-size: 0.85rem;
       }
 
       .payment-action-row {
@@ -2147,19 +2155,19 @@ body { padding-top: 120px; }
               </div>
               
               <div class="form-row">
-                <div class="payment-methods-container">
-                  <div class="payment-option active" data-method="cod">
+                <!-- Payment Method Tabs -->
+                <div class="payment-tabs" role="tablist">
+                  <button class="payment-tab-btn active" role="tab" aria-selected="true" onclick="switchPaymentTab('cod')" data-method="cod">
                     <input type="radio" id="pay_cod" name="payment_method" value="cod" checked hidden>
                     <i class="fas fa-truck"></i>
                     <span>Cash on Delivery</span>
-                  </div>
-                  
-                  <div class="payment-option" data-method="momo">
+                  </button>
+                  <button class="payment-tab-btn" role="tab" aria-selected="false" onclick="switchPaymentTab('momo')" data-method="momo">
                     <input type="radio" id="pay_momo" name="payment_method" value="momo" hidden>
                     <i class="fas fa-mobile-alt"></i>
                     <span>Mobile Money</span>
                     <span class="coming-soon-badge">Coming Soon</span>
-                  </div>
+                  </button>
                 </div>
               </div>
               
@@ -2363,6 +2371,29 @@ body { padding-top: 120px; }
       }
     }
 
+    // Payment Tab Switching Function
+    function switchPaymentTab(method) {
+      // Remove active class from all tabs
+      document.querySelectorAll('.payment-tab-btn').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-selected', 'false');
+      });
+      
+      // Add active class to clicked tab
+      const activeTab = document.querySelector(`[data-method="${method}"]`);
+      if (activeTab) {
+        activeTab.classList.add('active');
+        activeTab.setAttribute('aria-selected', 'true');
+      }
+      
+      // Check the corresponding radio button
+      const radio = document.querySelector(`input[value="${method}"]`);
+      if (radio) {
+        radio.checked = true;
+        updatePaymentMethodVisibility();
+      }
+    }
+
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
       updateStepDisplay();
@@ -2372,21 +2403,14 @@ body { padding-top: 120px; }
         radio.addEventListener('change', updatePaymentMethodVisibility);
       });
       
-      // Add event listeners for payment option divs
-      document.querySelectorAll('.payment-option').forEach(option => {
-        option.addEventListener('click', function() {
+      // Add event listeners for payment tab buttons
+      document.querySelectorAll('.payment-tab-btn').forEach(tab => {
+        tab.addEventListener('click', function() {
           // Ignore disabled payment methods (e.g., Coming Soon)
           if (this.classList.contains('disabled')) return;
-          // Remove active class from all options
-          document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
-          // Add active class to clicked option
-          this.classList.add('active');
-          // Check the corresponding radio button
-          const radio = this.querySelector('input[type="radio"]');
-          if (radio) {
-            radio.checked = true;
-            updatePaymentMethodVisibility();
-          }
+          
+          const method = this.getAttribute('data-method');
+          switchPaymentTab(method);
         });
       });
     });
