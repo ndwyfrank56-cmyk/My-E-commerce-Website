@@ -2830,6 +2830,22 @@ def get_cart():
         print(f"Cart API error: {e}")
         return jsonify({'items': []})
 
+@app.route('/cart-info')
+def cart_info():
+    """Get cart count and total for AJAX updates"""
+    try:
+        cart_data = session.get('cart', {})
+        cart_count = sum(item['quantity'] for item in cart_data.values())
+        cart_total = sum(item['quantity'] * item['price'] for item in cart_data.values())
+        
+        return jsonify({
+            'count': cart_count,
+            'total': cart_total
+        })
+    except Exception as e:
+        print(f"Cart info error: {e}")
+        return jsonify({'count': 0, 'total': 0})
+
 @app.route('/api/product/stock', methods=['GET'])
 def get_product_stock():
     """API endpoint to get stock for specific variation combination"""
@@ -2965,6 +2981,13 @@ def update_cart():
         action = request.args.get('action') if request.method == 'GET' else request.form.get('action')
         quantity = request.args.get('quantity') if request.method == 'GET' else request.form.get('quantity')
         redirect_to = request.args.get('redirect_to') if request.method == 'GET' else request.form.get('redirect_to')
+        
+        # Debug logging
+        print(f"DEBUG: cart_key={cart_key}, action={action}, quantity={quantity}")
+        print(f"DEBUG: method={request.method}")
+        print(f"DEBUG: form data={dict(request.form)}")
+        print(f"DEBUG: args data={dict(request.args)}")
+        print(f"DEBUG: current cart keys={list(session.get('cart', {}).keys())}")
         
         # Get cart from session
         if 'cart' not in session:
