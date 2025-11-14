@@ -2208,21 +2208,9 @@ body { padding-top: 120px; }
           {% endfor %}
         </div>
         
-        <!-- Cost Breakdown -->
-        <div class="cost-breakdown scroll-animate" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-          <div class="cost-row" style="display: flex; justify-content: space-between; margin-bottom: 0.65rem;">
-            <div style="color: #888888; font-size: 0.9rem; font-weight: 400;">Subtotal</div>
-            <div style="color: var(--text-primary); font-size: 0.9rem; font-weight: 600;">RWF {{ '{:,.0f}'.format(total.value) }}</div>
-          </div>
-          <div class="cost-row" style="display: flex; justify-content: space-between; margin-bottom: 0.65rem;">
-            <div style="color: #888888; font-size: 0.9rem; font-weight: 400;">Delivery Fee</div>
-            <div style="color: var(--text-primary); font-size: 0.9rem; font-weight: 600;">RWF 2,000</div>
-          </div>
-        </div>
-        
-        <div class="total scroll-animate" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #333;">
+        <div class="total scroll-animate" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
           <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Total Amount</div>
-          <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.0f}'.format(total.value + 2000) }}</div>
+          <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
         </div>
       {% endif %}
     </aside>
