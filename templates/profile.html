@@ -2161,6 +2161,16 @@
       body.appendChild(msg);
       footer.appendChild(stayBtn);
       footer.appendChild(signoutBtn);
+
+      // Mobile layout adjustments: stack buttons full-width
+      if (window.innerWidth <= 480) {
+        footer.style.flexDirection = 'column';
+        footer.style.alignItems = 'stretch';
+        stayBtn.style.width = '100%';
+        signoutBtn.style.width = '100%';
+        stayBtn.style.padding = '0.9rem 1rem';
+        signoutBtn.style.padding = '0.9rem 1rem';
+      }
       box.appendChild(header);
       box.appendChild(body);
       box.appendChild(footer);
