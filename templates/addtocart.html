@@ -1705,13 +1705,16 @@
 
     <div class="cart-items">
       {% if not cart_items %}
-        <div class="empty-cart">
-          <i class="fas fa-lock"></i>
-          <p>Your cart is empty</p>
-          <button class="shop-btn" onclick="window.location.href='/'">
-            <i class="fas fa-shopping-cart"></i>
-            <span>Continue Shopping</span>
-            <span class="arrow">→</span>
+        <!-- Match mini-cart empty design -->
+        <div class="mini-cart-empty">
+          <div class="empty-icon">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <h3>Your cart is empty</h3>
+          <p>Add some products to get started!</p>
+          <button class="btn-continue-shopping" onclick="window.location.href='/'">
+            <i class="fas fa-arrow-left"></i>
+            Continue Shopping
           </button>
         </div>
       {% else %}
