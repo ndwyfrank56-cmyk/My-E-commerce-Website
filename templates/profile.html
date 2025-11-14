@@ -1044,6 +1044,7 @@
       max-width: 100%;
       min-width: 0;
       padding: 24px;
+      position: relative;
     }
     .order-card-header { 
       padding: 0 0 1rem 0; 
@@ -1076,6 +1077,11 @@
     .status-badge.failed { color: #E74C3C; border-color: #E74C3C; background: rgba(231,76,60,0.1); }
     .status-badge.pending { color: #F39C12; border-color: #F39C12; background: rgba(243,156,18,0.1); }
     .status-badge.cancelled { color: #E74C3C; border-color: #E74C3C; background: rgba(231,76,60,0.1); }
+    .order-card.cancelled-order { opacity: 0.65; background: linear-gradient(135deg, rgba(26,29,36,0.8) 0%, rgba(15,17,21,0.8) 100%); }
+    .order-card.cancelled-order .order-card-header { opacity: 0.7; }
+    .order-card.cancelled-order .order-items { opacity: 0.7; }
+    .order-card.cancelled-order .order-card-footer { opacity: 0.7; }
+    .order-card.cancelled-order::after { content: 'CANCELLED'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); font-size: 3rem; font-weight: 900; color: rgba(231,76,60,0.15); pointer-events: none; z-index: 1; letter-spacing: 0.1em; }
     .status-badge.delivered { display:inline-flex; align-items:center; gap:.3rem; padding:.3rem .65rem; border-radius:20px; border:1px solid; font-weight:600; font-size:.65rem; letter-spacing:.03em; text-transform:uppercase; background: transparent; }
     .status-badge .badge-icon{ font-size:.65rem; }
     .status-badge.yes { color: #2ECC71; border-color: #2ECC71; background: rgba(46,204,113,0.1); }
@@ -1472,7 +1478,7 @@
             {% if user_orders and user_orders|length > 0 %}
               <div class="orders-grid" id="ordersGrid">
                 {% for order in user_orders %}
-                  <article class="order-card{% if loop.index0 >= 5 %} order-hidden{% endif %}"{% if loop.index0 >= 5 %} style="display:none"{% endif %}>
+                  <article class="order-card{% if loop.index0 >= 5 %} order-hidden{% endif %}{% if order.status and order.status|lower == 'cancelled' %} cancelled-order{% endif %}"{% if loop.index0 >= 5 %} style="display:none"{% endif %}>
                     <header class="order-card-header">
                       <div class="order-info">
                         <div class="order-id">Order #{{ order.id }}</div>
@@ -1491,13 +1497,13 @@
                           {% else %}
                             <span class="status-badge delivered no"><i class="fas fa-truck badge-icon"></i><span>IN TRANSIT</span></span>
                           {% endif %}
-                          <span class="status-badge {{ order.payment_status|lower }}">{{ 'UNPAID' if order.payment_status|lower == 'pending' else order.payment_status|upper }}</span>
-                          {% if (not order.delivered or order.delivered|lower not in ['yes','true','1']) %}
-                            <form method="post" action="/orders/cancel/{{ order.id }}" style="display:inline;" data-no-loading id="cancelOrderForm{{ order.id }}">
-                              <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                              <button type="button" class="cancel-btn" title="Cancel order" onclick="showCancelOrderModal({{ order.id }})">Cancel</button>
-                            </form>
-                          {% endif %}
+                        {% endif %}
+                        <span class="status-badge {{ order.payment_status|lower }}">{{ 'UNPAID' if order.payment_status|lower == 'pending' else order.payment_status|upper }}</span>
+                        {% if order.status and order.status|lower != 'cancelled' and (not order.delivered or order.delivered|lower not in ['yes','true','1']) %}
+                          <form method="post" action="/orders/cancel/{{ order.id }}" style="display:inline;" data-no-loading id="cancelOrderForm{{ order.id }}">
+                            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                            <button type="button" class="cancel-btn" title="Cancel order" onclick="showCancelOrderModal({{ order.id }})">Cancel</button>
+                          </form>
                         {% endif %}
                       </div>
                     </div>

@@ -2147,10 +2147,10 @@ def cancel_order(order_id):
                 stock_level = restore_stock_smartly(cur, product_id, quantity, variations)
                 print(f"ORDER CANCEL: Stock restored to {stock_level} level for product_id={product_id}, qty={quantity}")
         
-        # Update both order status and payment status to cancelled
+        # Update order status, payment status, and delivered to cancelled
         cur.execute("""
             UPDATE orders 
-            SET status = 'cancelled', payment_status = 'cancelled' 
+            SET status = 'cancelled', payment_status = 'cancelled', delivered = 'false' 
             WHERE id = %s
         """, (order_id,))
         
