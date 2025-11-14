@@ -1533,21 +1533,6 @@
                         <span>Shipping to {{ order.city if order.city else 'address' }}</span>
                       </div>
                       <div class="order-total-section">
-                        {% set transport = 1500 %}
-                        {% set subtotal = (order.total_amount - transport) / 1.18 %}
-                        {% set tax = subtotal * 0.18 %}
-                        <div class="order-subtotal-row">
-                          <span>Subtotal</span>
-                          <span>RWF {{ '{:,.0f}'.format(subtotal) }}</span>
-                        </div>
-                        <div class="order-subtotal-row">
-                          <span>Tax (18%)</span>
-                          <span>RWF {{ '{:,.0f}'.format(tax) }}</span>
-                        </div>
-                        <div class="order-subtotal-row">
-                          <span>Transport Fee</span>
-                          <span>RWF {{ '{:,.0f}'.format(transport) }}</span>
-                        </div>
                         <div class="order-total-row">
                           <span class="order-total-label">Total</span>
                           <span class="order-total-amount">RWF {{ '{:,.0f}'.format(order.total_amount) }}</span>
