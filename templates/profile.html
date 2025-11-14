@@ -1082,6 +1082,7 @@
     .order-card.cancelled-order .order-items { opacity: 0.7; }
     .order-card.cancelled-order .order-card-footer { opacity: 0.7; }
     .order-card.cancelled-order::after { content: 'CANCELLED'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); font-size: 3rem; font-weight: 900; color: rgba(231,76,60,0.15); pointer-events: none; z-index: 1; letter-spacing: 0.1em; }
+    .order-card.paid-order::after { content: 'PAID'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); font-size: 3rem; font-weight: 900; color: rgba(52,152,219,0.15); pointer-events: none; z-index: 1; letter-spacing: 0.1em; }
     .status-badge.delivered { display:inline-flex; align-items:center; gap:.3rem; padding:.3rem .65rem; border-radius:20px; border:1px solid; font-weight:600; font-size:.65rem; letter-spacing:.03em; text-transform:uppercase; background: transparent; }
     .status-badge .badge-icon{ font-size:.65rem; }
     .status-badge.yes { color: #2ECC71; border-color: #2ECC71; background: rgba(46,204,113,0.1); }
@@ -1478,7 +1479,7 @@
             {% if user_orders and user_orders|length > 0 %}
               <div class="orders-grid" id="ordersGrid">
                 {% for order in user_orders %}
-                  <article class="order-card{% if loop.index0 >= 5 %} order-hidden{% endif %}{% if order.status and order.status|lower == 'cancelled' %} cancelled-order{% endif %}"{% if loop.index0 >= 5 %} style="display:none"{% endif %}>
+                  <article class="order-card{% if loop.index0 >= 5 %} order-hidden{% endif %}{% if order.status and order.status|lower == 'cancelled' %} cancelled-order{% endif %}{% if order.payment_status and order.payment_status|lower == 'paid' %} paid-order{% endif %}"{% if loop.index0 >= 5 %} style="display:none"{% endif %}>
                     <header class="order-card-header">
                       <div class="order-info">
                         <div class="order-id">Order #{{ order.id }}</div>
