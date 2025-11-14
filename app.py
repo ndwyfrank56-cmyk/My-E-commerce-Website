@@ -3399,28 +3399,29 @@ def checkout():
                                     from datetime import datetime
                                     cur = mysql.connection.cursor()
                                     
-                                    # Insert order
+                                    # Insert order - match database schema exactly
                                     cur.execute("""
-                                        INSERT INTO orders (user_id, guest_email, full_name, address_line, city, 
+                                        INSERT INTO orders (user_id, full_name, address_line, city, 
                                                           delivery_phone, provider, momo_number, notes, latitude, 
-                                                          longitude, total_amount, payment_status, order_status, 
-                                                          payment_method, currency, created_at)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                                          longitude, total_amount, payment_status, status, 
+                                                          created_at)
+                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                                     """, (
-                                        user_id, guest_email, full_name, address_line, city,
-                                        delivery_phone, None, None, notes, latitude,
+                                        user_id, full_name, address_line, city,
+                                        delivery_phone, 'COD', None, notes, latitude,
                                         longitude, final_total, 'pending', 'pending',
-                                        'cod', 'RWF', datetime.now()
+                                        datetime.now()
                                     ))
                                     
                                     order_id = cur.lastrowid
                                     
-                                    # Insert order items
+                                    # Insert order items - match database schema exactly
                                     for item in cart_items:
+                                        subtotal = item['quantity'] * item['price']
                                         cur.execute("""
-                                            INSERT INTO order_items (order_id, product_id, quantity, price, variations)
-                                            VALUES (%s, %s, %s, %s, %s)
-                                        """, (order_id, item['product_id'], item['quantity'], item['price'], item.get('variations', '')))
+                                            INSERT INTO order_items (order_id, product_id, product_name, price, quantity, subtotal, VARIATIONS)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                        """, (order_id, item['product_id'], item['name'], item['price'], item['quantity'], subtotal, item.get('variations', '')))
                                     
                                     mysql.connection.commit()
                                     cur.close()
