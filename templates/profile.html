@@ -1342,7 +1342,7 @@
         <!-- Login Pocket Section -->
         <div class="sidebar-login-section">
           {% if session.user_id %}
-            <a href="/logout" class="sidebar-login-btn" onclick="if(!confirm('Are you sure you want to sign out?')) { event.preventDefault(); return false; }"
+            <a href="/logout" class="sidebar-login-btn no-loading" onclick="event.preventDefault(); showSignOutModal();">
               <i class="fas fa-sign-out-alt"></i> Sign Out
             </a>
           {% else %}
