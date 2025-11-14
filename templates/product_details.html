@@ -2550,6 +2550,7 @@
       
       // Redirect directly to add-to-cart with buy_now parameter
       // Backend will add to cart and redirect to checkout
+      console.log('Buy Now URL:', '/add-to-cart?' + params.toString());
       window.location.href = '/add-to-cart?' + params.toString();
     }
     

@@ -2731,6 +2731,7 @@ def add_to_cart():
         
         # Handle buy now - redirect to checkout
         if is_buy_now:
+            print(f"Buy Now detected - redirecting to checkout for product {product_id}")
             return redirect(url_for('checkout'))
         
         # Handle AJAX requests
