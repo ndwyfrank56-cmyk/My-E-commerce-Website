@@ -1935,55 +1935,42 @@
     function updateQuantity(productId, quantity) {
       console.log('Updating quantity:', productId, quantity);
       
-      try {
-        const xhr = new XMLHttpRequest();
-        const url = '/update-cart';
-        const data = `product_id=${encodeURIComponent(productId)}&quantity=${quantity}&action=update&ajax=1`;
-        
-        xhr.open('POST', url, true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            console.log('Response status:', xhr.status);
-            
-            if (xhr.status === 200) {
-              try {
-                const data = JSON.parse(xhr.responseText);
-                console.log('Response data:', data);
-                
-                if (data.success) {
-                  // Update the cart display without reloading
-                  updateCartDisplay();
-                  if (data.message) {
-                    showToast(data.message, 'success');
-                  }
-                } else {
-                  showToast(data.error || 'Failed to update cart', 'error');
-                }
-              } catch (parseError) {
-                console.error('JSON parse error:', parseError);
-                showToast('Error parsing server response', 'error');
-              }
-            } else {
-              console.error('HTTP error:', xhr.status);
-              showToast('Failed to update cart (HTTP ' + xhr.status + ')', 'error');
-            }
-          }
-        };
-        
-        xhr.onerror = function() {
-          console.error('Network error');
-          showToast('Network error updating cart', 'error');
-        };
-        
-        xhr.send(data);
-        
-      } catch (e) {
-        console.error('Error:', e);
-        showToast('Error updating cart: ' + e.message, 'error');
-      }
+      // Create a form and submit it to reload the page with flash messages
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/update-cart';
+      
+      // Add product_id field
+      const productField = document.createElement('input');
+      productField.type = 'hidden';
+      productField.name = 'product_id';
+      productField.value = productId;
+      form.appendChild(productField);
+      
+      // Add quantity field
+      const quantityField = document.createElement('input');
+      quantityField.type = 'hidden';
+      quantityField.name = 'quantity';
+      quantityField.value = quantity;
+      form.appendChild(quantityField);
+      
+      // Add action field
+      const actionField = document.createElement('input');
+      actionField.type = 'hidden';
+      actionField.name = 'action';
+      actionField.value = 'update';
+      form.appendChild(actionField);
+      
+      // Add redirect field to come back to cart page
+      const redirectField = document.createElement('input');
+      redirectField.type = 'hidden';
+      redirectField.name = 'redirect_to';
+      redirectField.value = '/addtocart';
+      form.appendChild(redirectField);
+      
+      // Submit form
+      document.body.appendChild(form);
+      form.submit();
     }
 
     function stepQty(btn, delta, max){
@@ -2011,63 +1998,35 @@
       confirmBtn.onclick = () => {
         console.log('Removing item:', productId);
         
-        try {
-          const xhr = new XMLHttpRequest();
-          const url = '/update-cart';
-          const data = `product_id=${encodeURIComponent(productId)}&action=remove&ajax=1`;
-          
-          xhr.open('POST', url, true);
-          xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-          xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-          
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-              console.log('Remove response status:', xhr.status);
-              
-              if (xhr.status === 200) {
-                try {
-                  const data = JSON.parse(xhr.responseText);
-                  console.log('Remove response data:', data);
-                  
-                  if (data.success) {
-                    // Remove the item from display
-                    const cartItem = document.querySelector(`[data-id="${productId}"]`).closest('.cart-item');
-                    if (cartItem) {
-                      cartItem.remove();
-                    }
-                    updateCartDisplay();
-                    showToast(data.message || 'Item removed from cart', 'success');
-                    closeModal();
-                  } else {
-                    showToast(data.error || 'Failed to remove item', 'error');
-                    closeModal();
-                  }
-                } catch (parseError) {
-                  console.error('JSON parse error:', parseError);
-                  showToast('Error parsing server response', 'error');
-                  closeModal();
-                }
-              } else {
-                console.error('HTTP error:', xhr.status);
-                showToast('Failed to remove item (HTTP ' + xhr.status + ')', 'error');
-                closeModal();
-              }
-            }
-          };
-          
-          xhr.onerror = function() {
-            console.error('Network error');
-            showToast('Network error removing item', 'error');
-            closeModal();
-          };
-          
-          xhr.send(data);
-          
-        } catch (e) {
-          console.error('Error:', e);
-          showToast('Error removing item: ' + e.message, 'error');
-          closeModal();
-        }
+        // Create a form and submit it to reload the page with flash messages
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/update-cart';
+        
+        // Add product_id field
+        const productField = document.createElement('input');
+        productField.type = 'hidden';
+        productField.name = 'product_id';
+        productField.value = productId;
+        form.appendChild(productField);
+        
+        // Add action field
+        const actionField = document.createElement('input');
+        actionField.type = 'hidden';
+        actionField.name = 'action';
+        actionField.value = 'remove';
+        form.appendChild(actionField);
+        
+        // Add redirect field to come back to cart page
+        const redirectField = document.createElement('input');
+        redirectField.type = 'hidden';
+        redirectField.name = 'redirect_to';
+        redirectField.value = '/addtocart';
+        form.appendChild(redirectField);
+        
+        // Submit form
+        document.body.appendChild(form);
+        form.submit();
       };
       
       // Show modal
