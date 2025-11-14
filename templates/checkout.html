@@ -2834,13 +2834,14 @@ body { padding-top: 120px; }
     }
 
     .success-modal {
-      background: white;
+      background: #11151d;
       border-radius: 16px;
       padding: 32px;
       max-width: 400px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+      border: 1px solid #202431;
       animation: slideUp 0.3s ease-out;
     }
 
@@ -2862,13 +2863,13 @@ body { padding-top: 120px; }
     .success-title {
       font-size: 24px;
       font-weight: 600;
-      color: #111827;
+      color: #e8eaee;
       margin: 0 0 8px 0;
     }
 
     .success-message {
       font-size: 16px;
-      color: #6B7280;
+      color: #9aa3b2;
       margin: 0 0 24px 0;
       line-height: 1.5;
     }
@@ -2899,12 +2900,13 @@ body { padding-top: 120px; }
     }
 
     .success-btn.secondary {
-      background: #F3F4F6;
-      color: #374151;
+      background: #0e1117;
+      color: #e8eaee;
+      border: 1px solid #202431;
     }
 
     .success-btn.secondary:hover {
-      background: #E5E7EB;
+      background: #111827;
     }
 
     @media (max-width: 480px) {
@@ -2925,7 +2927,7 @@ body { padding-top: 120px; }
 
   <script>
     function goToProfile() {
-      window.location.href = '/profile';
+      window.location.href = '/profile#orders';
     }
 
     function continueShopping() {
