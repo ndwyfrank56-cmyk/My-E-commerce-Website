@@ -2111,6 +2111,65 @@
       // Close on backdrop click
       backdrop.onclick = () => document.body.removeChild(overlay);
     }
+    
+    // Floating Sign Out Modal (matches cancel modal styling, no hover effects)
+    function showSignOutModal() {
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000';
+      const backdrop = document.createElement('div');
+      backdrop.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px)';
+      const box = document.createElement('div');
+      box.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1a1d24 0%,#0f1115 100%);border:1px solid #2a2f3a;border-radius:15px;box-shadow:0 15px 30px rgba(0,0,0,0.6);max-width:380px;width:90%';
+
+      const header = document.createElement('div');
+      header.style.cssText = 'padding:1.5rem 1.5rem 1rem;border-bottom:1px solid #2a2f3a;display:flex;justify-content:space-between;align-items:center';
+      const title = document.createElement('h5');
+      title.innerHTML = '<i class="fas fa-sign-out-alt" style="color:#f59e0b;margin-right:0.5rem"></i>Sign Out?';
+      title.style.cssText = 'margin:0;color:#e5e7eb;font-weight:600;font-size:1rem';
+      const closeBtn = document.createElement('button');
+      closeBtn.innerHTML = '&times;';
+      closeBtn.style.cssText = 'background:none;border:none;color:rgba(255,255,255,0.8);font-size:1.5rem;cursor:pointer;padding:0;line-height:1';
+      closeBtn.onclick = () => document.body.removeChild(overlay);
+
+      const body = document.createElement('div');
+      body.style.cssText = 'padding:1.5rem;color:#e5e7eb;text-align:center';
+      const msg = document.createElement('p');
+      msg.textContent = 'Are you sure you want to sign out? You can sign back in anytime.';
+      msg.style.cssText = 'margin:0;line-height:1.6';
+
+      const footer = document.createElement('div');
+      footer.style.cssText = 'padding:1rem 1.5rem 1.5rem;display:flex;gap:0.75rem;justify-content:center';
+      const stayBtn = document.createElement('button');
+      stayBtn.innerHTML = '<i class="fas fa-times"></i> Stay Logged In';
+      stayBtn.style.cssText = 'background:rgba(75,85,99,0.9);color:#e5e7eb;font-weight:600;border:1px solid rgba(75,85,99,0.5);border-radius:10px;padding:0.75rem 1.5rem;cursor:pointer;transition:none';
+      stayBtn.onclick = () => document.body.removeChild(overlay);
+
+      const signoutBtn = document.createElement('button');
+      signoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
+      signoutBtn.style.cssText = 'background:rgba(229,231,235,0.9);color:#1a1d24;font-weight:600;border:1px solid rgba(229,231,235,0.3);border-radius:10px;padding:0.75rem 1.5rem;cursor:pointer;transition:none';
+      signoutBtn.onclick = () => {
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = '/logout';
+        form.className = 'no-loading';
+        document.body.appendChild(form);
+        form.submit();
+      };
+
+      header.appendChild(title);
+      header.appendChild(closeBtn);
+      body.appendChild(msg);
+      footer.appendChild(stayBtn);
+      footer.appendChild(signoutBtn);
+      box.appendChild(header);
+      box.appendChild(body);
+      box.appendChild(footer);
+      overlay.appendChild(backdrop);
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+
+      backdrop.onclick = () => document.body.removeChild(overlay);
+    }
   </script>
 
   <!-- Global Loading JavaScript -->
