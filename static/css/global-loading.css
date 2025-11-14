@@ -2,10 +2,10 @@
 
 /* CSS Variables for Forest Green Theme */
 :root {
-  --forest-green: #2d5a2d;
+  --forest-green: #2e4d2c;
   --forest-green-light: #4a7c4a;
   --forest-green-dark: #1a3d1a;
-  --loading-bg: #0a0f0a;
+  --loading-bg: rgba(46, 77, 44, 0.85);
   --loading-text: #e8f5e8;
   --loading-text-secondary: #a8c8a8;
 }
@@ -18,8 +18,8 @@
   width: 100vw;
   height: 100vh;
   background: var(--loading-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
   display: none;
   align-items: center;
@@ -59,7 +59,7 @@
 }
 
 .cart__track {
-  stroke: rgba(45, 90, 45, 0.2);
+  stroke: rgba(46, 77, 44, 0.3);
 }
 
 .cart__lines {
