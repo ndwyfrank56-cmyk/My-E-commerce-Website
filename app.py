@@ -2982,12 +2982,8 @@ def update_cart():
         quantity = request.args.get('quantity') if request.method == 'GET' else request.form.get('quantity')
         redirect_to = request.args.get('redirect_to') if request.method == 'GET' else request.form.get('redirect_to')
         
-        # Debug logging
-        print(f"DEBUG: cart_key={cart_key}, action={action}, quantity={quantity}")
-        print(f"DEBUG: method={request.method}")
-        print(f"DEBUG: form data={dict(request.form)}")
-        print(f"DEBUG: args data={dict(request.args)}")
-        print(f"DEBUG: current cart keys={list(session.get('cart', {}).keys())}")
+        # Debug logging (simplified)
+        print(f"UPDATE CART: {request.method} - cart_key={cart_key}, action={action}, quantity={quantity}")
         
         # Get cart from session
         if 'cart' not in session:
