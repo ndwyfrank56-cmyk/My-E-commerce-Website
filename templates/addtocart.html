@@ -1933,26 +1933,38 @@
 
     // AJAX function to update cart without page reload
     function updateQuantity(productId, quantity) {
+      console.log('Updating quantity:', productId, quantity);
+      
       fetch('/update-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest'
         },
-        body: `product_id=${productId}&quantity=${quantity}&action=update`
+        body: `product_id=${encodeURIComponent(productId)}&quantity=${quantity}&action=update&ajax=1`
       })
-      .then(response => response.json())
+      .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('Response data:', data);
         if (data.success) {
           // Update the cart display without reloading
           updateCartDisplay();
-          showToast('Cart updated successfully', 'success');
+          if (data.message) {
+            showToast(data.message, 'success');
+          }
         } else {
-          showToast('Failed to update cart', 'error');
+          showToast(data.error || 'Failed to update cart', 'error');
         }
       })
       .catch(error => {
-        console.error('Error:', error);
-        showToast('Error updating cart', 'error');
+        console.error('Error updating quantity:', error);
+        showToast('Error updating cart: ' + error.message, 'error');
       });
     }
 
@@ -1979,15 +1991,25 @@
       // Set up confirm button
       const confirmBtn = document.getElementById('confirmButton');
       confirmBtn.onclick = () => {
+        console.log('Removing item:', productId);
+        
         fetch('/update-cart', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
           },
-          body: `product_id=${productId}&action=remove`
+          body: `product_id=${encodeURIComponent(productId)}&action=remove&ajax=1`
         })
-        .then(response => response.json())
+        .then(response => {
+          console.log('Remove response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          return response.json();
+        })
         .then(data => {
+          console.log('Remove response data:', data);
           if (data.success) {
             // Remove the item from display
             const cartItem = document.querySelector(`[data-id="${productId}"]`).closest('.cart-item');
@@ -1995,15 +2017,17 @@
               cartItem.remove();
             }
             updateCartDisplay();
-            showToast('Item removed from cart', 'success');
+            showToast(data.message || 'Item removed from cart', 'success');
             closeModal();
           } else {
-            showToast('Failed to remove item', 'error');
+            showToast(data.error || 'Failed to remove item', 'error');
+            closeModal();
           }
         })
         .catch(error => {
-          console.error('Error:', error);
-          showToast('Error removing item', 'error');
+          console.error('Error removing item:', error);
+          showToast('Error removing item: ' + error.message, 'error');
+          closeModal();
         });
       };
       

@@ -3010,7 +3010,8 @@ def update_cart():
         
         if action == 'remove':
             current_cart.pop(cart_key, None)
-            flash(f'{product_name} removed from cart', 'success')
+            success_message = f'{product_name} removed from cart'
+            flash(success_message, 'success')
         elif action == 'update' and quantity:
             requested_qty = int(quantity)
             
@@ -3051,11 +3052,18 @@ def update_cart():
             current_cart[cart_key]['quantity'] = actual_qty
             
             if requested_qty > max_stock:
-                flash(f'Only {max_stock} available in stock. Quantity set to maximum.', 'warning')
+                success_message = f'Only {max_stock} available in stock. Quantity set to maximum.'
+                flash(success_message, 'warning')
             else:
-                flash('Cart updated', 'success')
+                success_message = 'Cart updated successfully'
+                flash(success_message, 'success')
         else:
-            flash('Invalid action or quantity', 'error')
+            error_message = 'Invalid action or quantity'
+            flash(error_message, 'error')
+            
+            # Handle AJAX error response for invalid action
+            if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify(success=False, error=error_message)
         
         # Save to session
         session['cart'] = current_cart
@@ -3065,7 +3073,10 @@ def update_cart():
         if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
             cart_count = sum(item['quantity'] for item in current_cart.values())
             cart_total = sum(item['quantity'] * item['price'] for item in current_cart.values())
-            return jsonify(success=True, cart_count=cart_count, cart_total=cart_total)
+            
+            # Include success message in response
+            message = success_message if 'success_message' in locals() else 'Operation completed'
+            return jsonify(success=True, cart_count=cart_count, cart_total=cart_total, message=message)
         
         # Redirect
         if redirect_to and redirect_to.startswith('/'):
