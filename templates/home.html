@@ -3699,28 +3699,36 @@
       }
     }
 
-    async function removeCartItem(productId) {
+    async function removeCartItem(cartKey) {
       // Simple version - just reload page after removal
+      console.log('Removing cart item with key:', cartKey);
+      
       if (confirm('Are you sure you want to remove this item from your cart?')) {
         try {
-          const res = await fetch(`/update-cart?product_id=${productId}&action=remove&ajax=1`, {
+          const res = await fetch(`/update-cart?product_id=${encodeURIComponent(cartKey)}&action=remove&ajax=1`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
           });
           
+          console.log('Response status:', res.status);
+          
           if (res.ok) {
             const data = await res.json();
+            console.log('Response data:', data);
+            
             if (data.success) {
               // Just reload the page for now
               location.reload();
             } else {
+              console.error('Backend error:', data.error);
               alert('Failed to remove item: ' + (data.error || 'Unknown error'));
             }
           } else {
-            alert('Failed to remove item');
+            console.error('HTTP error:', res.status);
+            alert('Failed to remove item (HTTP ' + res.status + ')');
           }
         } catch (e) {
-          console.error('Error:', e);
-          alert('Error removing item');
+          console.error('Network error:', e);
+          alert('Network error removing item: ' + e.message);
         }
       }
     }

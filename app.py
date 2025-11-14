@@ -2991,7 +2991,17 @@ def update_cart():
         
         current_cart = session['cart']
         
-        if not cart_key or cart_key not in current_cart:
+        if not cart_key:
+            print(f"ERROR: No cart_key provided")
+            if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify(success=False, error="No cart key provided")
+            flash('Invalid cart item', 'error')
+            return redirect(url_for('addtocart'))
+            
+        if cart_key not in current_cart:
+            print(f"ERROR: cart_key '{cart_key}' not found in cart. Available keys: {list(current_cart.keys())}")
+            if request.args.get('ajax') == '1' or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify(success=False, error=f"Cart item not found: {cart_key}")
             flash('Invalid cart item', 'error')
             return redirect(url_for('addtocart'))
         
