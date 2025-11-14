@@ -3381,7 +3381,7 @@ def checkout():
                                 'notes': notes,
                                 'latitude': latitude,
                                 'longitude': longitude,
-                                'total_amount': final_total,
+                                'total_amount': total,
                                 'cart_items': cart_items,
                                 'currency': currency if payment_method == 'momo' else 'RWF'
                             }
@@ -3409,7 +3409,7 @@ def checkout():
                                     """, (
                                         user_id, full_name, address_line, city,
                                         delivery_phone, 'COD', None, notes, latitude,
-                                        longitude, final_total, 'pending', 'pending',
+                                        longitude, total, 'pending', 'pending',
                                         datetime.now()
                                     ))
                                     
@@ -3697,7 +3697,7 @@ def pay_simple():
             'notes': notes,
             'latitude': latitude,
             'longitude': longitude,
-            'total_amount': float(final_total),
+            'total_amount': float(total),
             'cart_items': cart_items,
             'currency': currency
         }
@@ -3948,7 +3948,7 @@ def pay_cod():
         # Create order - SIMPLE!
         try:
             print(f"DEBUG: Creating COD order for user_id: {session.get('user_id')}")
-            print(f"DEBUG: Order details - name: {full_name}, phone: {delivery_phone}, total: {final_total}")
+            print(f"DEBUG: Order details - name: {full_name}, phone: {delivery_phone}, total: {total}")
             
             # Insert into orders table
             cur.execute(
@@ -3956,7 +3956,7 @@ def pay_cod():
                 INSERT INTO orders (user_id, full_name, address_line, city, delivery_phone, provider, momo_number, notes, latitude, longitude, total_amount, status, momo_transaction_id, payment_status)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                (session.get('user_id'), full_name, address_line, city, delivery_phone, 'NONE', None, notes, latitude, longitude, float(final_total), 'pending', None, 'pending')
+                (session.get('user_id'), full_name, address_line, city, delivery_phone, 'NONE', None, notes, latitude, longitude, float(total), 'pending', None, 'pending')
             )
             order_id = cur.lastrowid
             print(f"DEBUG: Order created with ID: {order_id}")
