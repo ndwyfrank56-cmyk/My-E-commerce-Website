@@ -390,6 +390,10 @@ body:has([action="/checkout/momo"]) .search-container {
 @media (min-width: 1024px) {
   .menu-hint { font-size: 11px !important; }
 }
+@media (max-width: 768px) {
+  /* Hide label on small screens to preserve search space */
+  .menu-hint { display: none !important; }
+}
 
 /* Product prices smoky white */
 .order-price,
