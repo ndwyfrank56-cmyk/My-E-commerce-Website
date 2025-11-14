@@ -1519,7 +1519,7 @@
         <div class="dropdown-variations-container" style="margin: 1rem 0 0.5rem 0; display: flex; flex-direction: column; gap: 1rem;">
           {% for attr_name, options in dropdown_variations.items() %}
           <div class="variation-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">{{ attr_name }}</label>
+            <label style="display: block; font-size: 0.8rem; color: #f5f5f5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">{{ attr_name }}</label>
             <div class="variation-boxes" data-variation-name="{{ attr_name }}" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
               {% for opt in options %}
               <button type="button" class="variation-box" data-variation-id="{{ opt.id }}" data-stock="{{ opt.stock }}" data-img-var-id="{{ opt.img_var_id if opt.img_var_id else '' }}" data-variation-name="{{ attr_name }}" onclick="selectVariationBox(this)" style="padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(30,35,45,0.8); color: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all .15s ease; min-width: 48px; text-align: center; position: relative;">
@@ -1611,10 +1611,10 @@
           {% endif %}
 
           {% if session and session.get('user_id') %}
-            <form class="review-form" method="post" action="{{ url_for('add_review') }}" id="reviewForm">
+            <form class="review-form no-loading" method="post" action="{{ url_for('add_review') }}" id="reviewForm">
               <input type="hidden" name="product_id" value="{{ product.id }}"/>
               <input type="hidden" id="ratingValue" name="rating" value="" />
-              <label class="review-form-label">rate it <span style="color:#ef4444">*</span></label>
+              <label class="review-form-label" style="color: #f5f5f5;">rate it <span style="color:#ef4444">*</span></label>
               <div class="rating-input" id="ratingInput" aria-label="Choose rating from 1 to 5">
                 <i class="fa-star fa-regular star" data-val="1"></i>
                 <i class="fa-star fa-regular star" data-val="2"></i>
@@ -2639,7 +2639,19 @@
             if(errorMsg) errorMsg.style.display = 'block';
             wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
             stars[0].focus();
+            
+            // Re-enable form in case it got disabled
+            form.classList.remove('form-loading');
+            var submitBtn = form.querySelector('button[type="submit"]');
+            if(submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.classList.remove('btn-loading');
+            }
+            
             return false;
+          } else {
+            // Hide error message if rating is selected
+            if(errorMsg) errorMsg.style.display = 'none';
           }
         });
       }
