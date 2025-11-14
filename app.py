@@ -2615,6 +2615,7 @@ def add_to_cart():
         dropdown_var_id = request.args.get('dropdown_var_id', '')
         variation_image = request.args.get('variation_image', '')
         is_buy_now = request.args.get('buy_now') == '1'
+        requested_quantity = int(request.args.get('quantity', '1'))
         
         if not product_id:
             flash('Product ID not specified', 'error')
@@ -2673,19 +2674,32 @@ def add_to_cart():
         # Add to cart with stock validation
         if cart_key in session['cart']:
             current_qty = session['cart'][cart_key]['quantity']
-            if current_qty < actual_stock:
-                session['cart'][cart_key]['quantity'] += 1
+            new_total_qty = current_qty + requested_quantity
+            
+            if new_total_qty <= actual_stock:
+                session['cart'][cart_key]['quantity'] = new_total_qty
                 # Show stock warning if getting close to limit
-                remaining = actual_stock - (current_qty + 1)
+                remaining = actual_stock - new_total_qty
                 if remaining <= 0:
                     flash(f'Added to cart. No more {product["name"]} available in stock!', 'warning')
                 elif remaining <= 2:
                     flash(f'Added to cart. Only {remaining} left in stock!', 'warning')
+                else:
+                    flash(f'Added {requested_quantity} to cart', 'success')
             else:
-                flash(f'Cannot add more - only {actual_stock} available in stock', 'error')
-                cur.close()
-                return redirect(request.referrer or url_for('home'))
+                # Can't add full requested quantity, add what we can
+                max_can_add = actual_stock - current_qty
+                if max_can_add > 0:
+                    session['cart'][cart_key]['quantity'] = actual_stock
+                    flash(f'Only {max_can_add} more available in stock. Added {max_can_add} to cart.', 'warning')
+                else:
+                    flash(f'Cannot add more - only {actual_stock} available in stock', 'error')
+                    cur.close()
+                    return redirect(request.referrer or url_for('home'))
         else:
+            # Validate requested quantity doesn't exceed stock
+            final_quantity = min(requested_quantity, actual_stock)
+            
             # Resolve image URL
             cart_image = variation_image if variation_image else product['image']
             if cart_image and not cart_image.startswith('/static/'):
@@ -2696,11 +2710,17 @@ def add_to_cart():
                 'name': product['name'],
                 'price': product['price'],
                 'image': cart_image,
-                'quantity': 1,
+                'quantity': final_quantity,
                 'variations': variation_display,
                 'img_var_id': img_var_id,
                 'dropdown_var_id': dropdown_var_id
             }
+            
+            # Show appropriate message
+            if final_quantity < requested_quantity:
+                flash(f'Only {final_quantity} available in stock. Added {final_quantity} to cart.', 'warning')
+            elif final_quantity > 1:
+                flash(f'Added {final_quantity} items to cart', 'success')
         
         session.modified = True
         cur.close()
