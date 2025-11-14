@@ -2142,7 +2142,7 @@ body { padding-top: 120px; }
               <div class="form-row">
                 <!-- Payment Method Tabs -->
                 <div class="payment-tabs" role="tablist">
-                  <button class="payment-tab-btn active" role="tab" aria-selected="true" onclick="switchPaymentTab('cod')" data-method="cod">
+                  <button class="payment-tab-btn active" role="tab" aria-selected="true" data-method="cod">
                     <input type="radio" id="pay_cod" name="payment_method" value="cod" checked hidden>
                     <i class="fas fa-truck"></i>
                     <span>Cash on Delivery</span>
@@ -2171,7 +2171,7 @@ body { padding-top: 120px; }
             </div>
             
             <div class="payment-buttons">
-              <button type="button" id="btnCOD" class="pay-btn cod-btn" onclick="initiatePayment('cod')">
+              <button type="submit" id="btnCOD" class="pay-btn cod-btn">
                 Cash on Delivery
               </button>
             </div>
