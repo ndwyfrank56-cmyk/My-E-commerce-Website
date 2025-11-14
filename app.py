@@ -2729,11 +2729,14 @@ def add_to_cart():
         
         # Success message already shown above based on quantity
         
-        # Handle buy now or AJAX
-        if is_buy_now or request.args.get('ajax') == '1':
+        # Handle buy now - redirect to checkout
+        if is_buy_now:
+            return redirect(url_for('checkout'))
+        
+        # Handle AJAX requests
+        if request.args.get('ajax') == '1':
             cart_count = sum(item['quantity'] for item in session['cart'].values())
-            message = 'Redirecting to checkout' if is_buy_now else 'Product added to cart'
-            return jsonify(success=True, cart_count=cart_count, message=message)
+            return jsonify(success=True, cart_count=cart_count, message='Product added to cart')
         
         # Regular redirect
         redirect_url = request.args.get('redirect')

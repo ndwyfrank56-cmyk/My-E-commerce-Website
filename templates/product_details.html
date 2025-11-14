@@ -2494,11 +2494,44 @@
       addToCartWithVariations(productId);
     }
     
-    async function buyNow(productId) {
-      // First add to cart with variations
-      const imgVarId = document.getElementById('selectedImageVariations').value;
-      const dropdownVarIds = (document.getElementById('selectedDropdownVariations').value || '').split(',').filter(Boolean);
+    function buyNow(productId) {
+      // Validate selections first (same as add to cart)
+      const hasImageVars = document.querySelectorAll('.image-variation-item').length > 0;
+      const hasDropdownVars = document.querySelectorAll('.variation-boxes').length > 0;
       
+      // Get current selections
+      const imgVarId = document.getElementById('selectedImageVariations')?.value?.trim();
+      const dropdownVarId = document.getElementById('selectedDropdownVariations')?.value?.trim();
+      
+      // Get currently visible dropdown options (after filtering)
+      const visibleDropdowns = document.querySelectorAll('.variation-boxes button:not([disabled]):not([style*="display: none"])');
+      const hasVisibleDropdowns = visibleDropdowns.length > 0;
+      
+      // === VALIDATION RULES ===
+      if (hasImageVars && !imgVarId) {
+        showCustomAlert('Please select a color.');
+        return;
+      }
+
+      if (hasDropdownVars && hasVisibleDropdowns && !dropdownVarId) {
+        showCustomAlert('Please select a size.');
+        return;
+      }
+
+      // === CROSS-VALIDATION: Check if selected dropdown is compatible with selected image ===
+      if (imgVarId && dropdownVarId) {
+        const selectedDropdownBox = document.querySelector(`.variation-box[data-variation-id="${dropdownVarId}"]`);
+        if (selectedDropdownBox) {
+          const linkedImgVarId = selectedDropdownBox.getAttribute('data-img-var-id') || '';
+          // If the dropdown is linked to a specific image, it must match the selected image
+          if (linkedImgVarId && linkedImgVarId !== '' && linkedImgVarId !== 'null' && linkedImgVarId !== String(imgVarId)) {
+            showCustomAlert('This size is not available for the selected color. Please choose a different size or color.');
+            return;
+          }
+        }
+      }
+      
+      // Build URL with all parameters
       const quantity = parseInt(document.getElementById('productQuantity')?.textContent || '1', 10);
       const params = new URLSearchParams({
         product_id: productId,
@@ -2511,33 +2544,13 @@
         params.append('img_var_id', imgVarId);
       }
       
-      // Use dropdown_var_id (singular) to match the backend endpoint
-      if (dropdownVarIds.length > 0) {
-        params.append('dropdown_var_id', dropdownVarIds[0].trim());
+      if (dropdownVarId) {
+        params.append('dropdown_var_id', dropdownVarId);
       }
       
-      try {
-        // Add to cart first and wait for JSON response
-        const response = await fetch('/add-to-cart?' + params.toString(), {
-          method: 'GET'
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          
-          if (data.success) {
-            // Product successfully added to cart, redirect to checkout
-            window.location.href = '/checkout';
-          } else {
-            showCustomAlert('Error adding item to cart');
-          }
-        } else {
-          showCustomAlert('Error adding item to cart');
-        }
-      } catch (error) {
-        console.error('Buy now error:', error);
-        showCustomAlert('Error processing buy now request');
-      }
+      // Redirect directly to add-to-cart with buy_now parameter
+      // Backend will add to cart and redirect to checkout
+      window.location.href = '/add-to-cart?' + params.toString();
     }
     
     async function refreshCartSidebar() {
