@@ -142,12 +142,10 @@ class GlobalLoadingManager {
       const form = e.target;
       if (!form || form.tagName !== 'FORM') return;
       
-      // Skip if form has no-loading class
+      // Only skip if form has explicit no-loading class
       if (form.classList.contains('no-loading')) return;
       
-      // Show loading for all forms (except those with no-loading class)
-      
-      // Show loading
+      // Show loading for ALL forms - no restrictions!
       this.show('Processing...', 'Submitting your request');
       
       // Add loading class to form
@@ -232,11 +230,8 @@ class GlobalLoadingManager {
   }
 
   shouldSkipLink(link) {
-    // Skip if link has no-loading class
+    // Only skip if link has explicit no-loading class
     if (link.classList.contains('no-loading')) return true;
-    
-    // Skip if it's a modal trigger
-    if (link.hasAttribute('data-toggle') || link.hasAttribute('data-target')) return true;
     
     // Skip if it's a JavaScript void link
     if (link.getAttribute('href') === 'javascript:void(0)' || link.getAttribute('href') === '#') return true;
@@ -245,26 +240,15 @@ class GlobalLoadingManager {
     const href = link.getAttribute('href') || '';
     if (href.startsWith('mailto:') || href.startsWith('tel:')) return true;
     
-    // Skip if it's in a dropdown or search suggestions
-    if (link.closest('.dropdown-menu, .search-suggestions, .search-dropdown')) return true;
-    
+    // Show loading for everything else - no restrictions!
     return false;
   }
 
   shouldSkipAjaxLoading(url, options = {}) {
-    // Skip if it's a search request (usually fast)
-    if (typeof url === 'string' && url.includes('/search')) return true;
-    
-    // Skip if it's an API request with no-loading header
+    // Only skip if request has explicit no-loading header
     if (options.headers && options.headers['X-No-Loading']) return true;
     
-    // Skip if it's a small data request
-    if (typeof url === 'string' && (
-      url.includes('/api/') || 
-      url.includes('/count') || 
-      url.includes('/status')
-    )) return true;
-    
+    // Show loading for ALL AJAX requests - no restrictions!
     return false;
   }
 

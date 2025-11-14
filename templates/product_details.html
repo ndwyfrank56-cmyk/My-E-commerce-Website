@@ -1611,7 +1611,7 @@
           {% endif %}
 
           {% if session and session.get('user_id') %}
-            <form class="review-form no-loading" method="post" action="{{ url_for('add_review') }}" id="reviewForm">
+            <form class="review-form" method="post" action="{{ url_for('add_review') }}" id="reviewForm">
               <input type="hidden" name="product_id" value="{{ product.id }}"/>
               <input type="hidden" id="ratingValue" name="rating" value="" />
               <label class="review-form-label" style="color: #f5f5f5;">rate it <span style="color:#ef4444">*</span></label>
