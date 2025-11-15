@@ -2427,8 +2427,16 @@
       // Get current image
       const mainImageEl = document.getElementById('mainProductImage');
       let currentImage = mainImageEl ? mainImageEl.src : '';
+      // Extract pathname from full URL if needed
       if (currentImage && currentImage.includes('://')) {
-        try { const url = new URL(currentImage); currentImage = url.pathname; } catch (_) {}
+        try { 
+          const url = new URL(currentImage); 
+          currentImage = url.pathname;
+          // Ensure it starts with /static/ for consistency
+          if (!currentImage.startsWith('/static/')) {
+            currentImage = '/static' + (currentImage.startsWith('/') ? currentImage : '/' + currentImage);
+          }
+        } catch (_) {}
       }
 
       // === FINAL RULE: Only require selection if options are ACTUALLY visible ===
@@ -2531,6 +2539,20 @@
         }
       }
       
+      // Get current image (same logic as addToCartWithVariations)
+      const mainImageEl = document.getElementById('mainProductImage');
+      let currentImage = mainImageEl ? mainImageEl.src : '';
+      if (currentImage && currentImage.includes('://')) {
+        try { 
+          const url = new URL(currentImage); 
+          currentImage = url.pathname;
+          // Ensure it starts with /static/ for consistency
+          if (!currentImage.startsWith('/static/')) {
+            currentImage = '/static' + (currentImage.startsWith('/') ? currentImage : '/' + currentImage);
+          }
+        } catch (_) {}
+      }
+      
       // Build URL with all parameters
       const quantity = parseInt(document.getElementById('productQuantity')?.textContent || '1', 10);
       const params = new URLSearchParams({
@@ -2546,6 +2568,10 @@
       
       if (dropdownVarId) {
         params.append('dropdown_var_id', dropdownVarId);
+      }
+      
+      if (currentImage) {
+        params.append('variation_image', currentImage);
       }
       
       // Redirect directly to add-to-cart with buy_now parameter
