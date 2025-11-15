@@ -2708,8 +2708,8 @@ def add_to_cart():
 
         # Decide final cart image: prefer variation image, otherwise product image
         cart_image = variation_image if variation_image else product['image']
-        # Ensure image is resolved when coming from the product
-        if cart_image and not variation_image:
+        # Always ensure image is properly resolved
+        if cart_image:
             cart_image = resolve_image_url(cart_image)
         
         if dropdown_var_id:
@@ -2875,7 +2875,7 @@ def get_cart():
             
             # Ensure image URL is proper
             image_url = item.get('image', '')
-            if image_url and not image_url.startswith('/static/'):
+            if image_url:
                 image_url = resolve_image_url(image_url)
             
             cart_items.append({
