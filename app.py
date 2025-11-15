@@ -2657,7 +2657,7 @@ def add_to_cart():
                 variation_display = f"{img_var[1] or ''}"
                 # Capture variation image if not already provided
                 if not variation_image and img_var[3]:
-                    variation_image = img_var[3]
+                    variation_image = resolve_image_url(img_var[3])
         
         if dropdown_var_id:
             cart_key += f"_drop{dropdown_var_id}"
@@ -2707,9 +2707,10 @@ def add_to_cart():
             # Validate requested quantity doesn't exceed stock
             final_quantity = min(requested_quantity, actual_stock)
             
-            # Resolve image URL - always resolve to ensure proper path
+            # Use variation image if available, otherwise use product image
             cart_image = variation_image if variation_image else product['image']
-            if cart_image:
+            # Ensure image is resolved (variation_image is already resolved, but product['image'] may not be)
+            if cart_image and not variation_image:
                 cart_image = resolve_image_url(cart_image)
             
             session['cart'][cart_key] = {
