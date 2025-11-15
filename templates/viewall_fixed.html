@@ -1040,7 +1040,24 @@
         gap: 0.5rem;
       }
     }
-    .sidebar-right .cart-item-image { width: 70px !important; height: 70px !important; flex: 0 0 70px !important; }
+    .sidebar-right .cart-item-image { 
+      width: 90px !important; 
+      height: 90px !important; 
+      flex: 0 0 90px !important;
+      border-radius: 12px !important;
+      overflow: hidden !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    .sidebar-right .cart-item-image img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain !important;
+      padding: 4px !important;
+    }
     /* Quantity controls removed from sidebar */
     .sidebar-right .remove-btn {
       padding: 0.5rem !important;
