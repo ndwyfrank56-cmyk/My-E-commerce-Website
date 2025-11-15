@@ -30,7 +30,7 @@ button.is-loading#addToCartBtn > .loading-dot {
   position: sticky;
   top: 0;
   background: rgba(21,25,34,0.98);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
