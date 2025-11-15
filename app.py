@@ -2707,9 +2707,9 @@ def add_to_cart():
             # Validate requested quantity doesn't exceed stock
             final_quantity = min(requested_quantity, actual_stock)
             
-            # Resolve image URL
+            # Resolve image URL - always resolve to ensure proper path
             cart_image = variation_image if variation_image else product['image']
-            if cart_image and not cart_image.startswith('/static/'):
+            if cart_image:
                 cart_image = resolve_image_url(cart_image)
             
             session['cart'][cart_key] = {
