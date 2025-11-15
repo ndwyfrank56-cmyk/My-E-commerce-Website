@@ -2494,6 +2494,8 @@
       if (dropdownVarId) params.set('dropdown_var_id', dropdownVarId);
       if (currentImage) params.set('variation_image', currentImage);
 
+      console.log('ADD TO CART URL:', '/add-to-cart?' + params.toString());
+      console.log('currentImage:', currentImage);
       window.location.href = '/add-to-cart?' + params.toString();
     }
     
