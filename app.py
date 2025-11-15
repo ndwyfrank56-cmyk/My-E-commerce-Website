@@ -848,6 +848,53 @@ def resolve_image_url(image_value):
     except Exception:
         return image_value
 
+def fetch_image_variations(cur, product_id):
+    """Fetch image variations for a product with resolved URLs"""
+    image_variations = []
+    try:
+        cur.execute("""
+            SELECT id, type, name, description, stock, img_url
+            FROM image_variations
+            WHERE prod_id = %s
+            ORDER BY type, name
+        """, (product_id,))
+        for row in cur.fetchall():
+            image_variations.append({
+                'id': row[0],
+                'type': row[1],
+                'name': row[2],
+                'description': row[3],
+                'stock': row[4],
+                'img_url': resolve_image_url(row[5])
+            })
+    except Exception as e:
+        print(f"Error fetching image variations: {e}")
+    return image_variations
+
+def fetch_dropdown_variations(cur, product_id):
+    """Fetch dropdown variations for a product"""
+    dropdown_variations = {}
+    try:
+        cur.execute("""
+            SELECT id, attr_name, attr_value, stock, img_var_id
+            FROM dropdown_variation
+            WHERE prod_id = %s
+            ORDER BY attr_name, attr_value
+        """, (product_id,))
+        for row in cur.fetchall():
+            attr_name = row[1]
+            if attr_name not in dropdown_variations:
+                dropdown_variations[attr_name] = []
+            dropdown_variations[attr_name].append({
+                'id': row[0],
+                'value': row[2],
+                'stock': row[3],
+                'img_var_id': row[4]
+            })
+    except Exception as e:
+        print(f"Error fetching dropdown variations: {e}")
+    return dropdown_variations
+
 def get_product_with_discount(product_data):
     """Get product data with discount calculations"""
     if not product_data:
@@ -4099,48 +4146,9 @@ def product_detail(product_id):
     else:
         related_products = []
     
-    # Fetch variations for this product
-    dropdown_variations = {}
-    image_variations = []
-    try:
-        # Fetch image variations (colors/styles)
-        cur.execute("""
-            SELECT id, type, name, description, stock, img_url
-            FROM image_variations
-            WHERE prod_id = %s
-            ORDER BY type, name
-        """, (product_id,))
-        for row in cur.fetchall():
-            image_variations.append({
-                'id': row[0],
-                'type': row[1],
-                'name': row[2],
-                'description': row[3],
-                'stock': row[4],
-                'img_url': resolve_image_url(row[5])
-            })
-        
-        # Fetch dropdown variations (sizes, etc.) - grouped by attribute name
-        cur.execute("""
-            SELECT id, attr_name, attr_value, stock, img_var_id
-            FROM dropdown_variation
-            WHERE prod_id = %s
-            ORDER BY attr_name, attr_value
-        """, (product_id,))
-        for row in cur.fetchall():
-            attr_name = row[1]
-            if attr_name not in dropdown_variations:
-                dropdown_variations[attr_name] = []
-            dropdown_variations[attr_name].append({
-                'id': row[0],
-                'value': row[2],
-                'stock': row[3],
-                'img_var_id': row[4]
-            })
-    except Exception as e:
-        print(f"Error fetching variations: {e}")
-        dropdown_variations = {}
-        image_variations = []
+    # Fetch variations for this product using standardized helper functions
+    image_variations = fetch_image_variations(cur, product_id)
+    dropdown_variations = fetch_dropdown_variations(cur, product_id)
     
     # Fetch reviews for this product (latest first)
     try:
