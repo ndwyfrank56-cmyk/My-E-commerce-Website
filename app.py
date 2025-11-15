@@ -2702,12 +2702,15 @@ def add_to_cart():
                 actual_stock = img_var[0]
                 # Use name (e.g., "Brown") instead of type (e.g., "Color")
                 variation_display = f"{img_var[1] or ''}"
-                # Use variation_image from frontend if provided, otherwise use database image
+                # Use variation_image from frontend if provided, otherwise fallback to database image
                 if not variation_image and img_var[3]:
                     variation_image = img_var[3]
-                # Always resolve the image URL
-                if variation_image:
-                    variation_image = resolve_image_url(variation_image)
+
+        # Decide final cart image: prefer variation image, otherwise product image
+        cart_image = variation_image if variation_image else product['image']
+        # Ensure image is resolved when coming from the product
+        if cart_image and not variation_image:
+            cart_image = resolve_image_url(cart_image)
         
         if dropdown_var_id:
             cart_key += f"_drop{dropdown_var_id}"
@@ -2735,6 +2738,8 @@ def add_to_cart():
             
             if new_total_qty <= actual_stock:
                 session['cart'][cart_key]['quantity'] = new_total_qty
+                # Always keep image in sync with latest chosen variation
+                session['cart'][cart_key]['image'] = cart_image
                 # Show stock warning if getting close to limit
                 remaining = actual_stock - new_total_qty
                 if remaining <= 0:
@@ -2748,6 +2753,8 @@ def add_to_cart():
                 max_can_add = actual_stock - current_qty
                 if max_can_add > 0:
                     session['cart'][cart_key]['quantity'] = actual_stock
+                    # Also update image when we adjust quantity
+                    session['cart'][cart_key]['image'] = cart_image
                     flash(f'Only {max_can_add} more available in stock. Added {max_can_add} to cart.', 'warning')
                 else:
                     flash(f'Cannot add more - only {actual_stock} available in stock', 'error')
@@ -2756,12 +2763,6 @@ def add_to_cart():
         else:
             # Validate requested quantity doesn't exceed stock
             final_quantity = min(requested_quantity, actual_stock)
-            
-            # Use variation image if available, otherwise use product image
-            cart_image = variation_image if variation_image else product['image']
-            # Ensure image is resolved (variation_image is already resolved, but product['image'] may not be)
-            if cart_image and not variation_image:
-                cart_image = resolve_image_url(cart_image)
             
             session['cart'][cart_key] = {
                 'product_id': product_id,
