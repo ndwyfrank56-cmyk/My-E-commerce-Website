@@ -2649,12 +2649,15 @@ def add_to_cart():
         # Handle variations
         if img_var_id:
             cart_key += f"_img{img_var_id}"
-            cur.execute("SELECT stock, name, type FROM image_variations WHERE id = %s", (img_var_id,))
+            cur.execute("SELECT stock, name, type, img_url FROM image_variations WHERE id = %s", (img_var_id,))
             img_var = cur.fetchone()
             if img_var:
                 actual_stock = img_var[0]
                 # Use name (e.g., "Brown") instead of type (e.g., "Color")
                 variation_display = f"{img_var[1] or ''}"
+                # Capture variation image if not already provided
+                if not variation_image and img_var[3]:
+                    variation_image = img_var[3]
         
         if dropdown_var_id:
             cart_key += f"_drop{dropdown_var_id}"
@@ -2665,7 +2668,7 @@ def add_to_cart():
                 # Build proper variation display
                 dropdown_text = f"{drop_var[1] or 'Size'}: {drop_var[2] or ''}"
                 if variation_display:
-                    variation_display += f", {dropdown_text}"
+                    variation_display += f" {dropdown_text}"
                 else:
                     variation_display = dropdown_text
         
