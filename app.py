@@ -2668,6 +2668,9 @@ def add_to_cart():
         is_buy_now = request.args.get('buy_now') == '1'
         requested_quantity = int(request.args.get('quantity', '1'))
         
+        # Debug logging
+        print(f"ADD-TO-CART: product_id={product_id}, img_var_id={img_var_id}, variation_image={variation_image}")
+        
         if not product_id:
             flash('Product ID not specified', 'error')
             return redirect(url_for('home'))
@@ -2775,6 +2778,9 @@ def add_to_cart():
                 'dropdown_var_id': dropdown_var_id
             }
             
+            # Debug logging
+            print(f"STORED IN CART: cart_key={cart_key}, image={cart_image}")
+            
             # Show appropriate message
             if final_quantity < requested_quantity:
                 flash(f'Only {final_quantity} available in stock. Added {final_quantity} to cart.', 'warning')
@@ -2877,6 +2883,9 @@ def get_cart():
             image_url = item.get('image', '')
             if image_url:
                 image_url = resolve_image_url(image_url)
+            
+            # Debug logging
+            print(f"Cart item {cart_key}: image_url={image_url}, raw={item.get('image', '')}")
             
             cart_items.append({
                 'id': cart_key,
