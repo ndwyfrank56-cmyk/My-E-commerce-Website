@@ -2702,9 +2702,12 @@ def add_to_cart():
                 actual_stock = img_var[0]
                 # Use name (e.g., "Brown") instead of type (e.g., "Color")
                 variation_display = f"{img_var[1] or ''}"
-                # Capture variation image if not already provided
+                # Use variation_image from frontend if provided, otherwise use database image
                 if not variation_image and img_var[3]:
-                    variation_image = resolve_image_url(img_var[3])
+                    variation_image = img_var[3]
+                # Always resolve the image URL
+                if variation_image:
+                    variation_image = resolve_image_url(variation_image)
         
         if dropdown_var_id:
             cart_key += f"_drop{dropdown_var_id}"
