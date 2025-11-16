@@ -2168,6 +2168,25 @@ def cancel_order(order_id):
         flash('Failed to cancel order.', 'error')
     return redirect(url_for('profile') + '#orders')
 
+@app.get('/api/debug/products')
+def debug_products():
+    """Debug endpoint to check if products exist"""
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT COUNT(*) FROM products")
+        count = cur.fetchone()[0]
+        
+        cur.execute("SELECT id, name FROM products LIMIT 5")
+        products = cur.fetchall()
+        
+        cur.close()
+        return jsonify({
+            'total_products': count,
+            'sample_products': [{'id': p[0], 'name': p[1]} for p in products]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.get('/api/search')
 def search_api():
     """Clean search API for live suggestions"""
