@@ -604,75 +604,35 @@
     .wishlist-btn{ position:absolute; bottom:12px; right:12px; width:46px; height:46px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1px solid #2e4d2c; background:#2e4d2c; color:#fff; cursor:pointer; }
     .wishlist-btn i{ color:#fff; font-size:1.2rem; }
     .product-info{ display:flex; flex-direction:column; gap: 1rem; }
-    .product-title{ font-size: 1.6rem; font-weight: 800; letter-spacing:.02em; color: var(--text-primary); }
-    .price-stock{ display:flex; align-items:center; gap: .75rem; }
-    .price-badge{ 
-      display:inline-flex; 
-      flex-direction: column;
-      align-items:flex-start; 
-      padding:.4rem .7rem; 
-      border-radius: 6px; 
-      background: rgba(46,77,44,0.95); 
-      color:#e8f5e4; 
-      border:none; 
-      font-weight:700; 
+    .product-title{ font-size: 2rem; font-weight: 900; letter-spacing:.01em; color: var(--text-primary); line-height: 1.2; margin-bottom: 0.5rem; }
+    .pricing-section {
       position: relative;
+      margin: 1.5rem 0 1rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
     }
-    .price-badge .original-price {
-      font-size: 0.75rem;
+    .price-display {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .current-price {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #10b981;
+      letter-spacing: -0.01em;
+    }
+    .original-price {
+      font-size: 0.9rem;
       text-decoration: line-through;
-      opacity: 0.7;
+      color: rgba(255,255,255,0.4);
       font-weight: 500;
-      color: rgba(255,255,255,0.35);
     }
-    .price-badge .discount-percent {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: #ef4444;
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-    .stock-indicator {
-      display: inline-block;
-      padding: .4rem .65rem;
-      border-radius: 8px;
-      font-size: .8rem;
-      font-weight: 500;
-      letter-spacing: .02em;
-      margin-bottom: 1rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-    }
-    .stock-indicator.low {
-      background: rgba(255, 165, 0, 0.6);
-      color: #fff;
-    }
-    .stock-indicator.out-of-stock {
-      background: rgba(255, 0, 0, 0.6);
-      color: #fff;
-    }
-    .stock-indicator.plenty {
-      background: rgba(0, 128, 0, 0.6);
-      color: #fff;
-    }
-    .actions{ display:flex; gap:.6rem; margin-top:.25rem; }
-    .rating{ display:flex; align-items:center; gap:.5rem; margin-top:.4rem; }
-    .rating .stars{ display:inline-flex; gap:2px; }
-    .rating .stars .fa-star{ color:#f4c430; }
-    .rating .stars .fa-star-half-stroke{ color:#f4c430; }
-    .rating .stars .fa-regular{ color: rgba(255,255,255,0.35); }
-    .variation-box:hover { background: rgba(40,45,55,0.9); border-color: rgba(255,255,255,0.25); }
-    .variation-box.active { 
-      background: rgba(45,50,60,0.95); 
-      border: 2px solid rgba(229, 231, 235, 0.8) !important; /* Smoky white border */
-      color: #fff; 
-      font-weight: 600; 
-      box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.2), 0 4px 12px rgba(0,0,0,0.3); 
-      transform: translateY(-1px);
+    .savings-text {
+      color: #f59e0b;
+      font-weight: 600;
+      margin-top: 0.2rem;
     }
     .variation-box:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
     .variation-box[style*="display: none"] { display: none !important; }
@@ -1536,35 +1496,11 @@
         {% endif %}
       </div>
       <div class="product-info">
-
+        <!-- Product Title - Bold & Large -->
         <h1 class="product-title">{{ product.name }}</h1>
         <div id="variantSubtitle" style="display:none; margin:.15rem 0 .6rem 0; font-size:.9rem; color:var(--text-secondary); font-weight:500;"></div>
-        <div class="price-stock">
-          <span class="price-badge">
-            {% if product.discount and product.discount > 0 %}
-              <span class="original-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
-              <span class="discount-percent">-{{ product.discount|int }}%</span>
-              <span>RWF {{ '{:,.0f}'.format(product.price * (1 - product.discount/100)) }}</span>
-            {% else %}
-              <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
-            {% endif %}
-          </span>
-          <div class="stock-indicator">
-            <i class="fas fa-boxes"></i>
-            <span class="stock-dot {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}"></span>
-            <span>{{ product.stock }} left</span>
-          </div>
-        </div>
-        <div class="description">
-          {% if product.description %}
-            <div class="desc-box">
-              <div id="descContent" class="desc-content">{{ product.description|safe }}</div>
-              <button id="descToggle" class="desc-toggle" type="button">Read more</button>
-            </div>
-          {% else %}
-            <em style="color:var(--text-secondary)">No description available.</em>
-          {% endif %}
-        </div>
+        
+        <!-- Star Rating - Close to Title -->
         <div class="rating" aria-label="Product rating">
           {% if product.rating and product.rating > 0 %}
             <div class="stars">
@@ -1576,6 +1512,40 @@
               {% if half %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}
               {% for _ in range(empty) %}<i class="fa-regular fa-star"></i>{% endfor %}
             </div>
+          {% endif %}
+        </div>
+        
+        <!-- Pricing Block with Better Hierarchy -->
+        <div class="pricing-section">
+          <div class="price-display">
+            {% if product.discount and product.discount > 0 %}
+              <span class="current-price">RWF {{ '{:,.0f}'.format(product.price * (1 - product.discount/100)) }}</span>
+              <span class="original-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
+              <span class="savings-text">You save RWF {{ '{:,.0f}'.format(product.price * product.discount/100) }}</span>
+            {% else %}
+              <span class="current-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
+            {% endif %}
+          </div>
+          {% if product.discount and product.discount > 0 %}
+            <span class="discount-badge">-{{ product.discount|int }}%</span>
+          {% endif %}
+        </div>
+        
+        <!-- Stock Status Pill Badge -->
+        <div class="stock-pill">
+          <i class="fas fa-fire"></i>
+          <span class="stock-text {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}">{{ product.stock }} left in stock</span>
+        </div>
+        
+        <!-- Product Description -->
+        <div class="description">
+          {% if product.description %}
+            <div class="desc-box">
+              <div id="descContent" class="desc-content">{{ product.description|safe }}</div>
+              <button id="descToggle" class="desc-toggle" type="button">Read more</button>
+            </div>
+          {% else %}
+            <em style="color:var(--text-secondary)">No description available.</em>
           {% endif %}
         </div>
 
