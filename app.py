@@ -2700,7 +2700,7 @@ def add_to_cart():
         variation_parts = []
         if img_var_id:
             cart_key += f"_img{img_var_id}"
-            cur.execute("SELECT stock, name, type, img_url FROM image_variations WHERE id = %s", (img_var_id,))
+            cur.execute("SELECT stock, name, type FROM image_variations WHERE id = %s", (img_var_id,))
             img_var = cur.fetchone()
             if img_var:
                 actual_stock = img_var[0]
@@ -2708,20 +2708,6 @@ def add_to_cart():
                 img_type = (img_var[2] or 'color').lower()  # type field (e.g., "color", "style")
                 img_name = img_var[1] or ''  # name field (e.g., "Brown")
                 variation_parts.append(f"{img_type}:{img_name}")
-                # Use variation_image from frontend if provided, otherwise fallback to database image
-                db_img = img_var[3]
-                if not variation_image and db_img:
-                    variation_image = db_img
-                    print(f"DEBUG: Using DB image for variation: {db_img}")
-                else:
-                    print(f"DEBUG: Using frontend image: {variation_image}")
-
-        # Decide final cart image: prefer variation image, otherwise product image
-        cart_image = variation_image if variation_image else product['image']
-        # Always ensure image is properly resolved
-        if cart_image:
-            cart_image = resolve_image_url(cart_image)
-            print(f"DEBUG: Final cart_image after resolve: {cart_image}")
         
         if dropdown_var_id:
             cart_key += f"_drop{dropdown_var_id}"
@@ -2750,8 +2736,6 @@ def add_to_cart():
             
             if new_total_qty <= actual_stock:
                 session['cart'][cart_key]['quantity'] = new_total_qty
-                # Always keep image in sync with latest chosen variation
-                session['cart'][cart_key]['image'] = cart_image
                 # Show stock warning if getting close to limit
                 remaining = actual_stock - new_total_qty
                 if remaining <= 0:
@@ -2765,8 +2749,6 @@ def add_to_cart():
                 max_can_add = actual_stock - current_qty
                 if max_can_add > 0:
                     session['cart'][cart_key]['quantity'] = actual_stock
-                    # Also update image when we adjust quantity
-                    session['cart'][cart_key]['image'] = cart_image
                     flash(f'Only {max_can_add} more available in stock. Added {max_can_add} to cart.', 'warning')
                 else:
                     flash(f'Cannot add more - only {actual_stock} available in stock', 'error')
@@ -2780,7 +2762,6 @@ def add_to_cart():
                 'product_id': product_id,
                 'name': product['name'],
                 'price': product['price'],
-                'image': cart_image,
                 'quantity': final_quantity,
                 'variations': variation_display,
                 'img_var_id': img_var_id,
@@ -2788,11 +2769,7 @@ def add_to_cart():
             }
             
             # Debug logging
-            print(f"STORED IN CART: cart_key={cart_key}")
-            print(f"  - image={cart_image}")
-            print(f"  - variation_image={variation_image}")
-            print(f"  - product_image={product['image']}")
-            print(f"  - variations={variation_display}")
+            print(f"STORED IN CART: cart_key={cart_key}, variations={variation_display}, img_var_id={img_var_id}")
             
             # Show appropriate message
             if final_quantity < requested_quantity:
@@ -2877,28 +2854,40 @@ def addtocart():
 
 @app.route('/api/cart')
 def get_cart():
-    """Simple cart API using Flask sessions"""
+    """Simple cart API using Flask sessions - fetch variation images from database"""
     try:
         # Get cart from session
         cart_data = session.get('cart', {})
         cart_items = []
+        cur = mysql.connection.cursor()
         
         for cart_key, item in cart_data.items():
             # Extract product ID from cart key
             product_id = item.get('product_id', cart_key.split('_')[0])
+            img_var_id = item.get('img_var_id', '')
             
             # Format variations
             variations = item.get('variations', '')
             if variations:
                 variations = fmtvars(variations)
             
-            # Ensure image URL is proper
-            image_url = item.get('image', '')
-            if image_url:
-                image_url = resolve_image_url(image_url)
+            # Fetch image from database based on variation
+            image_url = ''
+            if img_var_id:
+                # Fetch variation image from database
+                cur.execute("SELECT img_url FROM image_variations WHERE id = %s", (img_var_id,))
+                result = cur.fetchone()
+                if result and result[0]:
+                    image_url = resolve_image_url(result[0])
             
-            # Debug logging
-            print(f"Cart item {cart_key}: image_url={image_url}, raw={item.get('image', '')}")
+            # Fallback to product image if no variation image
+            if not image_url:
+                cur.execute("SELECT image FROM products WHERE id = %s", (product_id,))
+                result = cur.fetchone()
+                if result and result[0]:
+                    image_url = resolve_image_url(result[0])
+            
+            print(f"Cart item {cart_key}: img_var_id={img_var_id}, image_url={image_url}")
             
             cart_items.append({
                 'id': cart_key,
@@ -2910,9 +2899,12 @@ def get_cart():
                 'variations': variations
             })
         
+        cur.close()
         return jsonify({'items': cart_items})
     except Exception as e:
         print(f"Cart API error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'items': []})
 
 @app.route('/cart-info')
