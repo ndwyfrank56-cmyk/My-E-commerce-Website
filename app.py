@@ -2175,18 +2175,21 @@ def search_api():
         query = request.args.get('q', '').strip()
         limit = min(int(request.args.get('limit', 8)), 20)
         
-        if len(query) < 2:
+        print(f"Search query: '{query}', limit: {limit}")
+        
+        if len(query) < 1:
             return jsonify({'results': []})
         
         cur = mysql.connection.cursor()
         search_term = f"%{query}%"
         
+        # Try case-insensitive search
         cur.execute(
             """
             SELECT p.id, p.name, p.price, p.image, COALESCE(c.name, 'Uncategorized') as category
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.id
-            WHERE p.name LIKE %s OR c.name LIKE %s
+            WHERE LOWER(p.name) LIKE LOWER(%s) OR LOWER(c.name) LIKE LOWER(%s)
             ORDER BY p.name ASC
             LIMIT %s
             """,
@@ -2194,7 +2197,10 @@ def search_api():
         )
         
         results = []
-        for row in cur.fetchall():
+        rows = cur.fetchall()
+        print(f"Search returned {len(rows)} results")
+        
+        for row in rows:
             product_url = url_for('product_detail', product_id=row[0])
             print(f"Generated URL for product {row[0]}: {product_url}")
             results.append({
@@ -2207,10 +2213,13 @@ def search_api():
             })
         
         cur.close()
+        print(f"Returning {len(results)} results")
         return jsonify({'results': results})
         
     except Exception as e:
         print(f"Search API error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'results': [], 'error': 'Search failed'}), 500
 
 @app.get('/api/product/<int:product_id>')
