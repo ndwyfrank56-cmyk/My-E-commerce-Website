@@ -1731,6 +1731,16 @@
                 <a href="/product/{{ item.product_id }}" class="cart-item-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
                   <h4 style="margin: 0;">{{ item.name }}</h4>
                 </a>
+                {% if item.img_var_name %}
+                <div class="cart-item-variations" style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 0.25rem; font-weight: 500;">
+                  {{ item.img_var_name }}
+                </div>
+                {% endif %}
+                {% if item.img_var_description %}
+                <div class="cart-item-variations" style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 0.1rem; font-weight: 400;">
+                  {{ item.img_var_description }}
+                </div>
+                {% endif %}
                 {% if item.variations %}
                 <div class="cart-item-variations" style="font-size: 0.72rem; color: var(--text-light); margin-top: 0.25rem; font-weight: 500;">
                   {{ item.variations|fmtvars }}
@@ -1852,6 +1862,12 @@
                 <a href="/product/{{ item.product_id }}" class="item-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">
                   <h4 style="margin: 0;">{{ item.name }}</h4>
                 </a>
+                {% if item.img_var_name %}
+                  <p class="item-variant" style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: rgba(255,255,255,0.7);">{{ item.img_var_name }}</p>
+                {% endif %}
+                {% if item.img_var_description %}
+                  <p class="item-variant-desc" style="margin: 0.15rem 0 0 0; font-size: 0.75rem; color: rgba(255,255,255,0.5);">{{ item.img_var_description }}</p>
+                {% endif %}
                 {% if item.variations %}
                   <p class="item-variant">{{ item.variations }}</p>
                 {% endif %}
