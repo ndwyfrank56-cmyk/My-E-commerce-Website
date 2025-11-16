@@ -2697,14 +2697,17 @@ def add_to_cart():
         variation_display = ""
         
         # Handle variations
+        variation_parts = []
         if img_var_id:
             cart_key += f"_img{img_var_id}"
             cur.execute("SELECT stock, name, type, img_url FROM image_variations WHERE id = %s", (img_var_id,))
             img_var = cur.fetchone()
             if img_var:
                 actual_stock = img_var[0]
-                # Use name (e.g., "Brown") instead of type (e.g., "Color")
-                variation_display = f"{img_var[1] or ''}"
+                # Store variation in parseable format: "color:Brown"
+                img_type = (img_var[2] or 'color').lower()  # type field (e.g., "color", "style")
+                img_name = img_var[1] or ''  # name field (e.g., "Brown")
+                variation_parts.append(f"{img_type}:{img_name}")
                 # Use variation_image from frontend if provided, otherwise fallback to database image
                 if not variation_image and img_var[3]:
                     variation_image = img_var[3]
@@ -2721,12 +2724,13 @@ def add_to_cart():
             drop_var = cur.fetchone()
             if drop_var:
                 actual_stock = drop_var[0]
-                # Build proper variation display
-                dropdown_text = f"{drop_var[1] or 'Size'}: {drop_var[2] or ''}"
-                if variation_display:
-                    variation_display += f" {dropdown_text}"
-                else:
-                    variation_display = dropdown_text
+                # Store variation in parseable format: "size:41"
+                attr_name = (drop_var[1] or 'size').lower()  # attr_name field (e.g., "size")
+                attr_value = drop_var[2] or ''  # attr_value field (e.g., "41")
+                variation_parts.append(f"{attr_name}:{attr_value}")
+        
+        # Join all variations with comma and space
+        variation_display = ", ".join(variation_parts)
         
         # Check stock
         if actual_stock <= 0:

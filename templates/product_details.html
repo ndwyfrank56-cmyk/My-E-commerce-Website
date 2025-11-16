@@ -123,22 +123,40 @@
       padding: 14px 20px 14px 50px;
       border: none;
       border-radius: 50px;
-      background: rgba(24,24,24,0.8);
-      color: #ffffff;
+      background: rgba(24,24,24,0.6);
+      color: var(--text-primary);
       font-size: 0.95rem;
-      font-weight: 500;
-      transition: none;
+      outline: none;
       box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+      transition: all 0.25s linear;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
     
     .search-input::placeholder {
       color: #888888;
+      transition: opacity 0.25s linear;
     }
 
     .search-input:focus {
       border: none;
       box-shadow: 0 6px 15px rgba(0,0,0,0.4);
       outline: none;
+      animation: searchFocus 0.5s linear forwards;
+    }
+
+    .search-input:focus::placeholder {
+      opacity: 0;
+    }
+
+    @keyframes searchFocus {
+      0% {
+        background: rgba(24,24,24,0.6);
+      }
+      100% {
+        background: rgba(24,24,24,0.8);
+      }
     }
 
     .search-icon {
@@ -2601,7 +2619,12 @@
         data.items.forEach(item => {
           const subtotal = item.price * item.quantity;
           total += subtotal;
-          const variationsHtml = item.variations ? `<div class="cart-item-variations" style="font-size: 0.72rem; color: var(--text-light); margin: 0.25rem 0 0.4rem 0; font-weight: 500;">${item.variations}</div>` : '';
+          // Format variations - display as "attr: value, attr2: value2"
+          let variationsHtml = '';
+          if (item.variations && item.variations.trim()) {
+            // Format: "color:Brown, size:41" -> display as is
+            variationsHtml = `<div class="cart-item-variations" style="font-size: 0.72rem; color: var(--text-light); margin: 0.25rem 0 0.4rem 0; font-weight: 500; line-height: 1.4;">${item.variations}</div>`;
+          }
           html += `
             <div class="cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '${item.product_id}')">
               <a href="/product/${item.product_id}" class="cart-item-image" style="display: block; text-decoration: none;"><img src="${item.image}" alt="${item.name}" onerror="this.src='/static/images/placeholder.png'"></a>
