@@ -172,6 +172,12 @@
       display: inline-flex;
       align-items: center;
       gap: .2rem;
+      border: 1px solid #9ca3af;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
     }
 
     .nav-center {
@@ -3171,7 +3177,15 @@
             <i class="fas fa-bars"></i>
           </button>
         </div>
-        <div class="nav-center"></div>
+        <div class="nav-center">
+          <div id="wrap">
+            <form action="" autocomplete="on">
+              <input id="search" name="search" type="text" placeholder="What're we looking for ?">
+              <input id="search_submit" value="Search" type="submit">
+            </form>
+            <div id="searchResults"></div>
+          </div>
+        </div>
         <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist">
             <i class="fas fa-heart"></i>
@@ -3980,6 +3994,59 @@
     // Update count on page load
     document.addEventListener('DOMContentLoaded', function() {
       updateWishlistCount();
+    });
+  </script>
+
+  <!-- Search functionality -->
+  <script>
+    const searchInput = document.getElementById('search');
+    const searchResults = document.getElementById('searchResults');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      const query = this.value.trim();
+
+      if (query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+      }
+
+      searchTimeout = setTimeout(() => {
+        fetch(`/api/search?q=${encodeURIComponent(query)}&limit=8`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.results && data.results.length > 0) {
+              let html = '';
+              data.results.forEach(item => {
+                html += `
+                  <div class="search-result-item" onclick="window.location.href='${item.url}'">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="search-result-info">
+                      <div class="search-result-name">${item.name}</div>
+                      <div class="search-result-price">RWF ${Math.round(item.price).toLocaleString()}</div>
+                    </div>
+                  </div>
+                `;
+              });
+              searchResults.innerHTML = html;
+              searchResults.style.display = 'block';
+            } else {
+              searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: #999;">No products found</div>';
+              searchResults.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            console.error('Search error:', err);
+            searchResults.style.display = 'none';
+          });
+      }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#wrap')) {
+        searchResults.style.display = 'none';
+      }
     });
   </script>
 

@@ -1251,7 +1251,15 @@
             <i class="fas fa-bars"></i>
           </button>
         </div>
-        <div class="nav-center"></div>
+        <div class="nav-center">
+          <div id="wrap">
+            <form action="" autocomplete="on">
+              <input id="search" name="search" type="text" placeholder="What're we looking for ?">
+              <input id="search_submit" value="Search" type="submit">
+            </form>
+            <div id="searchResults"></div>
+          </div>
+        </div>
         <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist" style="position:relative">
             <i class="fas fa-heart"></i>
@@ -2798,6 +2806,57 @@
       updateWishlistCount();
       
       // Auto mini-cart popup removed - using flash messages instead
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('search');
+    const searchResults = document.getElementById('searchResults');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      const query = this.value.trim();
+
+      if (query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+      }
+
+      searchTimeout = setTimeout(() => {
+        fetch(`/api/search?q=${encodeURIComponent(query)}&limit=8`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.results && data.results.length > 0) {
+              let html = '';
+              data.results.forEach(item => {
+                html += `
+                  <div class="search-result-item" onclick="window.location.href='${item.url}'">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="search-result-info">
+                      <div class="search-result-name">${item.name}</div>
+                      <div class="search-result-price">RWF ${Math.round(item.price).toLocaleString()}</div>
+                    </div>
+                  </div>
+                `;
+              });
+              searchResults.innerHTML = html;
+              searchResults.style.display = 'block';
+            } else {
+              searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: #999;">No products found</div>';
+              searchResults.style.display = 'block';
+            }
+          })
+          .catch(err => {
+            console.error('Search error:', err);
+            searchResults.style.display = 'none';
+          });
+      }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#wrap')) {
+        searchResults.style.display = 'none';
+      }
     });
   </script>
 
