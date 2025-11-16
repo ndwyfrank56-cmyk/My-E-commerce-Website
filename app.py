@@ -841,12 +841,16 @@ def build_cart_items_from_session(cur, session_cart):
                 if qty > 0:
                     # Fetch image from database based on variation
                     image_url = product['image']
+                    img_var_name = ''
+                    img_var_description = ''
                     if img_var_id and str(img_var_id).strip():
                         try:
-                            cur.execute("SELECT img_url FROM image_variations WHERE id = %s", (img_var_id,))
+                            cur.execute("SELECT img_url, name, description FROM image_variations WHERE id = %s", (img_var_id,))
                             result = cur.fetchone()
                             if result and result[0]:
                                 image_url = resolve_image_url(result[0])
+                                img_var_name = result[1] if len(result) > 1 else ''
+                                img_var_description = result[2] if len(result) > 2 else ''
                         except Exception:
                             pass
                     
@@ -859,7 +863,9 @@ def build_cart_items_from_session(cur, session_cart):
                         'quantity': qty,
                         'stock': product['stock'],
                         'variations': item.get('variations', ''),
-                        'is_new': False
+                        'is_new': False,
+                        'img_var_name': img_var_name,
+                        'img_var_description': img_var_description
                     })
     return cart_items
 
@@ -2356,30 +2362,8 @@ def home():
                 'order': 99
             }
         
-        cart_items = []
-        for cart_key, item in session.get('cart', {}).items():
-            # Extract actual product_id from cart item (for items with variations)
-            actual_product_id = item.get('product_id', cart_key.split('_')[0] if '_' in cart_key else cart_key)
-            cur.execute("SELECT * FROM products WHERE id = %s", (actual_product_id,))
-            product_data = cur.fetchone()
-            if product_data:
-                product = get_product_with_discount(product_data)
-                if product:
-                    item['quantity'] = min(item['quantity'], product['stock'])
-                    if item['quantity'] > 0:
-                        cart_items.append({
-                            'id': cart_key,  # Use cart_key (includes variation hash)
-                            'product_id': actual_product_id,  # Include actual product_id
-                            'name': product['name'],
-                            'price': product['price'],  # This is now the discounted price
-                            'original_price': product['original_price'],
-                            'discount': product['discount'],
-                            'image': item.get('image', product['image']),  # Use stored image (variation image) or fallback
-                            'quantity': item['quantity'],
-                            'stock': product['stock'],
-                            'variations': item.get('variations', ''),  # Include variations
-                            'is_new': False
-                        })
+        # Get cart items using standardized function
+        cart_items = build_cart_items_from_session(cur, session.get('cart', {}))
         # Build a safe 'user' object for the template to avoid UndefinedError
         user = None
         try:
@@ -2536,34 +2520,9 @@ def viewall():
         cur.execute("SELECT * FROM categories")
         categories_data = cur.fetchall()
         categories = [{'id': cat[0], 'name': cat[1]} for cat in categories_data]
-        cart_items = []
-        for cart_key, item in session.get('cart', {}).items():
-            # Extract actual product_id from cart item (for items with variations)
-            actual_product_id = item.get('product_id', cart_key.split('_')[0] if '_' in cart_key else cart_key)
-            cur.execute("SELECT * FROM products WHERE id = %s", (actual_product_id,))
-            product_data = cur.fetchone()
-            if product_data:
-                product = {
-                    'id': product_data[0],
-                    'name': product_data[1],
-                    'price': float(product_data[2]),
-                    'image': resolve_image_url(product_data[3]),
-                    'category_id': product_data[4],
-                    'stock': product_data[5] if len(product_data) > 5 else 0
-                }
-                item['quantity'] = min(item['quantity'], product['stock'])
-                if item['quantity'] > 0:
-                    cart_items.append({
-                        'id': cart_key,  # Use cart_key (includes variation hash)
-                        'product_id': actual_product_id,  # Include actual product_id
-                        'name': item['name'],
-                        'price': item['price'],
-                        'image': item.get('image', product['image']),  # Use stored image (variation image) or fallback to product image
-                        'quantity': item['quantity'],
-                        'stock': product['stock'],
-                        'variations': item.get('variations', ''),  # Include variations
-                        'is_new': False
-                    })
+        
+        # Get cart items using standardized function
+        cart_items = build_cart_items_from_session(cur, session.get('cart', {}))
         
         # Get available sizes for this category
         if category_id == 'uncategorized':
@@ -2764,35 +2723,16 @@ def addtocart():
         categories_data = cur.fetchall()
         categories = [{'id': cat[0], 'name': cat[1]} for cat in categories_data]
         
-        cart_items = []
+        # Get cart from session using standardized function
+        current_cart = session.get('cart', {})
+        cart_items = build_cart_items_from_session(cur, current_cart)
+        
+        # Calculate total
         total = 0
         newly_added_product_id = request.args.get('product_id')
-        
-        # Get cart from session
-        current_cart = session.get('cart', {})
-        
-        for cart_key, item in current_cart.items():
-            actual_product_id = item.get('product_id', cart_key.split('_')[0])
-            cur.execute("SELECT * FROM products WHERE id = %s", (actual_product_id,))
-            product_data = cur.fetchone()
-            
-            if product_data:
-                product = get_product_with_discount(product_data)
-                if product:
-                    cart_items.append({
-                        'id': cart_key,
-                        'product_id': actual_product_id,
-                        'name': product['name'],
-                        'price': product['price'],
-                        'original_price': product['original_price'],
-                        'discount': product['discount'],
-                        'image': item.get('image', product['image']),
-                        'quantity': item['quantity'],
-                        'stock': product['stock'],
-                        'variations': item.get('variations', ''),
-                        'is_new': actual_product_id == newly_added_product_id
-                    })
-                    total += product['price'] * item['quantity']
+        for item in cart_items:
+            item['is_new'] = str(item['product_id']) == newly_added_product_id
+            total += item['price'] * item['quantity']
         
         cur.close()
         return render_template('addtocart.html', cart_items=cart_items, categories=categories, total=total)
@@ -3268,34 +3208,23 @@ def checkout():
                 'city': user_row[5]
             }
     
-    cart_items = []
+    # Get cart items using standardized function
+    cart_items = build_cart_items_from_session(cur, session.get('cart', {}))
+    
+    # Calculate total and add discount info
     total = 0.0
-    for cart_key, item in session.get('cart', {}).items():
-        # Extract actual product_id from cart item
-        actual_product_id = item.get('product_id', cart_key.split('_')[0] if '_' in cart_key else cart_key)
+    for item in cart_items:
+        # Fetch discount info for each item
+        actual_product_id = item['product_id']
         cur.execute("SELECT * FROM products WHERE id = %s", (actual_product_id,))
         product_data = cur.fetchone()
         if product_data:
             product = get_product_with_discount(product_data)
             if product:
-                qty = min(item['quantity'], product['stock'])
-                if qty > 0:
-                    variations_value = item.get('variations', '')
-                    
-                    cart_items.append({
-                        'id': cart_key,  # Use cart_key which includes variations
-                        'product_id': actual_product_id,
-                        'name': product['name'],
-                        'price': product['price'],  # This is now the discounted price
-                        'original_price': product['original_price'],
-                        'discount': product['discount'],
-                        'image': item.get('image', product['image']),  # Use stored image (variation image) or fallback
-                        'quantity': qty,
-                        'stock': product['stock'],
-                        'variations': variations_value,
-                        'is_new': False
-                    })
-                    total += product['price'] * qty  # Use discounted price for total
+                item['original_price'] = product['original_price']
+                item['discount'] = product['discount']
+                item['is_new'] = False
+                total += item['price'] * item['quantity']
     delivery_fee = 1500
     tax_rate = 0.18
     tax_amount = total * tax_rate

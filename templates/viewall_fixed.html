@@ -4352,6 +4352,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="/product/{{ item.product_id }}" class="item-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">
                   <h4 style="margin: 0;">{{ item.name }}</h4>
                 </a>
+                {% if item.img_var_name %}
+                  <p class="item-variant" style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: rgba(255,255,255,0.7);">{{ item.img_var_name }}</p>
+                {% endif %}
+                {% if item.img_var_description %}
+                  <p class="item-variant-desc" style="margin: 0.15rem 0 0 0; font-size: 0.75rem; color: rgba(255,255,255,0.5);">{{ item.img_var_description }}</p>
+                {% endif %}
                 {% if item.variations %}
                   <p class="item-variant">{{ item.variations|fmtvars }}</p>
                 {% endif %}
