@@ -26,23 +26,26 @@
       --transition: all .25s ease;
     }
     /* Image variation thumbnails: no borders by default; only selected shows border */
-    .image-variations-container .image-variation-item div,
+    .image-variations-container { margin-top: 1.5rem; }
+    .image-variations-strip { display: flex; gap: 0.75rem; overflow-x: auto; padding: 0.5rem 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .image-variation-item { min-width: 90px; cursor: pointer; }
+    .image-variation-item div,
     .image-variations-container .image-variation-item > div,
     .image-variations-strip .image-variation-item div,
     .image-variations-strip .image-variation-item > div{
-      border: none !important;
-      border-color: transparent !important;
+      border: 2px solid rgba(255,255,255,0.12) !important;
+      border-radius: 8px !important;
+      border-color: rgba(255,255,255,0.12) !important;
       box-shadow: none !important;
       outline: none !important;
       -webkit-box-shadow: none !important;
+      transition: all 0.2s ease !important;
     }
-    .image-variations-container .image-variation-item:hover div,
-    .image-variations-container .image-variation-item:focus div,
-    .image-variations-container .image-variation-item:active div,
-    .image-variations-strip .image-variation-item:hover div,
-    .image-variations-strip .image-variation-item:focus div{
-      border: none !important;
-      border-color: transparent !important;
+    .image-variation-item.active div { border-color: rgba(255,255,255,0.5) !important; }
+    .image-variation-item:hover div,
+    .image-variation-item:focus div,
+    .image-variation-item:active div{
+      border-color: rgba(255,255,255,0.3) !important;
       box-shadow: none !important;
       outline: none !important;
       -webkit-box-shadow: none !important;
@@ -52,7 +55,6 @@
     .image-variation-item *:focus-visible{
       outline: none !important;
       box-shadow: none !important;
-      border-color: transparent !important;
     }
     * { 
       margin:0; 
@@ -515,9 +517,9 @@
     
     
     main{ padding: 160px 2rem 3rem; max-width:1200px; margin:0 auto; }
-    .product-layout{ display:grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items:start; }
-    .product-media{ background: rgba(21,25,34,0.5); border:1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1.5rem; display:flex; align-items:center; justify-content:center; min-height: 360px; box-shadow: none; position: relative; overflow: hidden; cursor: zoom-in; }
-    .product-media img{ max-width:100%; height:auto; object-fit:contain; border-radius: 4px; transition: opacity 0.35s ease-out, transform 0.35s ease-out; }
+    .product-layout{ display:grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items:start; }
+    .product-media{ background: rgba(21,25,34,0.5); border:1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 2rem; display:flex; align-items:center; justify-content:center; min-height: 420px; box-shadow: none; position: relative; overflow: hidden; cursor: zoom-in; }
+    .product-media img{ max-width:100%; height:auto; object-fit:contain; border-radius: 8px; transition: opacity 0.35s ease-out, transform 0.35s ease-out; }
     
     /* Image Zoom Styles */
     
@@ -604,68 +606,77 @@
     .wishlist-btn{ position:absolute; bottom:12px; right:12px; width:46px; height:46px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1px solid #2e4d2c; background:#2e4d2c; color:#fff; cursor:pointer; }
     .wishlist-btn i{ color:#fff; font-size:1.2rem; }
     .product-info{ display:flex; flex-direction:column; gap: 1rem; }
-    .product-title{ font-size: 1.6rem; font-weight: 800; letter-spacing:.02em; color: var(--text-primary); }
-    .price-stock{ display:flex; align-items:center; gap: .75rem; }
+    .product-title{ font-size: 1.8rem; font-weight: 800; letter-spacing:.01em; color: var(--text-primary); margin-bottom: 1rem; line-height: 1.2; }
+    .product-title + .rating { margin-bottom: 2rem; }
+    .rating { margin-top: 0 !important; margin-bottom: 0; }
+    .price-stock{ display:flex; align-items:center; gap: 1.2rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
     .price-badge{ 
       display:inline-flex; 
       flex-direction: column;
       align-items:flex-start; 
-      padding:.4rem .7rem; 
-      border-radius: 6px; 
-      background: rgba(46,77,44,0.95); 
-      color:#e8f5e4; 
+      padding: 0; 
+      border-radius: 0; 
+      background: transparent; 
+      color: var(--text-primary); 
       border:none; 
-      font-weight:700; 
+      font-weight: 700; 
       position: relative;
     }
+    .price-badge span:first-child { font-size: 1.4rem; font-weight: 900; color: var(--text-primary); }
     .price-badge .original-price {
-      font-size: 0.75rem;
+      font-size: 0.9rem;
       text-decoration: line-through;
-      opacity: 0.7;
+      opacity: 0.6;
       font-weight: 500;
+      color: var(--text-secondary);
+      margin-right: 0.75rem;
     }
     .price-badge .discount-percent {
       position: absolute;
-      top: -8px;
-      right: -8px;
+      top: -12px;
+      right: 0;
       background: #ef4444;
       color: white;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 800;
-      padding: 2px 6px;
+      padding: 3px 8px;
       border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
     .stock-indicator {
       display: inline-flex;
       align-items: center;
-      gap: .45rem;
-      padding: .4rem .65rem;
-      border-radius: 8px;
-      background: rgba(17,22,31,0.6);
+      gap: .5rem;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
       border: none;
-      color: rgba(255,255,255,0.92);
-      font-size: .8rem;
+      color: rgba(255,255,255,0.85);
+      font-size: .9rem;
       font-weight: 500;
-      letter-spacing: .02em;
-      margin-bottom: 1rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      letter-spacing: 0;
+      margin-bottom: 0;
+      box-shadow: none;
     }
+    .stock-indicator .stock-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+    .stock-indicator .stock-dot.low { background: #f59e0b; }
+    .stock-indicator .stock-dot.out { background: #ef4444; }
     .stock-indicator i { font-size: .9rem; opacity: .9; }
-    .actions{ display:flex; gap:.6rem; margin-top:.25rem; }
-    .rating{ display:flex; align-items:center; gap:.5rem; margin-top:.4rem; }
-    .rating .stars{ display:inline-flex; gap:2px; }
-    .rating .stars .fa-star{ color:#f4c430; }
-    .rating .stars .fa-star-half-stroke{ color:#f4c430; }
-    .rating .stars .fa-regular{ color: rgba(255,255,255,0.35); }
-    .variation-box:hover { background: rgba(40,45,55,0.9); border-color: rgba(255,255,255,0.25); }
+    .actions{ display:flex; gap:.8rem; margin-top: 2rem; }
+    .rating { display:flex; align-items:center; gap: 0.75rem; }
+    .rating .stars{ display:inline-flex; gap: 3px; }
+    .rating .stars .fa-star{ color: #fbbf24; font-size: 1rem; }
+    .rating .stars .fa-star-half-stroke{ color: #fbbf24; font-size: 1rem; }
+    .rating .stars .fa-regular{ color: rgba(255,255,255,0.25); font-size: 1rem; }
+    .variation-box { transition: all 0.15s ease; }
+    .variation-box:hover { background: rgba(40,45,55,0.95); border-color: rgba(255,255,255,0.3); }
     .variation-box.active { 
-      background: rgba(45,50,60,0.95); 
-      border: 2px solid rgba(229, 231, 235, 0.8) !important; /* Smoky white border */
+      background: rgba(60,70,85,0.95); 
+      border: 2px solid rgba(229, 231, 235, 0.7) !important;
       color: #fff; 
       font-weight: 600; 
-      box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.2), 0 4px 12px rgba(0,0,0,0.3); 
-      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.15), 0 4px 12px rgba(0,0,0,0.3); 
+      transform: none;
     }
     .variation-box:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
     .variation-box[style*="display: none"] { display: none !important; }
@@ -690,12 +701,14 @@
       letter-spacing: 0.3px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    .add-to-cart-btn{ flex:1; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.85); color:#111; font-weight:900; text-decoration:none; text-align:center; box-shadow: 0 8px 18px rgba(0,0,0,0.22); cursor: pointer; }
-    .buy-now-btn{ padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.8); font-weight:500; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+    .add-to-cart-btn{ flex:1; padding: 1rem 1.5rem; border-radius: 10px; border: none; background: rgba(255,255,255,0.9); color: #111; font-weight: 700; font-size: 0.95rem; text-decoration:none; text-align:center; box-shadow: 0 8px 20px rgba(0,0,0,0.25); cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.3px; }
+    .add-to-cart-btn:hover { background: rgba(255,255,255,1); box-shadow: 0 10px 28px rgba(0,0,0,0.3); }
+    .buy-now-btn{ padding: 1rem 1.5rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255,255,255,0.08); color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 0.95rem; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.6rem; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.3px; }
+    .buy-now-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255, 255, 255, 0.4); }
     
-    .description{ margin-top: .5rem; padding: 0; background: transparent; border: none; border-radius: 0; color: var(--text-secondary); }
+    .description{ margin-bottom: 2rem; padding: 1.5rem 0; background: transparent; border: none; border-radius: 0; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
     .desc-box{ position: relative; }
-    .desc-content{ max-height: 6.5em; overflow: hidden; line-height: 1.6; }
+    .desc-content{ max-height: 6.5em; overflow: hidden; line-height: 1.7; font-size: 0.95rem; }
     .desc-content.expanded{ max-height: none; }
     .desc-toggle{ margin-top: .5rem; padding: .6rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(21,25,34,0.6); color: var(--text-primary); cursor: pointer; }
     .related{ margin-top: 2.5rem; }
@@ -1147,465 +1160,12 @@
       .site-footer .footer-bottom-links{ justify-content: center !important; }
       .site-footer .footer-socials{ justify-content: center !important; }
     }
-
-    /* Tablet optimizations */
-    @media (max-width: 768px) {
-      .navbar-container { padding: 0.65rem 1.25rem; }
-      .logo { font-size: 1.5rem; }
-      .nav-btn { padding: 0.5rem; font-size: 1rem; }
-      .product-layout { grid-template-columns: 1fr; gap: 1.5rem; }
-      main { padding: 130px 1.25rem 2rem; }
-    }
-
-    /* Phone optimizations */
-    @media (max-width: 580px) {
-      .navbar-container { padding: 0.6rem 1rem; }
-      .logo { font-size: 1.3rem; }
-      .nav-btn { padding: 0.4rem; font-size: 1rem; }
-      .nav-btn.profile { width: 36px; height: 36px; }
-      .cart-badge, .wishlist-badge { width: 20px; height: 20px; font-size: 0.7rem; }
-      
-      main { padding: 120px 1rem 2rem; }
-      
-      .product-layout { gap: 1.25rem; }
-      
-      /* Product Media */
-      .product-media { 
-        min-height: 280px; 
-        padding: 1.25rem; 
-        margin-bottom: 1rem;
-      }
-      .product-media img { max-height: 260px; }
-      .wishlist-btn { bottom: 8px; right: 8px; width: 44px; height: 44px; }
-      
-      /* Image Variations Strip - Better Touch */
-      .image-variations-container { 
-        margin-top: 0.5rem !important; 
-      }
-      .image-variations-strip { 
-        gap: 0.5rem !important; 
-        padding: 0.35rem 0.1rem 0.35rem !important; 
-      }
-      .image-variation-item { 
-        min-width: 72px !important; 
-      }
-      .image-variation-item > div { 
-        width: 72px !important; 
-        height: 72px !important; 
-      }
-      
-      /* Product Info */
-      .product-title { font-size: 1.35rem; line-height: 1.3; margin-bottom: 0.5rem; }
-      
-      .price-stock { 
-        flex-direction: column; 
-        align-items: flex-start; 
-        gap: 0.65rem; 
-        margin-bottom: 0.75rem;
-      }
-      .price-badge { 
-        padding: 0.5rem 0.75rem; 
-        font-size: 1rem;
-      }
-      .price-badge .original-price { font-size: 0.8rem; }
-      .price-badge .discount-percent { font-size: 0.75rem; }
-      
-      .stock-indicator { 
-        padding: 0.45rem 0.7rem; 
-        font-size: 0.85rem;
-        margin-bottom: 0;
-      }
-      
-      /* Description */
-      .description { margin-top: 0.75rem; margin-bottom: 0.75rem; }
-      .desc-content { font-size: 0.95rem; line-height: 1.5; }
-      .desc-toggle { 
-        padding: 0.65rem 1rem; 
-        font-size: 0.9rem;
-        margin-top: 0.6rem;
-      }
-      
-      /* Rating */
-      .rating { 
-        gap: 0.4rem; 
-        margin-top: 0.6rem;
-        margin-bottom: 0.75rem;
-      }
-      .rating .stars { gap: 3px; font-size: 1rem; }
-      .rating .value { font-size: 0.9rem; }
-      
-      /* Box-style Variations */
-      .dropdown-variations-container { 
-        margin: 0.75rem 0 !important; 
-        gap: 0.85rem !important;
-      }
-      .variation-group label { 
-        font-size: 0.75rem !important; 
-        margin-bottom: 0.4rem !important;
-      }
-      .variation-boxes { 
-        gap: 0.45rem !important;
-      }
-      .variation-box { 
-        padding: 0.65rem 0.9rem !important; 
-        font-size: 0.85rem !important;
-        min-width: 56px !important;
-      }
-      
-      /* Actions: keep buttons on one line */
-      .actions { 
-        flex-direction: row; 
-        align-items: center;
-        gap: 0.6rem; 
-        margin-top: 1rem;
-      }
-      .add-to-cart-btn { 
-        flex: 1 1 auto; 
-        padding: 0.85rem 1rem; 
-        font-size: 0.98rem;
-        font-weight: 800;
-      }
-      .back-link { 
-        flex: 0 0 auto;
-        padding: 0.8rem 1rem; 
-        font-size: 0.95rem;
-        text-align: center;
-        white-space: nowrap;
-      }
-      
-      
-      /* Reviews */
-      .reviews { margin-top: 1.5rem; }
-      .reviews h3 { font-size: 1.1rem; }
-      .review-item { padding: 0.85rem; }
-      .review-form { padding: 0.85rem; }
-      .review-textarea { min-height: 88px; padding: 0.65rem; font-size: 0.95rem; }
-      .review-submit { padding: 0.65rem 1.1rem; font-size: 0.95rem; }
-      .rating-input .star { font-size: 1.05rem; }
-      
-      /* Related Products */
-      .related { margin-top: 1.75rem; }
-      .related h3 { font-size: 1.05rem; margin-bottom: 0.85rem; }
-      .related .products-grid { 
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .navbar-container { padding: 0.55rem 0.85rem; }
-      .logo { font-size: 1.25rem; }
-      main { padding: 115px 0.85rem 1.75rem; }
-      
-      .product-media { min-height: 240px; padding: 1rem; }
-      .product-media img { max-height: 220px; }
-      
-      .image-variation-item { min-width: 64px !important; }
-      .image-variation-item > div { width: 64px !important; height: 64px !important; }
-      
-      .product-title { font-size: 1.2rem; }
-      .price-badge { padding: 0.45rem 0.65rem; font-size: 0.95rem; }
-      .stock-indicator { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
-      .desc-content { max-height: 5em; font-size: 0.9rem; }
-      .desc-toggle { padding: 0.6rem 0.9rem; font-size: 0.85rem; }
-      .add-to-cart-btn { padding: 0.85rem 1.1rem; font-size: 0.95rem; }
-      .buy-now-btn { padding: 0.8rem 1.1rem; font-size: 0.9rem; }
-      
-      
-      .related .products-grid { gap: 0.65rem; }
-      .related .product-card .product-details h3 { font-size: 0.7rem; }
-    }
-
-  </style>
-</head>
-<body>
-  <!-- Global Loading Overlay -->
-  <div id="globalLoadingOverlay" class="global-loading-overlay">
-    <div class="global-loading-spinner">
-      <svg class="cart" role="img" aria-label="Shopping cart line animation" viewBox="0 0 128 128" width="128px" height="128px" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="8">
-          <g class="cart__track" stroke="hsla(0,10%,10%,0.1)">
-            <polyline points="4,4 21,4 26,22 124,22 112,64 35,64 39,80 106,80" />
-            <circle cx="43" cy="111" r="13" />
-            <circle cx="102" cy="111" r="13" />
-          </g>
-          <g class="cart__lines" stroke="currentColor">
-            <polyline class="cart__top" points="4,4 21,4 26,22 124,22 112,64 35,64 39,80 106,80" stroke-dasharray="338 338" stroke-dashoffset="-338" />
-            <g class="cart__wheel1" transform="rotate(-90,43,111)">
-              <circle class="cart__wheel-stroke" cx="43" cy="111" r="13" stroke-dasharray="81.68 81.68" stroke-dashoffset="81.68" />
-            </g>
-            <g class="cart__wheel2" transform="rotate(90,102,111)">
-              <circle class="cart__wheel-stroke" cx="102" cy="111" r="13" stroke-dasharray="81.68 81.68" stroke-dashoffset="81.68" />
-            </g>
-          </g>
-        </g>
-      </svg>
-    </div>
-    <div class="global-loading-text">Loading product details...</div>
-    <div class="global-loading-subtext">Preparing your shopping cart</div>
-  </div>
-
-  <header class="navbar">
-    <div class="navbar-top">
-      <div class="navbar-container">
-        <a href="/" class="logo">eM<span class="logo-cart"><i class="fas fa-cart-shopping"></i></span>rket</a>
-        <div class="nav-actions">
-          {% if session and session.get('user_id') %}
-            <div class="user-info">
-              <a href="/profile" class="nav-btn profile" title="Profile"><i class="fas fa-user"></i></a>
-              <span class="user-welcome">{{ session.get('username', 'User') }}</span>
-            </div>
-          {% else %}
-            <a href="/login" class="nav-btn profile" title="Login"><i class="fas fa-user"></i></a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    <div class="navbar-bottom">
-      <div class="navbar-container">
-        <div class="nav-actions">
-          <button class="menu-btn" onclick="document.getElementById('leftSidebar')?.classList.add('active');document.getElementById('overlay')?.classList.add('active')">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-        <div class="nav-center">
-        </div>
-        <div class="nav-actions">
-          <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist" style="position:relative">
-            <i class="fas fa-heart"></i>
-            <span class="wishlist-badge" id="wishlistBadge">0</span>
-          </a>
-          <button class="nav-btn cart" onclick="openMiniCart()" aria-label="Open Cart">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-badge" id="cartBadge">{{ (session.cart|default({})).values()|map(attribute='quantity')|sum if session and session.cart else 0 }}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Overlay and Sidebars -->
-  <div id="overlay" class="overlay" onclick="closeAllSidebars()"></div>
-  <aside id="leftSidebar" class="sidebar sidebar-left" aria-label="Categories">
-    <div class="sidebar-header">
-      <h3 class="sidebar-title">Categories</h3>
-      <button id="closeLeft" class="close-btn" aria-label="Close"><i class="fas fa-xmark"></i></button>
-    </div>
-    <div class="sidebar-content">
-      <div class="sidebar-scrollable">
-        <ul class="category-list">
-          <li class="category-item">
-            <a class="category-link" href="/">
-              <i class="fas fa-house category-icon"></i>Home
-            </a>
-          </li>
-          {% for c in categories %}
-          <li class="category-item"><a class="category-link" href="/viewall?category={{ c.id }}"><i class="fas fa-tag category-icon"></i>{{ c.name }}</a></li>
-          {% endfor %}
-          <li class="category-item">
-            <a href="/viewall?category=uncategorized" class="category-link">
-              <i class="fas fa-box-open category-icon"></i>Uncategorized
-            </a>
-          </li>
-        </ul>
-      </div>
-      
-    </div>
-  </aside>
-
-  <!-- Modern Mini Cart Overlay -->
-  <div class="mini-cart-overlay" id="miniCartOverlay" onclick="closeMiniCart()"></div>
-  
-  <!-- Modern Mini Cart Sidebar -->
-  <div class="mini-cart" id="miniCart">
-    <div class="mini-cart-header">
-      <div class="mini-cart-title">
-        {% if cart_items %}
-          {% set total = namespace(value=0) %}
-          {% for item in cart_items %}
-            {% set total.value = total.value + (item.price * item.quantity) %}
-          {% endfor %}
-          <div class="cart-total-display" style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">
-            Total: RWF {{ '{:,.0f}'.format(total.value) }}
-          </div>
-        {% endif %}
-        <div class="cart-header-buttons">
-          <a href="/addtocart" class="btn-view-cart-header"><i class="fas fa-shopping-cart"></i> cart</a>
-          <button class="btn-checkout-header" onclick="window.location.href='/checkout'"><i class="fas fa-credit-card"></i> checkout</button>
-        </div>
-      </div>
-      <button class="mini-cart-close" onclick="closeMiniCart()" aria-label="Close cart">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="mini-cart-body">
-      {% if not cart_items %}
-        <!-- Empty State -->
-        <div class="mini-cart-empty">
-          <div class="empty-icon">
-            <i class="fas fa-shopping-bag"></i>
-          </div>
-          <h3>Your cart is empty</h3>
-          <p>Add some products to get started!</p>
-          <button class="btn-continue-shopping" onclick="closeMiniCart()">
-            <i class="fas fa-arrow-left"></i>
-            Continue Shopping
-          </button>
-        </div>
-      {% else %}
-        <!-- Cart Items -->
-        <div class="mini-cart-items">
-          {% set total = namespace(value=0) %}
-          {% for item in cart_items %}
-            {% set subtotal = item.price * item.quantity %}
-            {% set total.value = total.value + subtotal %}
-            <div class="mini-cart-item" data-cart-id="{{ item.id }}" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
-              <a href="/product/{{ item.product_id }}" class="item-image" style="display: block; text-decoration: none;">
-                <img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy" onerror="this.src='/static/images/default-product.jpg'; this.onerror=null;">
-              </a>
-              <div class="item-details">
-                <a href="/product/{{ item.product_id }}" class="item-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">
-                  <h4 style="margin: 0;">{{ item.name }}</h4>
-                </a>
-                {% if item.variations %}
-                  <p class="item-variant">{{ item.variations|fmtvars }}</p>
-                {% endif %}
-                <div class="item-price-qty">
-                  <span class="item-price">RWF {{ "{:,.0f}".format(item.price) }}</span>
-                  <div class="item-quantity">
-                    <span class="qty-simple">{{ item.quantity }}</span>
-                  </div>
-                </div>
-              </div>
-              <button class="item-remove" onclick="removeCartItem('{{ item.id }}')" aria-label="Remove item">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    </div>
-
-  </div>
-
-  <main>
-    {% include 'flash_messages.html' %}
-    
-    
-    <section class="product-layout reveal">
-      <div>
-        <div class="product-media" style="position:relative;" onclick="openImageZoom()">
-          <img id="mainProductImage" src="{{ product.image }}" alt="{{ product.name }}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\'%3E%3Crect fill=\'%23eee\' width=\'600\' height=\'400\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\' font-family=\'Inter, sans-serif\'%3ENo image%3C/text%3E%3C/svg%3E'">
-          <!-- Wishlist forms for server flash -->
-          <form id="wlAdd" method="post" action="{{ url_for('add_to_wishlist', product_id=product.id) }}" style="display:none">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-          </form>
-          <form id="wlRemove" method="post" action="{{ url_for('remove_from_wishlist', product_id=product.id) }}" style="display:none">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-          </form>
-          <button id="wishlistBtn" class="wishlist-btn {% if in_wishlist %}active{% endif %}" type="button" data-in="{{ '1' if in_wishlist else '0' }}" onclick="event.stopPropagation()">
-            <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
-          </button>
-        </div>
-        
-        <!-- Image Variations Thumbnails -->
-        {% if image_variations and image_variations|length > 0 %}
-        <div class="image-variations-container" style="margin-top: .75rem;">
-          <div class="image-variations-strip" style="display: flex; gap: .65rem; overflow-x: auto; padding: .25rem .1rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
-            {% for img_var in image_variations %}
-            <div class="image-variation-item" data-img-var-id="{{ img_var.id }}" data-stock="{{ img_var.stock }}" data-name="{{ img_var.name }}" style="display:flex; flex-direction:column; align-items:center; min-width: 84px; position:relative; cursor: pointer;" onclick="selectImageVariation('{{ img_var.id }}','{{ img_var.img_url }}', '{{ img_var.name }}', '{{ img_var.description }}', '{{ img_var.stock }}', this)" title="{{ img_var.description }}">
-              <div style="width:84px; height:84px; border:none; border-radius:10px; overflow:hidden; background: var(--panel-2); transition: none; opacity:.9; scroll-snap-align:start; box-shadow:none!important; outline:none!important; position:relative;">
-                <img src="{{ img_var.img_url }}" alt="{{ img_var.description }}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'%3E%3Crect fill=\'%23ccc\' width=\'100\' height=\'100\'/%3E%3C/svg%3E'">
-                <div class="sold-out-badge" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-15deg); background:rgba(220,38,38,0.95); color:#fff; font-size:0.7rem; font-weight:700; text-transform:uppercase; padding:4px 12px; border-radius:4px; letter-spacing:1px; z-index:10; border:2px solid rgba(255,255,255,0.9); box-shadow:0 2px 8px rgba(0,0,0,0.4);">SOLD OUT</div>
-                <div class="stock-badge" style="display:none; position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.75); color:rgba(255,255,255,0.95); font-size:0.65rem; font-weight:600; padding:3px 7px; border-radius:4px; z-index:6; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); line-height:1;"></div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-      </div>
-      <div class="product-info">
-
-        <h1 class="product-title">{{ product.name }}</h1>
-        <div id="variantSubtitle" style="display:none; margin:.15rem 0 .6rem 0; font-size:.9rem; color:var(--text-secondary); font-weight:500;"></div>
-        <div class="price-stock">
-          <span class="price-badge">
-            {% if product.discount and product.discount > 0 %}
-              <span class="original-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
-              <span class="discount-percent">-{{ product.discount|int }}%</span>
-              <span>RWF {{ '{:,.0f}'.format(product.price * (1 - product.discount/100)) }}</span>
-            {% else %}
-              <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
-            {% endif %}
-          </span>
-          <div class="stock-indicator">
-            <i class="fas fa-boxes"></i>
-            <span class="stock-dot {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}"></span>
-            <span>{{ product.stock }} left</span>
-          </div>
-        </div>
-        <div class="description">
-          {% if product.description %}
-            <div class="desc-box">
-              <div id="descContent" class="desc-content">{{ product.description|safe }}</div>
-              <button id="descToggle" class="desc-toggle" type="button">Read more</button>
-            </div>
-          {% else %}
-            <em style="color:var(--text-secondary)">No description available.</em>
-          {% endif %}
-        </div>
-        <div class="rating" aria-label="Product rating">
-          {% if product.rating and product.rating > 0 %}
-            <div class="stars">
-              {% set r = product.rating %}
-              {% set full = (r // 1) | int %}
-              {% set half = 1 if (r - full) >= 0.5 and full < 5 else 0 %}
-              {% set empty = 5 - full - half %}
-              {% for _ in range(full) %}<i class="fa-solid fa-star"></i>{% endfor %}
-              {% if half %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}
-              {% for _ in range(empty) %}<i class="fa-regular fa-star"></i>{% endfor %}
-            </div>
-          {% endif %}
-        </div>
-
-        <!-- Box-style Variations Selection -->
-        {% if dropdown_variations and dropdown_variations|length > 0 %}
-        <div class="dropdown-variations-container" style="margin: 1rem 0 0.5rem 0; display: flex; flex-direction: column; gap: 1rem;">
-          {% for attr_name, options in dropdown_variations.items() %}
-          <div class="variation-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.8rem; color: #f5f5f5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">{{ attr_name }}</label>
-            <div class="variation-boxes" data-variation-name="{{ attr_name }}" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-              {% for opt in options %}
-              <button type="button" class="variation-box" data-variation-id="{{ opt.id }}" data-stock="{{ opt.stock }}" data-img-var-id="{{ opt.img_var_id if opt.img_var_id else '' }}" data-variation-name="{{ attr_name }}" onclick="selectVariationBox(this)" style="padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(30,35,45,0.8); color: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all .15s ease; min-width: 48px; text-align: center; position: relative;">
-                {{ opt.value }}
-                <span class="variation-stock-badge">{{ opt.stock }}</span>
-              </button>
-              {% endfor %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Quantity Selector -->
-        <div style="margin-top: 1.5rem; margin-bottom: 1rem;" data-product-stock="{{ product.stock }}">
-          <label style="display: block; font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem;">Quantity</label>
-          <div class="item-quantity" style="display: inline-flex; padding: 0.4rem 0.75rem;">
-            <button class="qty-btn" onclick="changeQuantity(-1)" type="button" id="qtyMinusBtn">
-              <i class="fas fa-minus"></i>
-            </button>
-            <span class="qty-value" id="productQuantity">1</span>
-            <button class="qty-btn" onclick="changeQuantity(1)" type="button" id="qtyPlusBtn">
-              <i class="fas fa-plus"></i>
             </button>
           </div>
           <div id="qtyWarning" style="display: none; font-size: 0.75rem; color: #ef4444; margin-top: 0.5rem;"></div>
         </div>
 
+        <!-- Action Buttons (Conversion Focus) -->
         <div class="actions">
           {% if product.stock > 0 %}
             <button class="add-to-cart-btn" id="addToCartBtn" onclick="addToCartWithVariations('{{ product.id }}')">Add to Cart</button>
@@ -1621,7 +1181,9 @@
         <!-- Hidden inputs to store selected variations -->
         <input type="hidden" id="selectedImageVariations" value=""><!-- stores img_var_id when present -->
         <input type="hidden" id="selectedDropdownVariations" value=""><!-- stores dropdown_var_id when present -->
+        <div id="variantSubtitle" style="display:none; margin:.15rem 0 .6rem 0; font-size:.9rem; color:var(--text-secondary); font-weight:500;"></div>
 
+        <!-- Reviews Section -->
         <section class="reviews">
           <h3>Reviews</h3>
           {% if reviews and reviews|length > 0 %}
@@ -1697,9 +1259,10 @@
       </div>
     </section>
 
+    <!-- Related Products Section -->
     {% if related_products and related_products|length > 0 %}
     <section class="related">
-      <h3>Related products</h3>
+      <h3>You might also like</h3>
       <div class="products-grid">
         {% for p in related_products %}
         <div class="product-card reveal-scale">
@@ -1717,8 +1280,9 @@
     </section>
     {% endif %}
   </main>
+  <!-- End Main Content -->
 
-  <!-- Image Zoom Overlay -->
+  <!-- Image Zoom Overlay (Professional & Clean) -->
   <div id="zoomOverlay" class="zoom-overlay" onclick="closeImageZoom()">
     <div class="zoomed-image-container" onclick="event.stopPropagation()">
       <img id="zoomedImage" class="zoomed-image" src="" alt="">
@@ -1730,7 +1294,14 @@
 
   {% include 'footer.html' %}
   <style>
+    /* Professional Product Page - Whitespace & Hierarchy Optimized */
     /* Footer mobile overrides placed AFTER footer.html to ensure they apply */
+    @media (max-width: 900px) {
+      .product-layout { gap: 2.5rem; }
+      main { padding: 140px 1.5rem 2rem; }
+      .product-title { font-size: 1.5rem; }
+      .price-stock { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
     @media (max-width: 900px) {
       footer.site-footer .newsletter-wrap{ grid-template-columns: 1fr !important; gap: .9rem !important; }
       footer.site-footer .newsletter-form{ margin-left: 0 !important; max-width: 100% !important; width: 100% !important; display: grid !important; grid-template-columns: 1fr !important; gap: .6rem !important; }
