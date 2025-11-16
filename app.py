@@ -2709,14 +2709,19 @@ def add_to_cart():
                 img_name = img_var[1] or ''  # name field (e.g., "Brown")
                 variation_parts.append(f"{img_type}:{img_name}")
                 # Use variation_image from frontend if provided, otherwise fallback to database image
-                if not variation_image and img_var[3]:
-                    variation_image = img_var[3]
+                db_img = img_var[3]
+                if not variation_image and db_img:
+                    variation_image = db_img
+                    print(f"DEBUG: Using DB image for variation: {db_img}")
+                else:
+                    print(f"DEBUG: Using frontend image: {variation_image}")
 
         # Decide final cart image: prefer variation image, otherwise product image
         cart_image = variation_image if variation_image else product['image']
         # Always ensure image is properly resolved
         if cart_image:
             cart_image = resolve_image_url(cart_image)
+            print(f"DEBUG: Final cart_image after resolve: {cart_image}")
         
         if dropdown_var_id:
             cart_key += f"_drop{dropdown_var_id}"
@@ -2783,7 +2788,11 @@ def add_to_cart():
             }
             
             # Debug logging
-            print(f"STORED IN CART: cart_key={cart_key}, image={cart_image}")
+            print(f"STORED IN CART: cart_key={cart_key}")
+            print(f"  - image={cart_image}")
+            print(f"  - variation_image={variation_image}")
+            print(f"  - product_image={product['image']}")
+            print(f"  - variations={variation_display}")
             
             # Show appropriate message
             if final_quantity < requested_quantity:
