@@ -3738,6 +3738,134 @@
       #modalProductDescription{ font-size: 0.9rem !important; }
     }
 
+    /* Clean Search Bar Styles */
+    .search-bar-wrapper {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .search-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: var(--panel-2);
+      border-radius: 10px;
+      padding: 0 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .search-bar:focus-within {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      background: white;
+    }
+
+    .search-icon {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-right: 10px;
+      transition: color 0.3s ease;
+      pointer-events: none;
+    }
+
+    .search-bar:focus-within .search-icon {
+      color: var(--text-primary);
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 12px 0;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-secondary);
+      transition: opacity 0.3s ease;
+    }
+
+    .search-input:focus::placeholder {
+      opacity: 0.5;
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      border: 1px solid var(--border);
+    }
+
+    .search-dropdown.active {
+      display: block;
+    }
+
+    .search-result-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item:hover {
+      background: var(--panel-2);
+    }
+
+    .search-result-item img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .search-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-result-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .search-result-price {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .search-no-results {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
@@ -3799,6 +3927,13 @@
           </button>
         </div>
       <div class="nav-center">
+          <div class="search-bar-wrapper">
+            <div class="search-bar">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
+              <div id="searchDropdown" class="search-dropdown"></div>
+            </div>
+          </div>
         </div>
       <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist">
@@ -4895,6 +5030,59 @@ document.addEventListener('DOMContentLoaded', () => {
         openMiniCart();
       }
     });
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+    let searchTimeout;
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+          searchDropdown.classList.remove('active');
+          return;
+        }
+
+        searchTimeout = setTimeout(() => {
+          fetch(`/api/search?q=${encodeURIComponent(query)}&limit=6`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.results && data.results.length > 0) {
+                let html = '';
+                data.results.forEach(item => {
+                  html += `
+                    <div class="search-result-item" onclick="window.location.href='${item.url}'">
+                      <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/48?text=No+Image'">
+                      <div class="search-result-info">
+                        <div class="search-result-name">${item.name}</div>
+                        <div class="search-result-price">RWF ${Math.round(item.price).toLocaleString()}</div>
+                      </div>
+                    </div>
+                  `;
+                });
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.add('active');
+              } else {
+                searchDropdown.innerHTML = '<div class="search-no-results">No products found</div>';
+                searchDropdown.classList.add('active');
+              }
+            })
+            .catch(err => {
+              console.error('Search error:', err);
+              searchDropdown.classList.remove('active');
+            });
+        }, 300);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-bar-wrapper')) {
+          searchDropdown.classList.remove('active');
+        }
+      });
+    }
   </script>
 
 
