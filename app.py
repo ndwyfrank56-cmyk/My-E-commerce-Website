@@ -2202,25 +2202,27 @@ def search_api():
             return jsonify({'results': []})
         
         cur = mysql.connection.cursor()
-        search_term = f"%{query}%"
         
         # First, let's check if there are ANY products in the database
         cur.execute("SELECT COUNT(*) FROM products")
         total_products = cur.fetchone()[0]
         print(f"Total products in database: {total_products}")
         
-        # Try case-insensitive search
+        # Build search term with wildcards
+        search_term = f"%{query}%"
+        print(f"Searching for: '{search_term}'")
+        
+        # Simple search - just search by product name
         sql = """
             SELECT p.id, p.name, p.price, p.image, COALESCE(c.name, 'Uncategorized') as category
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.id
-            WHERE p.name LIKE %s OR c.name LIKE %s
+            WHERE p.name LIKE %s
             ORDER BY p.name ASC
             LIMIT %s
         """
-        print(f"Executing SQL with search_term: '{search_term}'")
         
-        cur.execute(sql, (search_term, search_term, limit))
+        cur.execute(sql, (search_term, limit))
         
         results = []
         rows = cur.fetchall()
