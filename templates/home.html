@@ -3116,91 +3116,58 @@
       }
     }
 
-    /* New Gradient Search Bar Styles */
-    .search-container {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: auto;
-      min-width: 50px;
-    }
-
-    .search-input-wrapper {
+    /* Simple Search Bar Styles */
+    .simple-search {
       position: relative;
       display: inline-block;
       width: 100%;
+      max-width: 300px;
     }
 
-    .search-input-wrapper::after {
-      content: "";
-      background: white;
-      width: 4px;
-      height: 20px;
-      position: absolute;
-      top: 50%;
-      right: 12px;
-      transform: translateY(-50%) rotate(135deg);
-      pointer-events: none;
-      transition: all 0.3s ease;
-    }
-
-    .search-input {
-      color: var(--text-primary);
-      font-size: 15px;
-      background: white;
-      width: 40px;
-      height: 40px;
-      padding: 10px 15px;
-      border: solid 2px var(--text-primary);
+    .simple-search-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
       outline: none;
-      border-radius: 35px;
-      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: 'Roboto', sans-serif;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      background: white;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
     }
 
-    .search-input::placeholder {
-      color: #999;
-      opacity: 0;
-      transition: opacity 150ms ease-out;
+    .simple-search-input:focus {
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
     }
 
-    .search-input:focus {
-      width: 280px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    .simple-search-input::placeholder {
+      color: var(--text-light);
     }
 
-    .search-input:focus::placeholder {
-      opacity: 1;
-    }
-
-    .search-input:not(:placeholder-shown) {
-      width: 280px;
-    }
-
-    .search-results-dropdown {
+    .simple-search-results {
       position: absolute;
-      top: 50px;
+      top: 100%;
       left: 0;
-      width: 280px;
+      right: 0;
       background: white;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
       max-height: 400px;
       overflow-y: auto;
       z-index: 1000;
       display: none;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .search-result-item {
-      padding: 12px 15px;
+      padding: 10px 12px;
       border-bottom: 1px solid #f0f0f0;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: background 0.15s ease;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
@@ -3213,10 +3180,10 @@
     }
 
     .search-result-item img {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 4px;
       flex-shrink: 0;
     }
 
@@ -3228,8 +3195,8 @@
     .search-result-name {
       font-weight: 600;
       color: var(--text-primary);
-      font-size: 14px;
-      margin-bottom: 4px;
+      font-size: 13px;
+      margin-bottom: 2px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -3237,20 +3204,7 @@
 
     .search-result-price {
       color: var(--text-secondary);
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .search-result-price .price-value {
-      color: var(--price-tag-green);
-      font-weight: 700;
-    }
-
-    .search-no-results {
-      padding: 20px 15px;
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 14px;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -3315,11 +3269,9 @@
           </button>
         </div>
         <div class="nav-center">
-          <div class="search-container">
-            <div class="search-input-wrapper">
-              <input id="search" type="text" placeholder="Search . . ." class="search-input">
-            </div>
-            <div id="searchResults" class="search-results-dropdown"></div>
+          <div class="simple-search">
+            <input id="search" type="text" placeholder="Search products..." class="simple-search-input">
+            <div id="searchResults" class="simple-search-results"></div>
           </div>
         </div>
         <div class="nav-actions">
@@ -4180,7 +4132,7 @@
     });
 
     document.addEventListener('click', function(e) {
-      if (!e.target.closest('.search-container')) {
+      if (!e.target.closest('.simple-search')) {
         searchResults.style.display = 'none';
       }
     });
