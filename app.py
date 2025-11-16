@@ -2182,74 +2182,11 @@ def debug_products():
         cur.close()
         return jsonify({
             'total_products': count,
-            'sample_products': [{'id': p[0], 'name': p[1]} for p in products]
+            'products': products
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.get('/api/search')
-def search_api():
-    """Clean search API for live suggestions"""
-    try:
-        query = request.args.get('q', '').strip()
-        limit = min(int(request.args.get('limit', 8)), 20)
-        
-        print(f"\n=== SEARCH API CALLED ===")
-        print(f"Search query: '{query}', limit: {limit}")
-        
-        if len(query) < 1:
-            print("Query too short, returning empty results")
-            return jsonify({'results': []})
-        
-        cur = mysql.connection.cursor()
-        
-        # First, let's check if there are ANY products in the database
-        cur.execute("SELECT COUNT(*) FROM products")
-        total_products = cur.fetchone()[0]
-        print(f"Total products in database: {total_products}")
-        
-        # Build search term with wildcards
-        search_term = f"%{query}%"
-        print(f"Searching for: '{search_term}'")
-        
-        # Simple search - just search by product name
-        sql = """
-            SELECT p.id, p.name, p.price, p.image, COALESCE(c.name, 'Uncategorized') as category
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-            WHERE p.name LIKE %s
-            ORDER BY p.name ASC
-            LIMIT %s
-        """
-        
-        cur.execute(sql, (search_term, limit))
-        
-        results = []
-        rows = cur.fetchall()
-        print(f"Search returned {len(rows)} results")
-        
-        for row in rows:
-            product_url = url_for('product_detail', product_id=row[0])
-            print(f"Found product: {row[0]} - {row[1]}")
-            results.append({
-                'id': row[0],
-                'name': row[1],
-                'price': float(row[2]) if row[2] else 0.0,
-                'image': resolve_image_url(row[3]),
-                'category': row[4],
-                'url': product_url
-            })
-        
-        cur.close()
-        print(f"Returning {len(results)} results")
-        print("=== SEARCH API END ===\n")
-        return jsonify({'results': results})
-        
-    except Exception as e:
-        print(f"Search API error: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'results': [], 'error': 'Search failed'}), 500
+        print(f"Error in /api/debug/products: {e}")
+        return jsonify(error='server_error'), 500
 
 @app.get('/api/product/<int:product_id>')
 def api_product(product_id):
@@ -2841,27 +2778,6 @@ def get_cart():
         return jsonify({'items': []})
 
 @app.route('/cart-info')
-def cart_info():
-    """Get cart count and total for AJAX updates"""
-    try:
-        cart_data = session.get('cart', {})
-        cart_count = sum(item['quantity'] for item in cart_data.values())
-        cart_total = sum(item['quantity'] * item['price'] for item in cart_data.values())
-        
-        return jsonify({
-            'count': cart_count,
-            'total': cart_total
-        })
-    except Exception as e:
-        print(f"Cart info error: {e}")
-        return jsonify({'count': 0, 'total': 0})
-
-@app.route('/api/product/stock', methods=['GET'])
-def get_product_stock():
-    """API endpoint to get stock for specific variation combination"""
-    try:
-        product_id = request.args.get('product_id')
-        img_var_id = request.args.get('img_var_id', '')
         dropdown_var_id = request.args.get('dropdown_var_id', '')
         
         if not product_id:
