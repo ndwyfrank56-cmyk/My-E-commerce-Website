@@ -2188,52 +2188,6 @@ def debug_products():
         print(f"Error in /api/debug/products: {e}")
         return jsonify(error='server_error'), 500
 
-@app.get('/api/search')
-def search_api():
-    """Search API for live suggestions"""
-    try:
-        query = request.args.get('q', '').strip()
-        limit = min(int(request.args.get('limit', 8)), 20)
-        
-        if len(query) < 1:
-            return jsonify({'results': []})
-        
-        cur = mysql.connection.cursor()
-        
-        # Search by product name
-        search_term = f"%{query}%"
-        sql = """
-            SELECT p.id, p.name, p.price, p.image, COALESCE(c.name, 'Uncategorized') as category
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-            WHERE p.name LIKE %s
-            ORDER BY p.name ASC
-            LIMIT %s
-        """
-        
-        cur.execute(sql, (search_term, limit))
-        
-        results = []
-        rows = cur.fetchall()
-        
-        for row in rows:
-            product_url = url_for('product_detail', product_id=row[0])
-            results.append({
-                'id': row[0],
-                'name': row[1],
-                'price': float(row[2]) if row[2] else 0.0,
-                'image': resolve_image_url(row[3]),
-                'category': row[4],
-                'url': product_url
-            })
-        
-        cur.close()
-        return jsonify({'results': results})
-        
-    except Exception as e:
-        print(f"Search API error: {e}")
-        return jsonify({'results': [], 'error': 'Search failed'}), 500
-
 @app.get('/api/product/<int:product_id>')
 def api_product(product_id):
     try:
