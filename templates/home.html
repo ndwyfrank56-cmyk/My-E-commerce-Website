@@ -3121,53 +3121,54 @@
       position: relative;
       display: inline-block;
       width: 100%;
-      max-width: 300px;
+      max-width: 350px;
+      z-index: 100;
     }
 
     .simple-search-input {
       width: 100%;
-      padding: 8px 12px;
+      padding: 10px 14px;
       font-size: 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
       outline: none;
       background: white;
       color: var(--text-primary);
       transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
     .simple-search-input:focus {
       border-color: var(--text-primary);
-      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
     .simple-search-input::placeholder {
-      color: var(--text-light);
+      color: #999;
     }
 
     .simple-search-results {
       position: absolute;
-      top: 100%;
+      top: calc(100% + 4px);
       left: 0;
       right: 0;
       background: white;
-      border: 1px solid var(--border);
-      border-top: none;
-      border-radius: 0 0 6px 6px;
-      max-height: 400px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      max-height: 500px;
       overflow-y: auto;
-      z-index: 1000;
+      z-index: 1001;
       display: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
 
     .search-result-item {
-      padding: 10px 12px;
+      padding: 12px 14px;
       border-bottom: 1px solid #f0f0f0;
       cursor: pointer;
       transition: background 0.15s ease;
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
     }
 
@@ -3176,14 +3177,14 @@
     }
 
     .search-result-item:hover {
-      background: #f9fafb;
+      background: #f5f5f5;
     }
 
     .search-result-item img {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       object-fit: cover;
-      border-radius: 4px;
+      border-radius: 6px;
       flex-shrink: 0;
     }
 
@@ -3195,8 +3196,8 @@
     .search-result-name {
       font-weight: 600;
       color: var(--text-primary);
-      font-size: 13px;
-      margin-bottom: 2px;
+      font-size: 14px;
+      margin-bottom: 4px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -3204,7 +3205,8 @@
 
     .search-result-price {
       color: var(--text-secondary);
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 500;
     }
   </style>
 </head>
