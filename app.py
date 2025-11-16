@@ -2175,26 +2175,33 @@ def search_api():
         query = request.args.get('q', '').strip()
         limit = min(int(request.args.get('limit', 8)), 20)
         
+        print(f"\n=== SEARCH API CALLED ===")
         print(f"Search query: '{query}', limit: {limit}")
         
         if len(query) < 1:
+            print("Query too short, returning empty results")
             return jsonify({'results': []})
         
         cur = mysql.connection.cursor()
         search_term = f"%{query}%"
         
+        # First, let's check if there are ANY products in the database
+        cur.execute("SELECT COUNT(*) FROM products")
+        total_products = cur.fetchone()[0]
+        print(f"Total products in database: {total_products}")
+        
         # Try case-insensitive search
-        cur.execute(
-            """
+        sql = """
             SELECT p.id, p.name, p.price, p.image, COALESCE(c.name, 'Uncategorized') as category
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.id
-            WHERE LOWER(p.name) LIKE LOWER(%s) OR LOWER(c.name) LIKE LOWER(%s)
+            WHERE p.name LIKE %s OR c.name LIKE %s
             ORDER BY p.name ASC
             LIMIT %s
-            """,
-            (search_term, search_term, limit)
-        )
+        """
+        print(f"Executing SQL with search_term: '{search_term}'")
+        
+        cur.execute(sql, (search_term, search_term, limit))
         
         results = []
         rows = cur.fetchall()
@@ -2202,7 +2209,7 @@ def search_api():
         
         for row in rows:
             product_url = url_for('product_detail', product_id=row[0])
-            print(f"Generated URL for product {row[0]}: {product_url}")
+            print(f"Found product: {row[0]} - {row[1]}")
             results.append({
                 'id': row[0],
                 'name': row[1],
@@ -2214,6 +2221,7 @@ def search_api():
         
         cur.close()
         print(f"Returning {len(results)} results")
+        print("=== SEARCH API END ===\n")
         return jsonify({'results': results})
         
     except Exception as e:
