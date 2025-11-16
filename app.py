@@ -2778,6 +2778,9 @@ def get_cart():
         return jsonify({'items': []})
 
 @app.route('/cart-info')
+def cart_info():
+    try:
+        product_id = request.args.get('product_id')
         dropdown_var_id = request.args.get('dropdown_var_id', '')
         
         if not product_id:
