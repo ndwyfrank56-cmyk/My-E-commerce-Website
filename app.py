@@ -2873,19 +2873,25 @@ def get_cart():
             
             # Fetch image from database based on variation
             image_url = ''
-            if img_var_id:
-                # Fetch variation image from database
-                cur.execute("SELECT img_url FROM image_variations WHERE id = %s", (img_var_id,))
-                result = cur.fetchone()
-                if result and result[0]:
-                    image_url = resolve_image_url(result[0])
+            if img_var_id and str(img_var_id).strip():
+                try:
+                    # Fetch variation image from database
+                    cur.execute("SELECT img_url FROM image_variations WHERE id = %s", (img_var_id,))
+                    result = cur.fetchone()
+                    if result and result[0]:
+                        image_url = resolve_image_url(result[0])
+                except Exception as e:
+                    print(f"Error fetching variation image: {e}")
             
             # Fallback to product image if no variation image
             if not image_url:
-                cur.execute("SELECT image FROM products WHERE id = %s", (product_id,))
-                result = cur.fetchone()
-                if result and result[0]:
-                    image_url = resolve_image_url(result[0])
+                try:
+                    cur.execute("SELECT image FROM products WHERE id = %s", (product_id,))
+                    result = cur.fetchone()
+                    if result and result[0]:
+                        image_url = resolve_image_url(result[0])
+                except Exception as e:
+                    print(f"Error fetching product image: {e}")
             
             print(f"Cart item {cart_key}: img_var_id={img_var_id}, image_url={image_url}")
             
