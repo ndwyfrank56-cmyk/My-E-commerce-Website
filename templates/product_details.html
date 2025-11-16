@@ -2622,8 +2622,18 @@
           // Format variations - display as "attr: value, attr2: value2"
           let variationsHtml = '';
           if (item.variations && item.variations.trim()) {
-            // Format: "color:Brown, size:41" -> display as is
-            variationsHtml = `<div class="cart-item-variations" style="font-size: 0.72rem; color: var(--text-light); margin: 0.25rem 0 0.4rem 0; font-weight: 500; line-height: 1.4;">${item.variations}</div>`;
+            // Format: "color:Brown, size:41" -> "Color: Brown, Size: 41"
+            const formatted = item.variations
+              .split(',')
+              .map(part => {
+                const [key, value] = part.split(':').map(s => s.trim());
+                if (key && value) {
+                  return `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`;
+                }
+                return part.trim();
+              })
+              .join(' • ');
+            variationsHtml = `<div class="cart-item-variations" style="font-size: 0.72rem; color: var(--text-light); margin: 0.25rem 0 0.4rem 0; font-weight: 500; line-height: 1.4;">${formatted}</div>`;
           }
           html += `
             <div class="cart-item" style="cursor: pointer;" onclick="navigateToProduct(event, '${item.product_id}')">

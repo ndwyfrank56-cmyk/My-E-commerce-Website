@@ -2241,7 +2241,17 @@ body { padding-top: 120px; }
                 <a href="/product/{{ item.product_id }}" class="order-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">{{ item.name }}</a>
                 {% if item.variations and item.variations.strip() %}
                 <div class="order-variations" style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem;">
-                  {{ item.variations|fmtvars }}
+                  {% set var_parts = item.variations.split(',') %}
+                  {% for part in var_parts %}
+                    {% if part.strip() %}
+                      {% set key_val = part.split(':') %}
+                      {% if key_val|length == 2 %}
+                        <div>{{ key_val[0].strip().capitalize() }}: {{ key_val[1].strip() }}</div>
+                      {% else %}
+                        <div>{{ part.strip() }}</div>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
                 </div>
                 {% endif %}
                 <div class="order-meta">Qty: {{ item.quantity }}</div>
