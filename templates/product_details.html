@@ -623,6 +623,7 @@
       text-decoration: line-through;
       opacity: 0.7;
       font-weight: 500;
+      color: rgba(255,255,255,0.35);
     }
     .price-badge .discount-percent {
       position: absolute;
@@ -637,21 +638,27 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     .stock-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
+      display: inline-block;
       padding: .4rem .65rem;
       border-radius: 8px;
-      background: rgba(17,22,31,0.6);
-      border: none;
-      color: rgba(255,255,255,0.92);
       font-size: .8rem;
       font-weight: 500;
       letter-spacing: .02em;
       margin-bottom: 1rem;
       box-shadow: 0 6px 14px rgba(0,0,0,0.25);
     }
-    .stock-indicator i { font-size: .9rem; opacity: .9; }
+    .stock-indicator.low {
+      background: rgba(255, 165, 0, 0.6);
+      color: #fff;
+    }
+    .stock-indicator.out-of-stock {
+      background: rgba(255, 0, 0, 0.6);
+      color: #fff;
+    }
+    .stock-indicator.plenty {
+      background: rgba(0, 128, 0, 0.6);
+      color: #fff;
+    }
     .actions{ display:flex; gap:.6rem; margin-top:.25rem; }
     .rating{ display:flex; align-items:center; gap:.5rem; margin-top:.4rem; }
     .rating .stars{ display:inline-flex; gap:2px; }
