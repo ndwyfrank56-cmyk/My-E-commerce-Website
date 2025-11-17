@@ -371,7 +371,8 @@
     .item-price-qty { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
     .item-price { font-size: 1rem; font-weight: 700; color: rgba(255, 255, 255, 0.9); }
     .item-quantity { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 0.25rem 0.5rem; }
-    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.08); border: none; border-radius: 6px; color: #fff; font-size: 0.75rem; cursor: pointer; }
+    .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.08); border: none; border-radius: 6px; color: #fff; font-size: 0.75rem; cursor: pointer; transition: all 0.2s ease; }
+    .qty-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .qty-value { min-width: 24px; text-align: center; font-weight: 600; color: #fff; font-size: 0.9rem; }
     .item-remove { position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 6px; color: #ef4444; font-size: 1rem; cursor: pointer; }
     .mini-cart-footer { flex-shrink: 0; padding: 1rem 1.25rem; border-top: none; background: linear-gradient(180deg, rgba(15, 19, 24, 0.95) 0%, rgba(10, 13, 18, 0.98) 100%); box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4); }
@@ -620,7 +621,7 @@
     .current-price {
       font-size: 1.8rem;
       font-weight: 900;
-      color: #10b981;
+      color: #4ade80;
       letter-spacing: -0.01em;
     }
     .original-price {
@@ -633,6 +634,27 @@
       color: #f59e0b;
       font-weight: 600;
       margin-top: 0.2rem;
+    }
+    .stock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      border-radius: 20px;
+      margin-top: 0.75rem;
+    }
+    .stock-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4ade80;
+    }
+    .stock-text.low {
+      color: #f59e0b;
+    }
+    .stock-text.out {
+      color: #ef4444;
     }
     .variation-box:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
     .variation-box[style*="display: none"] { display: none !important; }
@@ -657,8 +679,9 @@
       letter-spacing: 0.3px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    .add-to-cart-btn{ flex:1; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.85); color:#111; font-weight:900; text-decoration:none; text-align:center; box-shadow: 0 8px 18px rgba(0,0,0,0.22); cursor: pointer; }
-    .buy-now-btn{ padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.8); font-weight:500; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+    .add-to-cart-btn{ flex:1.5; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.85); color:#111; font-weight:900; text-decoration:none; text-align:center; box-shadow: 0 8px 18px rgba(0,0,0,0.22); cursor: pointer; }
+    .buy-now-btn{ flex:0.8; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.8); font-weight:500; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+    .actions{ display: flex; flex-direction: row; gap: 0.75rem; align-items: center; margin-top: 1.5rem; }
     
     .description{ margin-top: .5rem; padding: 0; background: transparent; border: none; border-radius: 0; color: var(--text-secondary); }
     .desc-box{ position: relative; }
@@ -1533,7 +1556,6 @@
         
         <!-- Stock Status Pill Badge -->
         <div class="stock-pill">
-          <i class="fas fa-fire"></i>
           <span class="stock-text {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}">{{ product.stock }} left in stock</span>
         </div>
         
@@ -1589,7 +1611,7 @@
           {% else %}
             <button class="add-to-cart-btn" style="pointer-events:none; opacity:.6">Out of Stock</button>
           {% endif %}
-          <button class="buy-now-btn" onclick="buyNow('{{ product.id }}')" style="flex: 0 0 auto; max-width: 150px;">
+          <button class="buy-now-btn" onclick="buyNow('{{ product.id }}')">
             <i class="fas fa-bolt"></i>
             Buy Now
           </button>
