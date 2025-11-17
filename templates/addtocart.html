@@ -2507,6 +2507,62 @@
       background: rgba(229, 231, 235, 1);
     }
   </style>
+
+  <script>
+    // Search functionality
+    const searchInput = document.querySelector('.search-box');
+    const searchDropdown = document.getElementById('searchSuggestions');
+    let searchTimeout;
+
+    if (searchInput && searchDropdown) {
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+          searchDropdown.classList.remove('active');
+          return;
+        }
+
+        searchTimeout = setTimeout(() => {
+          fetch(`/api/search?q=${encodeURIComponent(query)}&limit=6`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.results && data.results.length > 0) {
+                let html = '';
+                data.results.forEach(item => {
+                  html += `
+                    <div class="search-result-item" onclick="window.location.href='${item.url}'">
+                      <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/48?text=No+Image'">
+                      <div class="search-result-info">
+                        <div class="search-result-name">${item.name}</div>
+                        <div class="search-result-price">RWF ${Math.round(item.price).toLocaleString()}</div>
+                      </div>
+                    </div>
+                  `;
+                });
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.add('active');
+              } else {
+                searchDropdown.innerHTML = '<div class="search-no-results">No products found</div>';
+                searchDropdown.classList.add('active');
+              }
+            })
+            .catch(err => {
+              console.error('Search error:', err);
+              searchDropdown.classList.remove('active');
+            });
+        }, 300);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+          searchDropdown.classList.remove('active');
+        }
+      });
+    }
+  </script>
+
   <!-- Global Loading JavaScript -->
   <script src="{{ url_for('static', filename='js/global-loading.js') }}"></script>
 </body>
