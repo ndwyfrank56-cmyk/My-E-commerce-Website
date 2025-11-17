@@ -1499,6 +1499,82 @@
     #leftSidebar .sidebar-scrollable::-webkit-scrollbar { width: 0; height: 0; }
     #leftSidebar .sidebar-scrollable::-webkit-scrollbar-thumb { background: transparent; }
 
+    .search-dropdown {
+      position: fixed;
+      top: auto;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 9999;
+      display: none;
+      border: 1px solid var(--border);
+      width: 90vw;
+      max-width: 1000px;
+    }
+
+    .search-dropdown.active {
+      display: block;
+    }
+
+    .search-result-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item:hover {
+      background: var(--panel-2);
+    }
+
+    .search-result-item img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .search-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-result-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 4px;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .search-result-price {
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .search-no-results {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
     @media (max-width: 768px) {
       .navbar-bottom .navbar-container {
         display: flex;
@@ -3791,7 +3867,11 @@
           </button>
         </div>
       <div class="nav-center">
+        <div class="search-container" style="position:relative; width:100%; max-width:700px;">
+          <input type="text" class="search-box" placeholder="Search products..." autocomplete="off" style="width:100%; padding:0.7rem 1rem; border-radius:10px; border:1px solid var(--border); background:var(--panel-2); color:var(--text-primary); font-size:0.9rem; outline:none;">
+          <div id="searchSuggestions" class="search-dropdown" style="background:#0f1115;"></div>
         </div>
+      </div>
       <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist">
             <i class="fas fa-heart"></i>

@@ -679,8 +679,8 @@
       letter-spacing: 0.3px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    .add-to-cart-btn{ flex:1; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.85); color:#111; font-weight:900; text-decoration:none; text-align:center; box-shadow: 0 8px 18px rgba(0,0,0,0.22); cursor: pointer; }
-    .buy-now-btn{ flex:1; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.8); font-weight:500; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+    .add-to-cart-btn{ flex:1.5; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.85); color:#111; font-weight:900; text-decoration:none; text-align:center; box-shadow: 0 8px 18px rgba(0,0,0,0.22); cursor: pointer; }
+    .buy-now-btn{ flex:0.8; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.8); font-weight:500; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
     .actions{ display: flex; flex-direction: row; gap: 0.75rem; align-items: center; margin-top: 1.5rem; }
     
     .description{ margin-top: .5rem; padding: 0; background: transparent; border: none; border-radius: 0; color: var(--text-secondary); }
@@ -1612,7 +1612,6 @@
             <button class="add-to-cart-btn" style="pointer-events:none; opacity:.6">Out of Stock</button>
           {% endif %}
           <button class="buy-now-btn" onclick="buyNow('{{ product.id }}')">
-            <i class="fas fa-bolt"></i>
             Buy Now
           </button>
         </div>
