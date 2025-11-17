@@ -4351,5 +4351,41 @@ def test_payment_setup():
     else:
         return jsonify({'error': 'Test route only available in development mode'}), 403
 
+@app.route('/api/search', methods=['GET'])
+def search_products():
+    """Search products by name - returns list without images"""
+    try:
+        query = request.args.get('q', '').strip()
+        if not query or len(query) < 2:
+            return jsonify([])
+        
+        cur = mysql.connection.cursor()
+        # Search in product name and description
+        search_term = f"%{query}%"
+        cur.execute("""
+            SELECT id, name, price, stock, discount 
+            FROM products 
+            WHERE name LIKE %s OR description LIKE %s
+            LIMIT 20
+        """, (search_term, search_term))
+        
+        results = cur.fetchall()
+        products = []
+        
+        for row in results:
+            products.append({
+                'id': row[0],
+                'name': row[1],
+                'price': float(row[2]) if row[2] is not None else 0.0,
+                'stock': row[3] if row[3] is not None else 0,
+                'discount': float(row[4]) if row[4] is not None else 0
+            })
+        
+        cur.close()
+        return jsonify(products)
+    except Exception as e:
+        print(f"Search error: {e}")
+        return jsonify([]), 500
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
