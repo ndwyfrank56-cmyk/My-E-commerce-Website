@@ -2929,7 +2929,7 @@
       // Auto mini-cart popup removed - using flash messages instead
     });
 
-    // Search functionality - client-side DOM search
+    // Search functionality - global API search
     document.addEventListener('DOMContentLoaded', function(){
       (function(){
         const input = document.querySelector('.search-container .search-box');
@@ -2941,36 +2941,8 @@
         const debounce = (fn, ms) => { return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn.apply(null, args), ms); }; };
 
         function clearPanel(){ panel.innerHTML = ''; panel.style.display = 'none'; }
+        function showLoading(){ panel.innerHTML = '<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">Searching...</div>'; panel.style.display = 'block'; }
         function showNoResults(){ panel.innerHTML = '<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">No results</div>'; panel.style.display = 'block'; }
-
-        function searchProducts(q) {
-          if (!q || q.length < 2) return [];
-          
-          const query = q.toLowerCase();
-          const results = [];
-          const seen = new Set();
-          
-          const productCards = document.querySelectorAll('[data-product-id]');
-          
-          productCards.forEach(card => {
-            const productId = card.getAttribute('data-product-id');
-            const productName = card.getAttribute('data-product-name') || '';
-            const productImage = card.getAttribute('data-product-image') || '';
-            
-            if (seen.has(productId)) return;
-            
-            if (productName.toLowerCase().includes(query)) {
-              seen.add(productId);
-              results.push({
-                id: productId,
-                name: productName,
-                image: productImage
-              });
-            }
-          });
-          
-          return results;
-        }
 
         function render(items){
           if (!items.length){ showNoResults(); return; }
@@ -2987,16 +2959,32 @@
           const q = input.value.trim();
           if (q === lastQ) return; lastQ = q;
           if (q.length < 2) { clearPanel(); return; }
-          const results = searchProducts(q);
-          render(results);
-        }, 100);
+          
+          showLoading();
+          fetch(`/api/search?q=${encodeURIComponent(q)}&limit=8`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.results && data.results.length > 0) {
+                render(data.results.map(item => ({
+                  id: item.id,
+                  name: item.name,
+                  image: item.image
+                })));
+              } else {
+                showNoResults();
+              }
+            })
+            .catch(err => {
+              console.error('Search error:', err);
+              showNoResults();
+            });
+        }, 300);
 
         input.addEventListener('input', onInput);
         input.addEventListener('focus', () => { 
           const q = input.value.trim();
           if (q.length >= 2) {
-            const results = searchProducts(q);
-            render(results);
+            onInput();
           }
         });
         document.addEventListener('click', (e) => {
