@@ -658,28 +658,36 @@
     .stock-text.out {
       color: #ef4444;
     }
-    .variation-box:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
-    .variation-box[style*="display: none"] { display: none !important; }
+    .variation-box {
+      transition: all 0.2s ease !important;
+    }
+
+    .variation-box:hover:not(:disabled) {
+      border-color: rgba(255,255,255,0.4) !important;
+      background: rgba(40,45,55,0.8) !important;
+      transform: translateY(-1px);
+    }
+
+    .variation-box.active {
+      border-color: #10b981 !important;
+      background: rgba(16,185,129,0.15) !important;
+      color: #10b981 !important;
+      box-shadow: 0 0 0 1px rgba(16,185,129,0.3);
+    }
+
+    .variation-box:disabled { 
+      opacity: 0.4; 
+      cursor: not-allowed; 
+      pointer-events: none; 
+    }
+
+    .variation-box[style*="display: none"] { 
+      display: none !important; 
+    }
     
-    /* Stock Badge on Variation Boxes */
+    /* Hide stock badge */
     .variation-stock-badge {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      background: rgba(229, 231, 235, 0.9);
-      color: #000;
-      border-radius: 4px;
-      padding: 2px 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 700;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      z-index: 5;
-      line-height: 1;
-      letter-spacing: 0.3px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      display: none !important;
     }
     .add-to-cart-btn{ flex:1.5; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.85); color:#111; font-weight:900; text-decoration:none; text-align:center; box-shadow: 0 8px 18px rgba(0,0,0,0.22); cursor: pointer; }
     .buy-now-btn{ flex:0.8; padding:.8rem 1rem; border-radius:10px; border:1px solid rgba(255, 255, 255, 0.2); background: transparent; color: rgba(255, 255, 255, 0.8); font-weight:500; text-decoration:none; text-align:center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
@@ -1585,9 +1593,8 @@
             <label style="display: block; font-size: 0.8rem; color: #f5f5f5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">{{ attr_name }}</label>
             <div class="variation-boxes" data-variation-name="{{ attr_name }}" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
               {% for opt in options %}
-              <button type="button" class="variation-box" data-variation-id="{{ opt.id }}" data-stock="{{ opt.stock }}" data-img-var-id="{{ opt.img_var_id if opt.img_var_id else '' }}" data-variation-name="{{ attr_name }}" onclick="selectVariationBox(this)" style="padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(30,35,45,0.8); color: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all .15s ease; min-width: 48px; text-align: center; position: relative;">
+              <button type="button" class="variation-box" data-variation-id="{{ opt.id }}" data-stock="{{ opt.stock }}" data-img-var-id="{{ opt.img_var_id if opt.img_var_id else '' }}" data-variation-name="{{ attr_name }}" onclick="selectVariationBox(this)" style="padding: 0.65rem 1.2rem; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(27,32,43,0.6); color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; min-width: 60px; text-align: center; position: relative; display: flex; align-items: center; justify-content: center;">
                 {{ opt.value }}
-                <span class="variation-stock-badge">{{ opt.stock }}</span>
               </button>
               {% endfor %}
             </div>
