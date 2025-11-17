@@ -3066,8 +3066,8 @@ body { padding-top: 120px; }
     }
 
     // Search functionality
-    const searchInput = document.querySelector('.search-box');
-    const searchDropdown = document.getElementById('searchSuggestions');
+    const searchInput = document.getElementById('searchInput') || document.querySelector('.search-box');
+    const searchDropdown = document.getElementById('searchDropdown') || document.getElementById('searchSuggestions');
     let searchTimeout;
 
     if (searchInput && searchDropdown) {
@@ -3112,7 +3112,7 @@ body { padding-top: 120px; }
       });
 
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
+        if (!e.target.closest('.search-container') && !e.target.closest('.search-box')) {
           searchDropdown.classList.remove('active');
         }
       });
