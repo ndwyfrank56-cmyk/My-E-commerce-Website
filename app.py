@@ -3955,13 +3955,16 @@ def search_products_api():
         query = request.args.get('q', '').strip()
         results = []
         if not query:
+            print(f"[SEARCH] Empty query")
             return jsonify(results)
 
         cur = mysql.connection.cursor()
         like = f"%{query}%"
+        print(f"[SEARCH] Query: '{query}', LIKE pattern: '{like}'")
 
         try:
             # Prefer searching both name and description when column exists
+            print(f"[SEARCH] Attempting query with description column...")
             cur.execute(
                 """
                 SELECT id, name, price
@@ -3972,8 +3975,11 @@ def search_products_api():
                 """,
                 (like, like),
             )
-        except Exception:
+            rows = cur.fetchall()
+            print(f"[SEARCH] Query with description succeeded, found {len(rows)} rows")
+        except Exception as e:
             # Fallback for databases without a description column
+            print(f"[SEARCH] Query with description failed: {e}, trying name-only fallback...")
             cur.execute(
                 """
                 SELECT id, name, price
@@ -3984,8 +3990,9 @@ def search_products_api():
                 """,
                 (like,),
             )
+            rows = cur.fetchall()
+            print(f"[SEARCH] Fallback query succeeded, found {len(rows)} rows")
 
-        rows = cur.fetchall()
         cur.close()
 
         for row in rows:
@@ -3997,9 +4004,12 @@ def search_products_api():
                 }
             )
 
+        print(f"[SEARCH] Returning {len(results)} results: {[r['name'] for r in results]}")
         return jsonify(results)
     except Exception as e:
-        print(f"Search API error: {e}")
+        print(f"[SEARCH] API error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": "Error performing search"}), 500
 
 @app.route('/product/<int:product_id>')
