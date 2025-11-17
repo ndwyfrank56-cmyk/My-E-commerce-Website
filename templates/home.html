@@ -3370,7 +3370,7 @@
           
           <div class="products-grid {% if 'explore' in section_data.name.lower() %}explore-more{% endif %}">
             {% for product in section_data.products %}
-              <article class="product-card scroll-animate">
+              <article class="product-card scroll-animate" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-price="{{ product.price }}">
                 <a class="card-link" href="/product/{{ product.id }}">View</a>
                 <div class="product-image-container">
                   <img loading="lazy" src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
@@ -3853,13 +3853,32 @@
       function setLoading(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">Searching...</div>`; panel.style.display = 'block'; }
       function showNoResults(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">No results</div>`; panel.style.display = 'block'; }
 
-      async function fetchResults(q){
-        if (!q || q.length < 2) { clearPanel(); return; }
-        try {
-          const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-          const data = await res.json();
-          render(Array.isArray(data) ? data : []);
-        } catch(e) { showNoResults(); }
+      // Client-side search: query all product cards on the page
+      function searchProducts(q) {
+        if (!q || q.length < 2) return [];
+        
+        const query = q.toLowerCase();
+        const results = [];
+        
+        // Find all product cards on the page
+        const productCards = document.querySelectorAll('[data-product-id]');
+        
+        productCards.forEach(card => {
+          const productId = card.getAttribute('data-product-id');
+          const productName = card.getAttribute('data-product-name') || '';
+          const productPrice = card.getAttribute('data-product-price') || '0';
+          
+          // Match against product name
+          if (productName.toLowerCase().includes(query)) {
+            results.push({
+              id: productId,
+              name: productName,
+              price: parseFloat(productPrice)
+            });
+          }
+        });
+        
+        return results;
       }
 
       function render(items){
@@ -3877,12 +3896,18 @@
         const q = input.value.trim();
         if (q === lastQ) return; lastQ = q;
         if (q.length < 2) { clearPanel(); return; }
-        setLoading();
-        fetchResults(q);
-      }, 180);
+        const results = searchProducts(q);
+        render(results);
+      }, 100);
 
       input.addEventListener('input', onInput);
-      input.addEventListener('focus', () => { if (input.value.trim().length >= 2) fetchResults(input.value.trim()); });
+      input.addEventListener('focus', () => { 
+        const q = input.value.trim();
+        if (q.length >= 2) {
+          const results = searchProducts(q);
+          render(results);
+        }
+      });
       document.addEventListener('click', (e) => {
         if (!panel.contains(e.target) && !input.contains(e.target)) clearPanel();
       });
