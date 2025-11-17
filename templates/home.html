@@ -151,105 +151,6 @@
       z-index: 2003; /* above sidebars/overlay */
     }
 
-    /* Search Bar Styling */
-    .search-container {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 0.6rem 1rem 0.6rem 2.5rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-      outline: none;
-    }
-
-    .search-input::placeholder {
-      color: rgba(255,255,255,0.4);
-    }
-
-    .search-input:focus {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.25);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255,255,255,0.5);
-      pointer-events: none;
-      font-size: 0.9rem;
-    }
-
-    .search-results {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: #151922;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-      max-height: 400px;
-      overflow-y: auto;
-      z-index: 10000;
-      display: none;
-      margin-top: -1px;
-    }
-
-    .search-results.active {
-      display: block;
-    }
-
-    .search-result-item {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      cursor: pointer;
-      transition: background 0.15s ease;
-      text-decoration: none;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .search-result-item:hover {
-      background: rgba(255,255,255,0.05);
-    }
-
-    .search-result-item:last-child {
-      border-bottom: none;
-    }
-
-    .search-result-name {
-      font-size: 0.9rem;
-      font-weight: 500;
-      flex: 1;
-    }
-
-    .search-result-price {
-      font-size: 0.85rem;
-      color: #3B82F6;
-      font-weight: 600;
-      margin-left: 1rem;
-    }
-
-    .search-result-stock {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      margin-left: 0.5rem;
-    }
-
     .logo {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-weight: 800;
@@ -3407,11 +3308,7 @@
             <i class="fas fa-bars"></i>
           </button>
         </div>
-        <div class="search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-input" id="searchInput" placeholder="Search products...">
-          <div class="search-results" id="searchResults"></div>
-        </div>
+        <div class="nav-center"></div>
         <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist">
             <i class="fas fa-heart"></i>
@@ -4222,9 +4119,9 @@
       updateWishlistCount();
     });
 
-    // Search functionality - Clean and Professional
+    // Search functionality
     const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
+    const searchDropdown = document.getElementById('searchDropdown');
     let searchTimeout;
 
     if (searchInput) {
@@ -4233,55 +4130,44 @@
         const query = this.value.trim();
 
         if (query.length < 2) {
-          searchResults.classList.remove('active');
+          searchDropdown.classList.remove('active');
           return;
         }
 
         searchTimeout = setTimeout(() => {
-          fetch(`/api/search?q=${encodeURIComponent(query)}`)
+          fetch(`/api/search?q=${encodeURIComponent(query)}&limit=6`)
             .then(res => res.json())
             .then(data => {
-              if (data && data.length > 0) {
+              if (data.results && data.results.length > 0) {
                 let html = '';
-                data.forEach(item => {
-                  const price = Math.round(item.price).toLocaleString();
-                  const stock = item.stock > 0 ? `${item.stock} left` : 'Out of stock';
+                data.results.forEach(item => {
                   html += `
-                    <a href="/product/${item.id}" class="search-result-item">
-                      <span class="search-result-name">${item.name}</span>
-                      <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span class="search-result-price">RWF ${price}</span>
-                        <span class="search-result-stock">${stock}</span>
+                    <div class="search-result-item" onclick="window.location.href='${item.url}'">
+                      <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/48?text=No+Image'">
+                      <div class="search-result-info">
+                        <div class="search-result-name">${item.name}</div>
+                        <div class="search-result-price">RWF ${Math.round(item.price).toLocaleString()}</div>
                       </div>
-                    </a>
+                    </div>
                   `;
                 });
-                searchResults.innerHTML = html;
-                searchResults.classList.add('active');
+                searchDropdown.innerHTML = html;
+                searchDropdown.classList.add('active');
               } else {
-                searchResults.innerHTML = '<div style="padding: 1rem; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.9rem;">No products found</div>';
-                searchResults.classList.add('active');
+                searchDropdown.innerHTML = '<div class="search-no-results">No products found</div>';
+                searchDropdown.classList.add('active');
               }
             })
             .catch(err => {
               console.error('Search error:', err);
-              searchResults.classList.remove('active');
+              searchDropdown.classList.remove('active');
             });
         }, 300);
       });
 
-      // Close search results when clicking outside
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
-          searchResults.classList.remove('active');
-        }
-      });
-
-      // Close on Escape key
-      searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          searchResults.classList.remove('active');
-          this.blur();
+        if (!e.target.closest('.search-bar-wrapper')) {
+          searchDropdown.classList.remove('active');
         }
       });
     }
