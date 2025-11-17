@@ -1824,15 +1824,15 @@
     /* Product Card Action Buttons */
     .product-actions {
       display: flex;
-      gap: 8px;
+      gap: 0.75rem;
       margin-top: auto; /* push actions to bottom of card */
-      justify-content: center;
-      padding-bottom: .5rem;
+      align-items: center;
+      padding-bottom: 0;
     }
 
     .btn-view,
     .btn-cart {
-      padding: 0.75rem 1rem;
+      padding: 0.8rem 1rem;
       border-radius: 10px;
       background: rgba(255,255,255,0.85);
       color: #111318;
@@ -1853,12 +1853,13 @@
 
     /* View button style (match Home smoky white) */
     .btn-view { 
-      border-radius: 10px; /* match Back button rounded rectangle */
+      flex: 0.8;
+      border-radius: 10px;
     }
 
     .add-to-cart-btn {
-      width: 100%;
-      padding: 0.75rem 1rem;
+      flex: 1.5;
+      padding: 0.8rem 1rem;
       background: rgba(255,255,255,0.85);
       color: #111318;
       border: 1px solid rgba(255,255,255,0.35);
@@ -1868,15 +1869,15 @@
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 8px 18px rgba(0,0,0,0.22);
-      margin-top: auto;
+      margin-top: 0;
       letter-spacing: 0.025em;
     }
     
     .product-card .product-actions .add-to-cart-btn {
-      flex: 1; /* fill remaining space for product cards */
+      flex: 1.5;
     }
     /* Ensure View keeps natural width on desktop */
-    .product-actions .btn-view { flex: 0 0 auto; }
+    .product-actions .btn-view { flex: 0.8; }
 
     .add-to-cart-btn:active {
       transform: translateY(1px);
