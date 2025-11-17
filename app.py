@@ -3958,18 +3958,33 @@ def search_products_api():
             return jsonify(results)
 
         cur = mysql.connection.cursor()
-        # Search by name or description (case-insensitive)
         like = f"%{query}%"
-        cur.execute(
-            """
-            SELECT id, name, price
-            FROM products
-            WHERE name LIKE %s OR (description IS NOT NULL AND description LIKE %s)
-            ORDER BY name ASC
-            LIMIT 10
-            """,
-            (like, like),
-        )
+
+        try:
+            # Prefer searching both name and description when column exists
+            cur.execute(
+                """
+                SELECT id, name, price
+                FROM products
+                WHERE name LIKE %s OR (description IS NOT NULL AND description LIKE %s)
+                ORDER BY name ASC
+                LIMIT 10
+                """,
+                (like, like),
+            )
+        except Exception:
+            # Fallback for databases without a description column
+            cur.execute(
+                """
+                SELECT id, name, price
+                FROM products
+                WHERE name LIKE %s
+                ORDER BY name ASC
+                LIMIT 10
+                """,
+                (like,),
+            )
+
         rows = cur.fetchall()
         cur.close()
 
