@@ -4922,7 +4922,11 @@ document.addEventListener('DOMContentLoaded', () => {
       (function(){
         const input = document.querySelector('.search-container .search-box');
         const panel = document.getElementById('searchSuggestions');
-        if (!input || !panel) return;
+        if (!input || !panel) {
+          console.error('Search elements not found', {input, panel});
+          return;
+        }
+        console.log('Search initialized', {input, panel, cardsFound: document.querySelectorAll('[data-product-id]').length});
         
         let timer = null;
         let lastQ = '';
