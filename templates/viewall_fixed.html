@@ -4800,57 +4800,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   </script>
-  <script>
-    (function(){
-      const input = document.querySelector('.search-container .search-box');
-      const panel = document.getElementById('searchSuggestions');
-      if (!input || !panel) return;
-
-      let timer = null; let lastQ = '';
-      const debounce = (fn, ms) => (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
-      const clearPanel = () => { panel.innerHTML = ''; panel.hidden = true; };
-      const setLoading = () => { panel.innerHTML = '<div class="status"><span class="spinner"></span>Loading…</div>'; panel.hidden = false; };
-      const showNoResults = () => { panel.innerHTML = '<div class="status">No results</div>'; panel.hidden = false; };
-
-      async function fetchResults(q){
-        if (!q || q.length < 2) { clearPanel(); return; }
-        try {
-          const res = await fetch(`/search?q=${encodeURIComponent(q)}&limit=8`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-          const data = await res.json();
-          render(data.results || []);
-        } catch(e){ showNoResults(); }
-      }
-
-      function render(items){
-        if (!items.length){ showNoResults(); return; }
-        panel.innerHTML = items.map(item => `
-          <div class="search-suggestion" data-url="/add-to-cart?product_id=${item.id}">
-            <img src="${item.image || ''}" alt="${item.name}">
-            <div class="meta">
-              <div class="name">${item.name}</div>
-              <div class="category">${item.category || ''}</div>
-            </div>
-            <div class="price">${item.price ? 'RWF ' + Math.round(item.price) : ''}</div>
-          </div>
-        `).join('');
-        panel.hidden = false;
-      }
-
-      const onInput = debounce(() => {
-        const q = input.value.trim();
-        if (q === lastQ) return; lastQ = q;
-        if (q.length < 2) { clearPanel(); return; }
-        setLoading();
-        fetchResults(q);
-      }, 180);
-
-      input.addEventListener('input', onInput);
-      input.addEventListener('focus', () => { if (input.value.trim().length >= 2) fetchResults(input.value.trim()); });
-      document.addEventListener('click', (e) => { if (!panel.contains(e.target) && !input.contains(e.target)) clearPanel(); });
-      panel.addEventListener('click', (e) => { const it = e.target.closest('.search-suggestion'); if (!it) return; window.location.href = it.dataset.url; });
-      input.addEventListener('keydown', (e) => { if (e.key === 'Escape') clearPanel(); });
-    })();
-  </script>
 
 
 <style>
