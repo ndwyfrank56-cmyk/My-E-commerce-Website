@@ -3066,84 +3066,86 @@ body { padding-top: 120px; }
     }
 
     // Search functionality - client-side DOM search
-    (function(){
-      const input = document.querySelector('.search-container .search-box');
-      const panel = document.getElementById('searchSuggestions');
-      if (!input || !panel) return;
-      
-      let timer = null;
-      let lastQ = '';
-      const debounce = (fn, ms) => { return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn.apply(null, args), ms); }; };
+    document.addEventListener('DOMContentLoaded', function(){
+      (function(){
+        const input = document.querySelector('.search-container .search-box');
+        const panel = document.getElementById('searchSuggestions');
+        if (!input || !panel) return;
+        
+        let timer = null;
+        let lastQ = '';
+        const debounce = (fn, ms) => { return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn.apply(null, args), ms); }; };
 
-      function clearPanel(){ panel.innerHTML = ''; panel.style.display = 'none'; }
-      function showNoResults(){ panel.innerHTML = '<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">No results</div>'; panel.style.display = 'block'; }
+        function clearPanel(){ panel.innerHTML = ''; panel.style.display = 'none'; }
+        function showNoResults(){ panel.innerHTML = '<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">No results</div>'; panel.style.display = 'block'; }
 
-      function searchProducts(q) {
-        if (!q || q.length < 2) return [];
-        
-        const query = q.toLowerCase();
-        const results = [];
-        const seen = new Set();
-        
-        const productCards = document.querySelectorAll('[data-product-id]');
-        
-        productCards.forEach(card => {
-          const productId = card.getAttribute('data-product-id');
-          const productName = card.getAttribute('data-product-name') || '';
-          const productImage = card.getAttribute('data-product-image') || '';
+        function searchProducts(q) {
+          if (!q || q.length < 2) return [];
           
-          if (seen.has(productId)) return;
+          const query = q.toLowerCase();
+          const results = [];
+          const seen = new Set();
           
-          if (productName.toLowerCase().includes(query)) {
-            seen.add(productId);
-            results.push({
-              id: productId,
-              name: productName,
-              image: productImage
-            });
-          }
-        });
-        
-        return results;
-      }
+          const productCards = document.querySelectorAll('[data-product-id]');
+          
+          productCards.forEach(card => {
+            const productId = card.getAttribute('data-product-id');
+            const productName = card.getAttribute('data-product-name') || '';
+            const productImage = card.getAttribute('data-product-image') || '';
+            
+            if (seen.has(productId)) return;
+            
+            if (productName.toLowerCase().includes(query)) {
+              seen.add(productId);
+              results.push({
+                id: productId,
+                name: productName,
+                image: productImage
+              });
+            }
+          });
+          
+          return results;
+        }
 
-      function render(items){
-        if (!items.length){ showNoResults(); return; }
-        panel.innerHTML = items.map(item => `
-          <div class="search-suggestion" data-url="/product/${item.id}" style="padding:8px 12px; display:flex; align-items:center; gap:1rem; cursor:pointer; font-size:0.9rem; color:rgba(255,255,255,0.9); border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
-            <img src="${item.image}" alt="${item.name}" style="width:50px; height:50px; object-fit:cover; border-radius:6px; flex-shrink:0;">
-            <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</span>
-          </div>
-        `).join('');
-        panel.style.display = 'block';
-      }
+        function render(items){
+          if (!items.length){ showNoResults(); return; }
+          panel.innerHTML = items.map(item => `
+            <div class="search-suggestion" data-url="/product/${item.id}" style="padding:8px 12px; display:flex; align-items:center; gap:1rem; cursor:pointer; font-size:0.9rem; color:rgba(255,255,255,0.9); border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+              <img src="${item.image}" alt="${item.name}" style="width:50px; height:50px; object-fit:cover; border-radius:6px; flex-shrink:0;">
+              <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</span>
+            </div>
+          `).join('');
+          panel.style.display = 'block';
+        }
 
-      const onInput = debounce(() => {
-        const q = input.value.trim();
-        if (q === lastQ) return; lastQ = q;
-        if (q.length < 2) { clearPanel(); return; }
-        const results = searchProducts(q);
-        render(results);
-      }, 100);
-
-      input.addEventListener('input', onInput);
-      input.addEventListener('focus', () => { 
-        const q = input.value.trim();
-        if (q.length >= 2) {
+        const onInput = debounce(() => {
+          const q = input.value.trim();
+          if (q === lastQ) return; lastQ = q;
+          if (q.length < 2) { clearPanel(); return; }
           const results = searchProducts(q);
           render(results);
-        }
-      });
-      document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && !input.contains(e.target)) clearPanel();
-      });
-      panel.addEventListener('click', (e) => {
-        const item = e.target.closest('.search-suggestion');
-        if (!item) return;
-        window.location.href = item.dataset.url;
-      });
-      input.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') clearPanel(); });
-    })();
+        }, 100);
+
+        input.addEventListener('input', onInput);
+        input.addEventListener('focus', () => { 
+          const q = input.value.trim();
+          if (q.length >= 2) {
+            const results = searchProducts(q);
+            render(results);
+          }
+        });
+        document.addEventListener('click', (e) => {
+          if (!panel.contains(e.target) && !input.contains(e.target)) clearPanel();
+        });
+        panel.addEventListener('click', (e) => {
+          const item = e.target.closest('.search-suggestion');
+          if (!item) return;
+          window.location.href = item.dataset.url;
+        });
+        input.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') clearPanel(); });
+      })();
+    });
   </script>
   {% endif %}
 
