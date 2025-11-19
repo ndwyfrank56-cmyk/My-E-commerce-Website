@@ -4060,7 +4060,7 @@
                 <div class="product-image-container">
                   <img loading="lazy" src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
                   <span class="price-badge">
-                    {% if product.discount and product.discount > 0 %}
+                    {% if product.discount and product.discount > 0 and product.original_price %}
                       <span class="original-price">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
                       <span class="discount-percent">-{{ product.discount|int }}%</span>
                       <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
@@ -4072,7 +4072,7 @@
                 <div class="product-info">
                   <h4 class="product-name">{{ product.name }}</h4>
                   <div class="product-price">
-                    {% if product.discount and product.discount > 0 %}
+                    {% if product.discount and product.discount > 0 and product.original_price %}
                       <span style="text-decoration: line-through; opacity: 0.6; font-size: 0.85rem; margin-right: 0.5rem;">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
                       <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                     {% else %}
