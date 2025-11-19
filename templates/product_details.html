@@ -1554,9 +1554,9 @@
         <div class="pricing-section">
           <div class="price-display">
             {% if product.discount and product.discount > 0 %}
-              <span class="current-price">RWF {{ '{:,.0f}'.format(product.price * (1 - product.discount/100)) }}</span>
-              <span class="original-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
-              <span class="savings-text">You save RWF {{ '{:,.0f}'.format(product.price * product.discount/100) }}</span>
+              <span class="current-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
+              <span class="original-price">RWF {{ '{:,.0f}'.format(product.price / (1 - product.discount/100)) }}</span>
+              <span class="savings-text">You save RWF {{ '{:,.0f}'.format(product.price / (1 - product.discount/100) - product.price) }}</span>
             {% else %}
               <span class="current-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
             {% endif %}
