@@ -3284,17 +3284,16 @@
       top: auto;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.85);
+      background: #ffffff;
       border-radius: 10px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       max-height: 400px;
       overflow-y: auto;
       z-index: 9999;
       display: none;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.15);
       width: 90vw;
       max-width: 1000px;
-      backdrop-filter: blur(10px);
     }
 
     .search-dropdown.active {
@@ -3344,9 +3343,10 @@
     }
 
     .search-result-price {
-      color: #333333;
+      color: #c7a96a;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 700;
+      margin-top: 2px;
     }
 
     .search-no-results {
@@ -3956,8 +3956,8 @@
       const debounce = (fn, ms) => { return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn.apply(null, args), ms); }; };
 
       function clearPanel(){ panel.innerHTML = ''; panel.style.display = 'none'; }
-      function setLoading(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">Searching...</div>`; panel.style.display = 'block'; }
-      function showNoResults(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:rgba(255,255,255,0.6);">No results</div>`; panel.style.display = 'block'; }
+      function setLoading(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:#666666;">Searching...</div>`; panel.style.display = 'block'; }
+      function showNoResults(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:#666666;">No results</div>`; panel.style.display = 'block'; }
 
       // Client-side search: query all product cards on the page
       function searchProducts(q) {
@@ -3995,9 +3995,12 @@
       function render(items){
         if (!items.length){ showNoResults(); return; }
         panel.innerHTML = items.map(item => `
-          <div class="search-suggestion" data-url="/product/${item.id}" style="padding:8px 12px; display:flex; align-items:center; gap:1rem; cursor:pointer; font-size:0.9rem; color:rgba(255,255,255,0.9); border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
-            <img src="${item.image}" alt="${item.name}" style="width:50px; height:50px; object-fit:cover; border-radius:6px; flex-shrink:0;">
-            <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</span>
+          <div class="search-suggestion" data-url="/product/${item.id}" style="padding:12px 14px; display:flex; align-items:center; gap:12px; cursor:pointer; border-bottom:1px solid rgba(0,0,0,0.08); transition:background 0.2s ease;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
+            <img src="${item.image}" alt="${item.name}" style="width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0;">
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:600; color:#000000; font-size:14px; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</div>
+              <div style="color:#c7a96a; font-size:13px; font-weight:700;">RWF ${Math.round(item.price).toLocaleString()}</div>
+            </div>
           </div>
         `).join('');
         panel.style.display = 'block';
