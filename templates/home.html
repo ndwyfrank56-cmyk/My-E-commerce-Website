@@ -3252,16 +3252,17 @@
       top: auto;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--panel-2);
+      background: rgba(255, 255, 255, 0.85);
       border-radius: 10px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       max-height: 400px;
       overflow-y: auto;
       z-index: 9999;
       display: none;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       width: 90vw;
       max-width: 1000px;
+      backdrop-filter: blur(10px);
     }
 
     .search-dropdown.active {
@@ -3270,7 +3271,7 @@
 
     .search-result-item {
       padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       cursor: pointer;
       transition: background 0.2s ease;
       display: flex;
@@ -3283,7 +3284,7 @@
     }
 
     .search-result-item:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.05);
     }
 
     .search-result-item img {
@@ -3301,7 +3302,7 @@
 
     .search-result-name {
       font-weight: 600;
-      color: var(--text-primary);
+      color: #000000;
       font-size: 14px;
       margin-bottom: 4px;
       overflow: visible;
@@ -3311,7 +3312,7 @@
     }
 
     .search-result-price {
-      color: var(--text-secondary);
+      color: #333333;
       font-size: 13px;
       font-weight: 500;
     }
@@ -3388,7 +3389,7 @@
         <div class="nav-center">
           <div class="search-container" style="position:relative; width:100%; max-width:700px;">
             <input type="text" class="search-box" placeholder="Search products..." autocomplete="off" style="width:100%; padding:0.7rem 1rem; border-radius:10px; border:1px solid var(--border); background:var(--panel-2); color:var(--text-primary); font-size:0.9rem; outline:none;">
-            <div id="searchSuggestions" class="search-dropdown" style="background:#0f1115;"></div>
+            <div id="searchSuggestions" class="search-dropdown"></div>
           </div>
         </div>
         <div class="nav-actions">
