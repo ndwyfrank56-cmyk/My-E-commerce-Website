@@ -2090,21 +2090,21 @@ def profile():
             cur.execute("SELECT id, username, email, password_hash, first_name, last_name, phone, city, address, is_active FROM users WHERE id = %s", (user_id,))
             row = cur.fetchone()
             user.update({'username': row[1], 'email': row[2], 'first_name': row[4], 'last_name': row[5], 'phone': row[6], 'city': row[7], 'address': row[8]})
-            return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items)
+            return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items, user_orders=user_orders)
         elif form_type == 'password':
             current_password = request.form.get('current_password', '')
             new_password = request.form.get('new_password', '')
             confirm_password = request.form.get('confirm_password', '')
             if not verify_password(current_password, user['password_hash']):
                 flash('Current password is incorrect.', 'error')
-                return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items)
+                return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items, user_orders=user_orders)
             ok, msg = validate_password(new_password)
             if not ok:
                 flash(msg, 'error')
-                return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items)
+                return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items, user_orders=user_orders)
             if new_password != confirm_password:
                 flash('New passwords do not match.', 'error')
-                return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items)
+                return render_template('profile.html', user=user, categories=categories, cart_items=cart_items, wishlist_items=wishlist_items, user_orders=user_orders)
             new_hash = hash_password(new_password)
             cur.execute("UPDATE users SET password_hash=%s WHERE id=%s", (new_hash, user_id))
             mysql.connection.commit()
