@@ -2460,18 +2460,30 @@
     pointer-events: auto;
   }
   
-  /* Special class for Explore More - show all items in grid */
+  /* Special class for Explore More - horizontal scrolling like other sections */
   .products-grid.explore-more {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.75rem !important;
-    overflow: hidden !important;
-    padding: 0 !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 1rem !important;
+    padding: 0 1rem 1rem 0 !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scroll-snap-type: x mandatory !important;
+    pointer-events: none !important;
+  }
+  
+  .products-grid.explore-more::-webkit-scrollbar {
+    display: none !important;
   }
   
   .products-grid.explore-more .product-card {
-    flex: none !important;
-    min-width: auto !important;
+    flex: 0 0 calc(50% - 0.5rem) !important;
+    min-width: calc(50% - 0.5rem) !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+    pointer-events: auto !important;
   }
   
   /* Arrow navigation buttons - Above products */
@@ -2518,9 +2530,9 @@
     margin: 0 2rem;
   }
 
-  /* Hide arrows for explore-more sections */
+  /* Show arrows for explore-more sections */
   .category-section:has(.products-grid.explore-more) .scroll-arrows-container {
-    display: none !important;
+    display: flex !important;
   }
 
   /* Mobile: Larger, more readable price badges */
