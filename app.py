@@ -2411,6 +2411,9 @@ def viewall():
         return redirect(url_for('home'))
     try:
         cur = mysql.connection.cursor()
+        if not cur:
+            flash("Database connection failed. Please try again.", 'error')
+            return redirect(url_for('home'))
         
         # Handle "uncategorized" special case
         if category_id == 'uncategorized':
@@ -2535,7 +2538,9 @@ def viewall():
                               available_sizes=available_sizes,
                               selected_sizes=selected_sizes)
     except Exception as e:
+        import traceback
         print(f"Error in /viewall: {e}")
+        print(f"Traceback: {traceback.format_exc()}")
         flash("Error loading category. Please try again.", 'error')
         return redirect(url_for('home'))
 
