@@ -3039,8 +3039,9 @@
       flex: 0 0 300px;
       position: sticky;
       top: 140px;
-      height: calc(100vh - 140px);
-      overflow-y: hidden;
+      height: auto;
+      min-height: calc(100vh - 140px);
+      overflow-y: visible;
       overflow-x: hidden;
       background: var(--panel);
       border-radius: 0;
@@ -3094,10 +3095,10 @@
       display: none;
     }
 
-    /* Content area - no scroll */
+    /* Content area - expands with content */
     .filter-content {
       flex: 1;
-      overflow: hidden;
+      overflow: visible;
       padding: 0;
       display: flex;
       flex-direction: column;
