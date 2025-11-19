@@ -2484,17 +2484,24 @@ def viewall():
                     continue
             
             products_data.append(prod)
-        products = [{
-            'id': prod[0],
-            'name': prod[1],
-            'price': float(prod[2]),
-            'image': resolve_image_url(prod[3]),
-            'category_id': prod[4],
-            'stock': prod[5] if len(prod) > 5 else 0,
-            'description': prod[6] if len(prod) > 6 else '',
-            'discount': float(prod[7] if len(prod) > 7 and prod[7] is not None else 0),
-            'rate': float(prod[8]) if len(prod) > 8 and prod[8] is not None else 0.0
-        } for prod in products_data]
+        products = []
+        for prod in products_data:
+            original_price = float(prod[2]) if prod[2] is not None else 0.0
+            discount = float(prod[7] if len(prod) > 7 and prod[7] is not None else 0)
+            discounted_price = calculate_discounted_price(original_price, discount)
+            
+            products.append({
+                'id': prod[0],
+                'name': prod[1],
+                'price': discounted_price,
+                'original_price': original_price,
+                'image': resolve_image_url(prod[3]),
+                'category_id': prod[4],
+                'stock': prod[5] if len(prod) > 5 else 0,
+                'description': prod[6] if len(prod) > 6 else '',
+                'discount': discount,
+                'rate': float(prod[8]) if len(prod) > 8 and prod[8] is not None else 0.0
+            })
         cur.execute("SELECT * FROM categories")
         categories_data = cur.fetchall()
         categories = [{'id': cat[0], 'name': cat[1]} for cat in categories_data]
