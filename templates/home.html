@@ -1738,6 +1738,20 @@
       display: none;
     }
 
+    /* Sticky header for mobile */
+    @media (max-width: 768px) {
+      .category-title {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 85%, rgba(11, 12, 16, 0) 100%);
+        padding: 1rem 1rem 1.5rem 1rem;
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 1.3rem;
+      }
+    }
+
 
 
 
@@ -1883,6 +1897,24 @@
 
     /* Make whole card clickable */
     .product-card .card-link { position: absolute; inset: 0; z-index: 1; text-indent: -9999px; }
+
+    /* Section badge on product card */
+    .section-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(199, 169, 106, 0.9);
+      color: #0f1115;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      z-index: 2;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 
     /* remove glossy layer and hover effects */
     .product-card::before { content: none; }
@@ -3448,8 +3480,9 @@
           
           <div class="products-grid {% if 'explore' in section_data.name.lower() %}explore-more{% endif %}">
             {% for product in section_data.products %}
-              <article class="product-card scroll-animate" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-price="{{ product.price }}" data-product-image="{{ product.image }}">
+              <article class="product-card scroll-animate" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-price="{{ product.price }}" data-product-image="{{ product.image }}" data-section="{{ section_data.name }}">
                 <a class="card-link" href="/product/{{ product.id }}">View</a>
+                <div class="section-badge">{{ section_data.name }}</div>
                 <div class="product-image-container">
                   <img loading="lazy" src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
                   <span class="price-badge">
