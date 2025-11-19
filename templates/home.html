@@ -2474,35 +2474,36 @@
     pointer-events: auto;
   }
   
-  /* Special class for Explore More - horizontal scrolling like other sections */
+  /* Special class for Explore More - clean grid like Related products */
   .products-grid.explore-more {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
     gap: 1rem !important;
-    padding: 0 1rem 1rem 0 !important;
-    scroll-behavior: smooth !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    scroll-snap-type: x mandatory !important;
-    pointer-events: none !important;
+    padding: 0 !important;
+    scroll-behavior: auto !important;
+    scrollbar-width: auto !important;
+    -ms-overflow-style: auto !important;
+    scroll-snap-type: none !important;
+    pointer-events: auto !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
   }
   
   .products-grid.explore-more::-webkit-scrollbar {
-    display: none !important;
+    display: auto !important;
   }
   
   .products-grid.explore-more .product-card {
-    flex: 0 0 calc(50% - 0.5rem) !important;
-    min-width: calc(50% - 0.5rem) !important;
-    scroll-snap-align: start !important;
-    scroll-snap-stop: always !important;
+    flex: auto !important;
+    min-width: auto !important;
+    scroll-snap-align: auto !important;
+    scroll-snap-stop: auto !important;
     pointer-events: auto !important;
   }
   
-  /* Arrow navigation buttons - Above products */
+  /* Arrow navigation buttons - Hide for explore-more */
   .scroll-arrows-container {
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
@@ -2544,9 +2545,9 @@
     margin: 0 2rem;
   }
 
-  /* Show arrows for explore-more sections */
+  /* Hide arrows for explore-more sections */
   .category-section:has(.products-grid.explore-more) .scroll-arrows-container {
-    display: flex !important;
+    display: none !important;
   }
 
   /* Mobile: Larger, more readable price badges */
