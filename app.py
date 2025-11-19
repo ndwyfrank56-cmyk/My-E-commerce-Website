@@ -1965,7 +1965,7 @@ def profile():
                     'id': product_id,
                     'name': item['name'],
                     'price': item['price'],
-                    'image': item['image'],
+                    'image': product['image'],
                     'quantity': item['quantity'],
                     'stock': product['stock'],
                     'variations': item.get('variations', ''),  # Include variations
