@@ -2176,59 +2176,28 @@ body { padding-top: 120px; }
         </div>
       {% endif %}
     {% endwith %}
-    <!-- Order Summary -->
-    <aside class="card scroll-animate">
-      <h2>Order Summary</h2>
-      {% if not cart_items %}
-        <div class="empty">No items to show.</div>
-      {% else %}
-        <div class="order-items">
-          {% set total = namespace(value=0) %}
-          {% for item in cart_items %}
-            {% set subtotal = item.price * item.quantity %}
-            {% set total.value = total.value + subtotal %}
-            <div class="order-item scroll-animate" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
-              <a href="/product/{{ item.product_id }}" class="order-thumb" style="display: block; text-decoration: none;"><img src="{{ item.image }}" alt="{{ item.name }}"></a>
-              <div class="order-info">
-                <a href="/product/{{ item.product_id }}" class="order-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">{{ item.name }}</a>
-                {% if item.img_var_name %}
-                <div class="order-variations" style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 0.2rem; font-weight: 500;">
-                  {{ item.img_var_name }}
-                </div>
-                {% endif %}
-                {% if item.img_var_description %}
-                <div class="order-variations" style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 0.1rem;">
-                  {{ item.img_var_description }}
-                </div>
-                {% endif %}
-                {% if item.variations and item.variations.strip() %}
-                <div class="order-variations" style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem;">
-                  {% set var_parts = item.variations.split(',') %}
-                  {% for part in var_parts %}
-                    {% if part.strip() %}
-                      {% set key_val = part.split(':') %}
-                      {% if key_val|length == 2 %}
-                        <div>{{ key_val[0].strip().capitalize() }}: {{ key_val[1].strip() }}</div>
-                      {% else %}
-                        <div>{{ part.strip() }}</div>
-                      {% endif %}
-                    {% endif %}
-                  {% endfor %}
-                </div>
-                {% endif %}
-                <div class="order-meta">Qty: {{ item.quantity }}</div>
-              </div>
-              <div class="order-price">RWF {{ '{:,.0f}'.format(subtotal) }}</div>
-            </div>
-          {% endfor %}
+    
+    <!-- Checkout Header with Total and Button -->
+    {% if cart_items %}
+      {% set total = namespace(value=0) %}
+      {% for item in cart_items %}
+        {% set subtotal = item.price * item.quantity %}
+        {% set total.value = total.value + subtotal %}
+      {% endfor %}
+      <div class="checkout-header" style="background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
+        <div>
+          <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Total Amount</div>
+          <div style="font-weight: 800; font-size: 1.8rem; color: var(--accent);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
         </div>
-        
-        <div class="total scroll-animate" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-          <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Total Amount</div>
-          <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
-        </div>
-      {% endif %}
-    </aside>
+        <form method="POST" action="/checkout" style="display: flex; gap: 1rem; align-items: center;">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+          <button type="submit" class="pay-btn" style="width: auto; padding: 1rem 2rem; min-width: 200px;">
+            <i class="fas fa-check-circle"></i>
+            Complete Order
+          </button>
+        </form>
+      </div>
+    {% endif %}
 
     <!-- Address + MoMo Payment Form -->
     <section class="card scroll-animate">
