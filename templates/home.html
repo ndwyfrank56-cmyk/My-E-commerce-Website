@@ -3519,7 +3519,6 @@
             {% for product in section_data.products %}
               <article class="product-card scroll-animate" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}" data-product-price="{{ product.price }}" data-product-image="{{ product.image }}" data-section="{{ section_data.name }}">
                 <a class="card-link" href="/product/{{ product.id }}">View</a>
-                <div class="section-badge">{{ section_data.name }}</div>
                 <div class="product-image-container">
                   <img loading="lazy" src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
                   <span class="price-badge">
