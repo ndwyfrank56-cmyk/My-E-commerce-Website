@@ -1762,20 +1762,9 @@
         </div>
         <div class="nav-center">
           {% if cart_items %}
-            {% set total = namespace(value=0) %}
-            {% for item in cart_items %}
-              {% set subtotal = item.price * item.quantity %}
-              {% set total.value = total.value + subtotal %}
-            {% endfor %}
-            <div style="display: flex; align-items: center; gap: 1.5rem; padding: 0 1rem;">
-              <div style="text-align: center;">
-                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em;">Total</div>
-                <div style="font-weight: 800; font-size: 1.1rem; color: var(--accent);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
-              </div>
-              <a href="/checkout" class="nav-btn" style="background: #2e7d32; color: white; padding: 0.6rem 1.2rem; border: none; text-decoration: none; font-weight: 600; font-size: 0.9rem; border-radius: 6px;">
-                Checkout
-              </a>
-            </div>
+            <a href="/checkout" class="nav-btn" style="background: #2e7d32; color: white; padding: 0.6rem 1.2rem; border: none; text-decoration: none; font-weight: 600; font-size: 0.9rem; border-radius: 6px;">
+              Checkout
+            </a>
           {% endif %}
         </div>
         <div class="nav-actions">
@@ -1795,8 +1784,21 @@
   <!-- Modern Cart Section -->
   <main class="main-content scroll-animate">
     <div class="section-header">
-      <h2 class="section-title">ADD TO CART</h2>
-      <p class="section-subtitle">Review your selected items and proceed to checkout</p>
+      <div>
+        <h2 class="section-title">ADD TO CART</h2>
+        <p class="section-subtitle">Review your selected items and proceed to checkout</p>
+      </div>
+      {% if cart_items %}
+        {% set total = namespace(value=0) %}
+        {% for item in cart_items %}
+          {% set subtotal = item.price * item.quantity %}
+          {% set total.value = total.value + subtotal %}
+        {% endfor %}
+        <div style="text-align: right;">
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;">Total</div>
+          <div style="font-weight: 800; font-size: 1.4rem; color: var(--accent);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
+        </div>
+      {% endif %}
     </div>
     
 
