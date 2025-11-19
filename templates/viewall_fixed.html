@@ -1825,8 +1825,19 @@
       line-height: 1.4;
     }
 
-    /* Hide legacy inline price pill; we use a floating price badge on the image for a sleeker look */
-    .product-price { display: none; }
+    /* Product price styling - show below product name */
+    .product-price { 
+      display: block !important;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #c7a96a;
+      margin-top: 0.5rem;
+    }
+
+    .product-price span {
+      display: inline;
+      margin-right: 0.5rem;
+    }
 
     /* Floating elements on the image - hidden */
     .price-badge {
