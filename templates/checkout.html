@@ -2184,14 +2184,6 @@ body { padding-top: 120px; }
         {% set subtotal = item.price * item.quantity %}
         {% set total.value = total.value + subtotal %}
       {% endfor %}
-      <div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
-          <div>
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem 0;">Checkout</h2>
-            <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Total Amount: <span style="color: var(--accent); font-size: 1.3rem;">RWF {{ '{:,.0f}'.format(total.value) }}</span></div>
-          </div>
-        </div>
-      </div>
     {% endif %}
 
     <!-- Order Summary - Top Section -->
