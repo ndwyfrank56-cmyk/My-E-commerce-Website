@@ -3992,12 +3992,7 @@
             <i class="fas fa-bars"></i>
           </button>
         </div>
-        <div class="nav-center">
-          <div class="search-container" style="position:relative; width:100%;">
-            <input type="text" class="search-box" placeholder="Search products..." autocomplete="off" style="width:100%; padding:0.7rem 1rem; border-radius:10px; border:1px solid var(--border); background:var(--panel-2); color:var(--text-primary); font-size:0.9rem; outline:none; transition: all 0.3s ease;">
-            <div id="searchSuggestions" class="search-dropdown"></div>
-          </div>
-        </div>
+        <div class="nav-center"></div>
         <div class="nav-actions">
           <a href="/profile#wishlist" class="nav-btn wishlist" aria-label="Wishlist">
             <i class="fas fa-heart"></i>
@@ -5030,94 +5025,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-  </script>
-
-  <!-- Search Functionality -->
-  <script>
-    (function(){
-      const input = document.querySelector('.search-container .search-box');
-      const panel = document.getElementById('searchSuggestions');
-      if (!input || !panel) return;
-      
-      let timer = null;
-      let lastQ = '';
-      const debounce = (fn, ms) => { return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn.apply(null, args), ms); }; };
-
-      function clearPanel(){ panel.innerHTML = ''; panel.style.display = 'none'; }
-      function setLoading(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:#666666;">Searching...</div>`; panel.style.display = 'block'; }
-      function showNoResults(){ panel.innerHTML = `<div style="padding:10px; font-size:0.8rem; color:#666666;">No results</div>`; panel.style.display = 'block'; }
-
-      function searchProducts(q) {
-        if (!q || q.length < 2) return [];
-        
-        const query = q.toLowerCase();
-        const results = [];
-        const seen = new Set();
-        
-        const productCards = document.querySelectorAll('[data-product-id]');
-        
-        productCards.forEach(card => {
-          const productId = card.getAttribute('data-product-id');
-          const productName = card.getAttribute('data-product-name') || '';
-          const productImage = card.getAttribute('data-product-image') || '';
-          const productPrice = card.getAttribute('data-product-price') || '0';
-          
-          if (seen.has(productId)) return;
-          
-          if (productName.toLowerCase().includes(query)) {
-            seen.add(productId);
-            results.push({
-              id: productId,
-              name: productName,
-              image: productImage,
-              price: parseFloat(productPrice)
-            });
-          }
-        });
-        
-        return results;
-      }
-
-      function render(items){
-        if (!items.length){ showNoResults(); return; }
-        panel.innerHTML = items.map(item => `
-          <div class="search-suggestion" data-url="/product/${item.id}" style="padding:12px 14px; display:flex; align-items:center; gap:12px; cursor:pointer; border-bottom:1px solid rgba(0,0,0,0.08); transition:background 0.2s ease;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
-            <img src="${item.image}" alt="${item.name}" style="width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0;">
-            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;">
-              <div style="font-weight:600; color:#000000; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</div>
-              <div style="color:#c7a96a; font-size:13px; font-weight:700; display:block;">RWF ${item.price ? Math.round(item.price).toLocaleString() : '0'}</div>
-            </div>
-          </div>
-        `).join('');
-        panel.style.display = 'block';
-      }
-
-      const onInput = debounce(() => {
-        const q = input.value.trim();
-        if (q === lastQ) return; lastQ = q;
-        if (q.length < 2) { clearPanel(); return; }
-        const results = searchProducts(q);
-        render(results);
-      }, 100);
-
-      input.addEventListener('input', onInput);
-      input.addEventListener('focus', () => { 
-        const q = input.value.trim();
-        if (q.length >= 2) {
-          const results = searchProducts(q);
-          render(results);
-        }
-      });
-      document.addEventListener('click', (e) => {
-        if (!panel.contains(e.target) && !input.contains(e.target)) clearPanel();
-      });
-      panel.addEventListener('click', (e) => {
-        const item = e.target.closest('.search-suggestion');
-        if (!item) return;
-        window.location.href = item.dataset.url;
-      });
-      input.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') clearPanel(); });
-    })();
   </script>
 
   <!-- Global Loading JavaScript -->
