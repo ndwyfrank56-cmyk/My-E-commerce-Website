@@ -1597,10 +1597,16 @@
             <label style="display: block; font-size: 0.8rem; color: #f5f5f5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">{{ attr_name }}</label>
             <div class="variation-boxes" data-variation-name="{{ attr_name }}" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
               {% for opt in options %}
-              <button type="button" class="variation-box" data-variation-id="{{ opt.id }}" data-stock="{{ opt.stock }}" data-img-var-id="{{ opt.img_var_id if opt.img_var_id else '' }}" data-variation-name="{{ attr_name }}" onclick="selectVariationBox(this)" style="padding: 0.65rem 1.2rem; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(27,32,43,0.6); color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; min-width: 60px; text-align: center; position: relative; display: flex; align-items: center; justify-content: center; gap: 0.6rem;">
-                {{ opt.value }}
-                <span class="stock-indicator" style="width: 12px; height: 12px; border-radius: 3px; background: {% if opt.stock > 0 %}#22c55e{% else %}#ef4444{% endif %}; display: inline-block; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,0.3);" title="{% if opt.stock > 0 %}In Stock ({{ opt.stock }} available){% else %}Out of Stock{% endif %}"></span>
-              </button>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem; position: relative;">
+                {% if opt.stock > 0 %}
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: white; box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);">{{ opt.stock }}</div>
+                {% else %}
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: #ef4444; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: white; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);">0</div>
+                {% endif %}
+                <button type="button" class="variation-box" data-variation-id="{{ opt.id }}" data-stock="{{ opt.stock }}" data-img-var-id="{{ opt.img_var_id if opt.img_var_id else '' }}" data-variation-name="{{ attr_name }}" onclick="selectVariationBox(this)" style="padding: 0.65rem 1.2rem; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(27,32,43,0.6); color: rgba(255,255,255,0.85); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; min-width: 60px; text-align: center; position: relative; display: flex; align-items: center; justify-content: center;">
+                  {{ opt.value }}
+                </button>
+              </div>
               {% endfor %}
             </div>
           </div>
