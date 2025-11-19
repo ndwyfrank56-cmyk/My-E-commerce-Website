@@ -3039,17 +3039,16 @@
       flex: 0 0 300px;
       position: sticky;
       top: 140px;
-      height: auto;
-      min-height: calc(100vh - 140px);
-      overflow-y: visible;
-      overflow-x: hidden;
-      background: var(--panel);
-      border-radius: 0;
-      border: none;
-      border-right: 1px solid rgba(255,255,255,0.05);
-      box-shadow: none;
+      height: fit-content;
+      max-height: none;
+      overflow: visible;
       display: flex;
       flex-direction: column;
+      background: rgba(21,25,34,0.5);
+      border: none;
+      border-radius: 12px;
+      padding: 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     }
 
     .ecommerce-filter-sidebar::-webkit-scrollbar {
@@ -3074,67 +3073,60 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      padding: 1.25rem 1.5rem 1rem;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-shrink: 0;
     }
 
     .filter-header h3 {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      color: rgba(255,255,255,0.8);
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0;
+      margin: 0;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
     }
 
     .filter-header h3 i {
       display: none;
     }
 
-    /* Content area - expands with content */
+    /* Content area - no scroll */
     .filter-content {
       flex: 1;
       overflow: visible;
       padding: 0;
-      display: flex;
-      flex-direction: column;
     }
 
     /* Clean Action Buttons */
     .filter-footer {
       flex-shrink: 0;
-      padding: 1.25rem 1.5rem 1.5rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 1.5rem 2rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: transparent;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
 
     .master-btn {
-      padding: 0.75rem 1.25rem;
+      width: 100%;
+      padding: 0.9rem 1.5rem;
       border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.85);
-      color: #111318;
-      font-weight: 600;
       font-size: 0.85rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
-      letter-spacing: 0.02em;
-    }
-
-    .master-btn:hover {
-      background: rgba(255,255,255,0.9);
-      border-color: rgba(255,255,255,0.2);
-      transform: none;
+      gap: 0.5rem;
     }
 
     .show-results-btn {
@@ -3174,7 +3166,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 1.5rem 0.75rem;
+      padding: 1.5rem 2rem 1rem;
       cursor: pointer;
       transition: none;
     }
@@ -3207,7 +3199,7 @@
 
     /* Section content with generous spacing */
     .filter-section-content {
-      padding: 0 1.5rem 1.5rem;
+      padding: 0 2rem 2rem;
       max-height: 1000px;
       overflow: hidden;
       transition: none;
@@ -3267,7 +3259,7 @@
     .price-range-container {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1.5rem;
     }
 
     /* Double handle slider */
@@ -3283,7 +3275,7 @@
       height: 4px;
       background: rgba(255,255,255,0.1);
       border-radius: 2px;
-      margin: 1.5rem 0 1.2rem;
+      margin: 2rem 0 1.5rem;
       width: 100%;
       max-width: 100%;
       overflow: hidden;
@@ -3510,20 +3502,6 @@
       body { padding-top: 135px; }
       .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
       .main-content { padding: 0.25rem 0.75rem 2.5rem 0.75rem; }
-      /* Compact filter sidebar on mobile */
-      .ecommerce-filter-sidebar { flex: 0 0 240px; }
-      .filter-header { padding: 0.9rem 1rem 0.7rem; }
-      .filter-header h3 { font-size: 0.7rem; }
-      .filter-section-header { padding: 0.8rem 1rem 0.6rem; }
-      .filter-section-content { padding: 0 1rem 1rem; }
-      .filter-footer { padding: 0.9rem 1rem 1rem; gap: 0.6rem; }
-      .master-btn { padding: 0.6rem 1rem; font-size: 0.8rem; }
-      .price-value label { font-size: 0.65rem; }
-      .price-value input { padding: 0.6rem 0.5rem; font-size: 0.9rem; }
-      .size-pill { padding: 0.35rem 0.55rem; font-size: 0.68rem; min-width: 32px; }
-      .checkbox-simple-label { padding: 0.6rem 0; gap: 0.6rem; }
-      .checkbox-simple-label span { font-size: 0.8rem; }
-    }
       
       .filter-products-wrapper { padding: 0.75rem; gap: 1.25rem; }
       .category-title { font-size: 1.1rem; }
@@ -3692,35 +3670,24 @@
     }
     @media (max-width: 480px){ 
       .products-grid{ grid-template-columns: repeat(2,1fr) !important; gap: 0.6rem; }
-      .product-card{ min-height: auto; }
-      .product-image-container{ padding: 0.4rem; }
-      .product-info{ padding: 0.6rem 0.7rem 0.7rem; gap: 0.25rem; }
-      .product-name{ font-size: 0.8rem; }
-      .stock-indicator{ font-size: 0.7rem; padding: 0.2rem 0.4rem; }
-      .price-badge{ font-size: 0.9rem; padding: 0.3rem 0.5rem; }
     }
-    @media (max-width: 320px){ 
-      .products-grid{ grid-template-columns: 1fr !important; } 
-      .product-card{ min-height: auto; }
-      .product-info{ padding: 0.5rem 0.6rem 0.6rem; }
-      .product-name{ font-size: 0.75rem; }
-    }
+    @media (max-width: 320px){ .products-grid{ grid-template-columns: 1fr !important; } }
     .products-grid > .product-card:only-child { width: min(100%, 340px); max-width: 340px; justify-self: center; }
     .products-grid > .product-card:only-child .product-image-container { min-height: 220px; }
     .product-card{
       position:relative;
       background:linear-gradient(135deg, rgba(17,22,31,0.95) 0%, rgba(21,25,34,0.98) 100%);
-      border-radius:10px;
+      border-radius:8px;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,0.08);
+      border:none;
       transition:none;
-      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+      box-shadow:none;
       isolation:isolate;
       display:flex;
       flex-direction:column;
       height:100%;
       cursor:pointer;
-      min-height: auto;
+      min-height: 380px;
     }
     .product-card .card-link{display:flex;flex-direction:column;width:100%;height:100%;text-decoration:none;color:inherit;z-index:1;flex:1}
     .product-card::before{content:none}
@@ -3731,10 +3698,9 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:0.5rem;
+      padding:0.65rem;
       background:rgba(0,0,0,0.15);
       aspect-ratio:1/1;
-      flex-shrink:0;
     }
     .product-image{
       max-width:100%;
@@ -3768,39 +3734,34 @@
     .price-badge::after{content:none}
     .price-badge i{display:none}
     .product-info{
-      padding:0.75rem 0.85rem 0.85rem;
+      padding:0.9rem 0.95rem 1rem;
       display:flex;
       flex-direction:column;
       flex:1;
-      gap:0.35rem;
-      min-height: auto;
+      gap:0.5rem;
+      min-height: 140px;
     }
     .product-name{
-      font-size:0.85rem;
+      font-size:0.88rem;
       font-weight:600;
       letter-spacing:0;
       text-transform:none;
       color:var(--text-primary);
       margin:0;
-      line-height:1.3;
-      display:-webkit-box;
-      -webkit-line-clamp:2;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
     }
     .stock-indicator{
       display:inline-flex;
       align-items:center;
-      gap:.3rem;
-      padding:.25rem .5rem;
+      gap:.45rem;
+      padding:.38rem .6rem;
       border-radius:999px;
       border:none;
-      background:rgba(46,77,44,0.4);
+      background:linear-gradient(180deg, rgba(27,32,43,0.75), rgba(21,25,34,0.85));
       color:var(--text-secondary);
-      font-size:.75rem;
-      margin:0.3rem 0 0;
+      font-size:.82rem;
+      margin:.2rem 0 0.8rem;
       width:fit-content;
-      box-shadow:none;
+      box-shadow:0 6px 14px rgba(0,0,0,0.25);
     }
     .stock-indicator i{font-size:.9rem;opacity:.9}
     .stock-dot{display:none}
