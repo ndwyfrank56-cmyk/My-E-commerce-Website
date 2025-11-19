@@ -4002,18 +4002,6 @@
                     <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                   {% endif %}
                 </div>
-                <div class="rating" style="display:flex; align-items:center; gap:.4rem; color: var(--text-secondary); font-size:.9rem; margin:.15rem 0 .35rem 0;">
-                  {% if product.rate and product.rate > 0 %}
-                    {% set full = product.rate | int %}
-                    {% set half = 1 if product.rate - full >= 0.5 else 0 %}
-                    {% set empty = 5 - full - half %}
-                    <span class="stars" style="color:#f4c430; font-size:.9rem;">
-                      {% for _ in range(full) %}<i class="fa-solid fa-star"></i>{% endfor %}
-                      {% if half %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}
-                      {% for _ in range(empty) %}<i class="fa-regular fa-star"></i>{% endfor %}
-                    </span>
-                  {% endif %}
-                </div>
                 <div class="stock-indicator">
                   <span class="stock-dot {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}"></span>
                   <span>{{ product.stock }} left</span>

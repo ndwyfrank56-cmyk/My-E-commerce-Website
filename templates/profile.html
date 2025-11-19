@@ -1590,18 +1590,6 @@
                         <i class="fas fa-boxes"></i>
                         <span>{{ product.stock }} left</span>
                       </div>
-                      <div class="rating" style="display:flex; align-items:center; gap:.4rem; color: var(--text-secondary); font-size:.85rem; margin:.15rem 0 0 0;">
-                        {% if product.rate and product.rate > 0 %}
-                          {% set full = product.rate | int %}
-                          {% set half = 1 if product.rate - full >= 0.5 else 0 %}
-                          {% set empty = 5 - full - half %}
-                          <span class="stars" style="color:#f4c430; font-size:.85rem;">
-                            {% for _ in range(full) %}<i class="fa-solid fa-star"></i>{% endfor %}
-                            {% if half %}<i class="fa-solid fa-star-half-stroke"></i>{% endif %}
-                            {% for _ in range(empty) %}<i class="fa-regular fa-star"></i>{% endfor %}
-                          </span>
-                        {% endif %}
-                      </div>
                       <form method="post" action="/wishlist/remove/{{ product.id }}" style="position:relative; z-index:2; margin-top:auto;">
                         <button type="submit" class="btn btn-danger" style="padding:.45rem .75rem; font-size:.8rem; border-radius:6px; width:auto;">Remove</button>
                       </form>
