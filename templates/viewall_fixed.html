@@ -3036,19 +3036,17 @@
     }
 
     .ecommerce-filter-sidebar {
-      flex: 0 0 300px;
+      flex: 0 0 280px;
       position: sticky;
       top: 140px;
-      height: fit-content;
-      max-height: none;
-      overflow: visible;
-      display: flex;
-      flex-direction: column;
-      background: rgba(21,25,34,0.5);
+      height: calc(100vh - 140px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--panel);
+      border-radius: 0;
       border: none;
-      border-radius: 12px;
-      padding: 0;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      box-shadow: none;
     }
 
     .ecommerce-filter-sidebar::-webkit-scrollbar {
@@ -3073,21 +3071,21 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      padding: 2rem 2rem 1.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 1.25rem 1.5rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
       flex-shrink: 0;
     }
 
     .filter-header h3 {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: #ffffff;
+      color: rgba(255,255,255,0.8);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       display: flex;
       align-items: center;
-      gap: 0;
-      margin: 0;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
+      gap: 0.5rem;
     }
 
     .filter-header h3 i {
@@ -3104,29 +3102,34 @@
     /* Clean Action Buttons */
     .filter-footer {
       flex-shrink: 0;
-      padding: 1.5rem 2rem 2rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      background: transparent;
+      padding: 1.25rem 1.5rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
 
     .master-btn {
-      width: 100%;
-      padding: 0.9rem 1.5rem;
+      padding: 0.75rem 1.25rem;
       border-radius: 6px;
-      font-size: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.85);
+      color: #111318;
       font-weight: 600;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: none;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border: none;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
+      letter-spacing: 0.02em;
+    }
+
+    .master-btn:hover {
+      background: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.2);
+      transform: none;
     }
 
     .show-results-btn {
@@ -3166,7 +3169,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.5rem 2rem 1rem;
+      padding: 1rem 1.5rem 0.75rem;
       cursor: pointer;
       transition: none;
     }
@@ -3199,7 +3202,7 @@
 
     /* Section content with generous spacing */
     .filter-section-content {
-      padding: 0 2rem 2rem;
+      padding: 0 1.5rem 1.5rem;
       max-height: 1000px;
       overflow: hidden;
       transition: none;
@@ -3259,7 +3262,7 @@
     .price-range-container {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.2rem;
     }
 
     /* Double handle slider */
@@ -3275,7 +3278,7 @@
       height: 4px;
       background: rgba(255,255,255,0.1);
       border-radius: 2px;
-      margin: 2rem 0 1.5rem;
+      margin: 1.5rem 0 1.2rem;
       width: 100%;
       max-width: 100%;
       overflow: hidden;
@@ -3415,9 +3418,9 @@
 
     /* Clean Secondary Section */
     .filter-secondary-section {
-      padding: 1.5rem 2rem 1rem;
+      padding: 1.25rem 1.5rem 1rem;
       background: transparent;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
 
     /* PRODUCTS AREA */
