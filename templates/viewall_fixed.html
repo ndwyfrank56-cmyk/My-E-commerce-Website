@@ -3036,17 +3036,19 @@
     }
 
     .ecommerce-filter-sidebar {
-      flex: 0 0 280px;
+      flex: 0 0 300px;
       position: sticky;
       top: 140px;
       height: calc(100vh - 140px);
-      overflow-y: auto;
+      overflow-y: hidden;
       overflow-x: hidden;
       background: var(--panel);
       border-radius: 0;
       border: none;
       border-right: 1px solid rgba(255,255,255,0.05);
       box-shadow: none;
+      display: flex;
+      flex-direction: column;
     }
 
     .ecommerce-filter-sidebar::-webkit-scrollbar {
@@ -3095,8 +3097,10 @@
     /* Content area - no scroll */
     .filter-content {
       flex: 1;
-      overflow: visible;
+      overflow: hidden;
       padding: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Clean Action Buttons */
