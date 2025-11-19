@@ -4050,28 +4050,28 @@
                 <img loading="lazy" src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
                 <span class="price-badge">
                   {% if product.discount and product.discount > 0 %}
-                    <span class="original-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
+                    <span class="original-price">RWF {{ '{:,.0f}'.format(product.price / (1 - product.discount/100)) }}</span>
                     <span class="discount-percent">-{{ product.discount|int }}%</span>
-                    <span>RWF {{ '{:,.0f}'.format(product.price * (1 - product.discount/100)) }}</span>
+                    <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                   {% else %}
                     <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                   {% endif %}
                 </span>
+                <div class="stock-indicator">
+                  <span class="stock-dot {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}"></span>
+                  <span>{{ product.stock }} left</span>
+                </div>
               </div>
               
               <div class="product-info">
                 <h4 class="product-name">{{ product.name }}</h4>
                 <div class="product-price">
                   {% if product.discount and product.discount > 0 %}
-                    <span style="text-decoration: line-through; opacity: 0.6; font-size: 0.85rem; margin-right: 0.5rem;">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
+                    <span style="text-decoration: line-through; opacity: 0.6; font-size: 0.85rem; margin-right: 0.5rem;">RWF {{ '{:,.0f}'.format(product.price / (1 - product.discount/100)) }}</span>
                     <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                   {% else %}
                     <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                   {% endif %}
-                </div>
-                <div class="stock-indicator">
-                  <span class="stock-dot {% if product.stock <= 5 and product.stock > 0 %}low{% elif product.stock <= 0 %}out{% endif %}"></span>
-                  <span>{{ product.stock }} left</span>
                 </div>
               </div>
             </article>
