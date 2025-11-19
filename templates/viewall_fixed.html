@@ -88,6 +88,7 @@
       background: var(--panel);
       border-bottom: none;
       transition: var(--transition);
+      overflow: visible;
     }
 
     .navbar-container {
@@ -141,6 +142,45 @@
       flex: 1;
       justify-content: center;
       width: 100%;
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 3000;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+    .search-suggestion {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.2s ease;
+    }
+
+    .search-suggestion:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .search-suggestion:last-child {
+      border-bottom: none;
     }
     
     /* Search Bar Styles */
