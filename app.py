@@ -2536,7 +2536,7 @@ def viewall():
                               selected_sizes=selected_sizes)
     except Exception as e:
         print(f"Error in /viewall: {e}")
-        flash(f"Error loading category: {e}", 'error')
+        flash("Error loading category. Please try again.", 'error')
         return redirect(url_for('home'))
 
 @app.route('/add-to-cart', methods=['GET'])
