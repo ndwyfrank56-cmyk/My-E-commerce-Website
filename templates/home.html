@@ -4298,65 +4298,6 @@
       updateWishlistCount();
     });
 
-    // Search functionality
-    const searchInput = document.querySelector('.search-box');
-    const searchDropdown = document.getElementById('searchSuggestions');
-    const searchContainer = document.querySelector('.search-container');
-    let searchTimeout;
-
-    if (searchInput) {
-      searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        const query = this.value.trim();
-
-        if (query.length < 2) {
-          searchDropdown.style.display = 'none';
-          return;
-        }
-
-        searchTimeout = setTimeout(() => {
-          fetch(`/api/search?q=${encodeURIComponent(query)}`)
-            .then(res => res.json())
-            .then(data => {
-              if (data && data.length > 0) {
-                let html = '';
-                data.forEach(item => {
-                  html += `
-                    <div class="search-result-item" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;" onclick="event.stopPropagation(); window.location.href='/product/${item.id}'">
-                      <i class="fas fa-box" style="color: #666;"></i>
-                      <div>
-                        <div style="font-weight: 500;">${item.name}</div>
-                        <div style="font-size: 0.85rem; color: #666;">RWF ${Math.round(item.price).toLocaleString()}</div>
-                      </div>
-                    </div>
-                  `;
-                });
-                searchDropdown.innerHTML = html;
-                searchDropdown.style.display = 'block';
-              } else {
-                searchDropdown.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">No products found</div>';
-                searchDropdown.style.display = 'block';
-              }
-            })
-            .catch(err => {
-              console.error('Search error:', err);
-              searchDropdown.style.display = 'none';
-            });
-        }, 300);
-      });
-
-      // Close dropdown when clicking outside search container
-      document.addEventListener('click', function(e) {
-        if (searchContainer && !searchContainer.contains(e.target)) {
-          searchDropdown.style.display = 'none';
-        }
-      });
-
-      // Prevent dropdown from closing when clicking inside it
-      searchDropdown.addEventListener('click', function(e) {
-        e.stopPropagation();
-      });
-    }
   </script>
 
 
