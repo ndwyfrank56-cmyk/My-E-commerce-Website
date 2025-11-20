@@ -2137,7 +2137,7 @@ def cancel_order(order_id):
         
         # Fetch order items to restore stock
         cur.execute("""
-            SELECT product_id, quantity, variations 
+            SELECT product_id, quantity, VARIATIONS 
             FROM order_items 
             WHERE order_id = %s
         """, (order_id,))
@@ -3344,10 +3344,15 @@ def checkout():
                                     # Insert order items - match database schema exactly
                                     for item in cart_items:
                                         subtotal = item['quantity'] * item['price']
+                                        variations = item.get('variations', '')
                                         cur.execute("""
                                             INSERT INTO order_items (order_id, product_id, product_name, price, quantity, subtotal, VARIATIONS)
                                             VALUES (%s, %s, %s, %s, %s, %s, %s)
-                                        """, (order_id, item['product_id'], item['name'], item['price'], item['quantity'], subtotal, item.get('variations', '')))
+                                        """, (order_id, item['product_id'], item['name'], item['price'], item['quantity'], subtotal, variations))
+                                        
+                                        # DEDUCT STOCK from appropriate level (triggers will cascade)
+                                        stock_level = deduct_stock_smartly(cur, item['product_id'], int(item['quantity']), variations)
+                                        print(f"CHECKOUT COD: Stock deducted from {stock_level} level for {item['name']}")
                                     
                                     mysql.connection.commit()
                                     cur.close()
