@@ -3968,7 +3968,6 @@ def search_products_api():
 
     Returns a JSON list of simple product objects (no images) matching
     the query string, limited to 10 results.
-    Also searches by category name.
     """
     try:
         query = request.args.get('q', '').strip()
@@ -4012,40 +4011,16 @@ def search_products_api():
             rows = cur.fetchall()
             print(f"[SEARCH] Fallback query succeeded, found {len(rows)} rows")
 
+        cur.close()
+
         for row in rows:
             results.append(
                 {
                     "id": row[0],
                     "name": row[1],
                     "price": float(row[2]) if row[2] is not None else 0.0,
-                    "type": "product"
                 }
             )
-
-        # Also search by category name
-        print(f"[SEARCH] Searching categories...")
-        cur.execute(
-            """
-            SELECT id, name
-            FROM categories
-            WHERE name LIKE %s
-            LIMIT 5
-            """,
-            (like,),
-        )
-        category_rows = cur.fetchall()
-        print(f"[SEARCH] Found {len(category_rows)} categories")
-
-        for row in category_rows:
-            results.append(
-                {
-                    "id": row[0],
-                    "name": row[1],
-                    "type": "category"
-                }
-            )
-
-        cur.close()
 
         print(f"[SEARCH] Returning {len(results)} results: {[r['name'] for r in results]}")
         return jsonify(results)

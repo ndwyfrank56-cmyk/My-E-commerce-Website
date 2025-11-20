@@ -4308,7 +4308,7 @@
         const query = this.value.trim();
 
         if (query.length < 2) {
-          searchDropdown.classList.remove('active');
+          searchDropdown.style.display = 'none';
           return;
         }
 
@@ -4319,31 +4319,20 @@
               if (data && data.length > 0) {
                 let html = '';
                 data.forEach(item => {
-                  if (item.type === 'product') {
-                    html += `
-                      <div class="search-result-item" onclick="window.location.href='/product/${item.id}'" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;">
-                        <i class="fas fa-box" style="color: #666;"></i>
-                        <div>
-                          <div style="font-weight: 500;">${item.name}</div>
-                          <div style="font-size: 0.85rem; color: #666;">RWF ${Math.round(item.price).toLocaleString()}</div>
-                        </div>
+                  html += `
+                    <div class="search-result-item" onclick="window.location.href='/product/${item.id}'" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;">
+                      <i class="fas fa-box" style="color: #666;"></i>
+                      <div>
+                        <div style="font-weight: 500;">${item.name}</div>
+                        <div style="font-size: 0.85rem; color: #666;">RWF ${Math.round(item.price).toLocaleString()}</div>
                       </div>
-                    `;
-                  } else if (item.type === 'category') {
-                    html += `
-                      <div class="search-result-item" onclick="window.location.href='/category/${item.id}'" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; background: #f5f5f5;">
-                        <i class="fas fa-tag" style="color: #2e4d2c;"></i>
-                        <div>
-                          <div style="font-weight: 500; color: #2e4d2c;">Category: ${item.name}</div>
-                        </div>
-                      </div>
-                    `;
-                  }
+                    </div>
+                  `;
                 });
                 searchDropdown.innerHTML = html;
                 searchDropdown.style.display = 'block';
               } else {
-                searchDropdown.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">No products or categories found</div>';
+                searchDropdown.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">No products found</div>';
                 searchDropdown.style.display = 'block';
               }
             })
