@@ -1777,28 +1777,6 @@
 
   <!-- Modern Cart Section -->
   <main class="main-content scroll-animate">
-    <div class="section-header">
-      <div>
-        <h2 class="section-title">Shopping Cart</h2>
-        <p class="section-subtitle">Review and manage your items</p>
-      </div>
-      {% if cart_items %}
-        {% set total = namespace(value=0) %}
-        {% for item in cart_items %}
-          {% set subtotal = item.price * item.quantity %}
-          {% set total.value = total.value + subtotal %}
-        {% endfor %}
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-          <div style="text-align: right;">
-            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem;">Total</div>
-            <div style="font-weight: 800; font-size: 1.1rem; color: var(--accent);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
-          </div>
-          <a href="/checkout" style="background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.95); padding: 0.7rem 1.5rem; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; font-weight: 600; font-size: 0.9rem; border-radius: 8px; white-space: nowrap; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-            Checkout
-          </a>
-        </div>
-      {% endif %}
-    </div>
     
 
     <div class="cart-items">
@@ -1860,6 +1838,22 @@
               <div class="cart-item-subtotal">RWF {{ '{:,.0f}'.format(subtotal) }}</div>
             </div>
           {% endfor %}
+        </div>
+        
+        <!-- Total and Checkout at Bottom -->
+        {% set total = namespace(value=0) %}
+        {% for item in cart_items %}
+          {% set subtotal = item.price * item.quantity %}
+          {% set total.value = total.value + subtotal %}
+        {% endfor %}
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <span style="font-size: 0.9rem; color: rgba(255,255,255,0.7); font-weight: 500;">Total</span>
+            <span style="font-weight: 800; font-size: 1.3rem; color: var(--accent);">RWF {{ '{:,.0f}'.format(total.value) }}</span>
+          </div>
+          <a href="/checkout" style="display: block; width: 100%; background: rgba(255,255,255,0.9); color: #000000; padding: 1rem; border: none; text-decoration: none; font-weight: 700; font-size: 1rem; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            Checkout
+          </a>
         </div>
       {% endif %}
     </div>
