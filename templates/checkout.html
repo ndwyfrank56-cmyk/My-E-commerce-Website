@@ -2093,12 +2093,12 @@ body { padding-top: 120px; }
       <div class="navbar-container">
         <a href="/" class="logo">eM<i class="fas fa-shopping-cart logo-cart" aria-hidden="true"></i>rket</a>
         <div class="nav-actions">
-          {% if session.user_id %}
-            <div class="nav-user" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <a href="/profile" class="nav-btn profile" title="My Profile"><i class="fas fa-user"></i></a>
+          <div class="nav-user" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <a href="/profile" class="nav-btn profile" title="My Profile"><i class="fas fa-user"></i></a>
+            {% if session.user_id %}
               <div class="nav-user-name" style="font-size:0.75rem;color:var(--text-secondary);line-height:1;">{{ session.username }}</div>
-            </div>
-          {% endif %}
+            {% endif %}
+          </div>
         </div>
       </div>
     </nav>
