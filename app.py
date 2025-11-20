@@ -1662,9 +1662,58 @@ def forgot_password():
             mysql.connection.commit()
             cur.close()
             
-            # Show reset code on page (email sending disabled for now)
-            flash(f'Your password reset code is: {reset_code}', 'success')
-            return redirect(url_for('reset_password'))
+            # Send email with reset code
+            subject = "Password Reset Code - eMarket"
+            body_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: 'Inter', Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }}
+                    .container {{ max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
+                    .header {{ background: linear-gradient(135deg, #2d5016 0%, #1e3a0f 100%); padding: 30px; text-align: center; }}
+                    .header h1 {{ color: #fff; margin: 0; font-size: 24px; }}
+                    .content {{ padding: 40px 30px; }}
+                    .code-box {{ background: #f8f9fa; border: 2px dashed #2d5016; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }}
+                    .code {{ font-size: 32px; font-weight: bold; color: #2d5016; letter-spacing: 8px; }}
+                    .warning {{ background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px; }}
+                    .footer {{ background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Password Reset Request</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hello <strong>{first_name}</strong>,</p>
+                        <p>We received a request to reset your password for your eMarket account (<strong>{username}</strong>).</p>
+                        <p>Use the following code to reset your password:</p>
+                        <div class="code-box">
+                            <div class="code">{reset_code}</div>
+                        </div>
+                        <div class="warning">
+                            <strong>This code expires in 15 minutes</strong><br>
+                            If you didn't request this, you can safely ignore this email.
+                        </div>
+                        <p>For security reasons, never share this code with anyone.</p>
+                    </div>
+                    <div class="footer">
+                        <p>eMarket - Your Trusted Online Shopping Platform</p>
+                        <p>This is an automated email. Please do not reply.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            email_sent = send_email(email, subject, body_html)
+            
+            if email_sent:
+                flash('A reset code has been sent to your email. Please check your inbox.', 'success')
+                return redirect(url_for('reset_password'))
+            else:
+                flash('Failed to send reset email. Please try again later.', 'error')
                 
         except Exception as e:
             print(f"Forgot password error: {e}")
