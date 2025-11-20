@@ -552,227 +552,85 @@
       margin-right: auto;
     }
     
-    /* Wishlist Styles - Match Home Page Product Cards */
+    /* Wishlist Grid - Match Home Page Product Cards */
     .wishlist-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: .7rem;
+      gap: 1rem;
       margin-top: 1.5rem;
     }
-    
-    .wishlist-item {
+
+    /* Product Card Styles - Exact Match from Home Page */
+    .product-card {
       position: relative;
-      background: linear-gradient(180deg, rgba(27,32,43,0.8), rgba(21,25,34,0.95));
-      border-radius: 14px;
-      border: 1px solid var(--border);
+      background: #0F1115;
+      border-radius: 18px;
       overflow: hidden;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: none;
+      box-shadow: none;
+      isolation: isolate;
       display: flex;
       flex-direction: column;
       height: 100%;
-      pointer-events: auto;
+      cursor: pointer;
+      padding: 14px;
     }
 
-    .wishlist-item::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.08) 0%,
-        rgba(255,255,255,0.02) 50%,
-        rgba(255,255,255,0.08) 100%
-      );
-      border-radius: inherit;
-      opacity: 0;
-      transition: opacity .25s ease;
-    }
-    
-    .wishlist-item:hover {
-      transform: none;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-      border-color: var(--border);
-    }
-    
-    .wishlist-item:hover::before { opacity: 0; }
-    
-    .wishlist-item-image {
+    /* Make whole card clickable */
+    .product-card .card-link { position: absolute; inset: 0; z-index: 1; text-indent: -9999px; }
+
+    /* remove glossy layer and hover effects */
+    .product-card::before { content: none; }
+    .product-card:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.08); }
+
+    .product-image-container {
       position: relative;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255,255,255,0.03);
-      min-height: 160px;
+      padding: 0.75rem;
+      background: rgba(0,0,0,0.15);
+      aspect-ratio: 1 / 1;
     }
-    
-    .wishlist-item-image img {
+
+    .product-image {
       max-width: 100%;
-      height: auto;
+      height: 100%;
       object-fit: contain;
-      transition: transform 0.3s ease;
-      border-radius: 8px;
+      border-radius: 4px;
+      box-shadow: none;
+      filter: none;
     }
-    
-    .wishlist-item-content {
-      padding: 0.9rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      gap: .5rem;
-    }
-    
-    .wishlist-item-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin: 0.25rem 0 0.25rem 0;
-      line-height: 1.3;
-    }
-    
-    .wishlist-stock-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .5rem .85rem;
-      border-radius: 100px;
-      background: rgba(17, 22, 31, 0.6);
-      color: rgba(255, 255, 255, 0.95);
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      margin-bottom: 1rem;
-      width: fit-content;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    
-    .wishlist-stock-indicator i {
-      font-size: .9rem;
-      opacity: .9;
-    }
-    
-    .wishlist-stock-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #10b981;
-    }
-    
-    .wishlist-stock-dot.low {
-      background: #f59e0b;
-    }
-    
-    .wishlist-stock-dot.out {
-      background: #ef4444;
-    }
-    
-    .wishlist-item-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: auto; /* push to bottom */
-      justify-content: center; /* center horizontally */
-      padding-bottom: .5rem; /* breathing room from edge */
-      pointer-events: auto;
-      z-index: 10;
-      position: relative;
-    }
-    
-    .wishlist-item-actions .btn {
-      flex: 1;
-      padding: 0.6rem 0.8rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border-radius: 8px;
-      text-decoration: none;
-      text-align: center;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-      cursor: pointer;
-      pointer-events: auto;
-      display: inline-flex;
-      align-items: center;
-    }
-    
-    .wishlist-item-actions .btn-primary {
-      background: rgba(255,255,255,0.85);
-      color: #111318;
-      border-color: rgba(255,255,255,0.35);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
-    }
-    
-    .wishlist-item-actions .btn-primary:hover { 
-      background: rgba(255,255,255,0.85); 
-      color:#111318; 
-      border-color: rgba(255,255,255,0.35); 
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22); 
-    }
-    
-    .wishlist-item-actions .btn-secondary {
-      background: var(--panel-2);
-      color: var(--text-secondary);
-      border-color: var(--border);
-    }
-    
-    .wishlist-item-actions .btn-secondary:hover {
-      background: var(--border);
-      color: var(--text-primary);
-      transform: none;
-    }
-    
-    .wishlist-item-actions .btn-danger {
-      background: rgba(255,255,255,0.85);
-      color: #111318;
-      border-color: rgba(255,255,255,0.35);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
-    }
-    
-    .wishlist-item-actions .btn-danger:hover { 
-      background: rgba(255,255,255,0.9);
-      border-color: rgba(255,255,255,0.35);
-      transform: none; 
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
-    }
-    
-    .wishlist-price-badge {
+
+    .price-badge {
       position: absolute;
-      left: 1rem;
-      bottom: 1rem;
+      left: 0.65rem;
+      bottom: 0.65rem;
       display: inline-flex;
       flex-direction: column;
       align-items: flex-start;
-      padding: .48rem 1rem .48rem 1.4rem;
-      border-radius: 8px;
-      background: var(--price-tag-green);
-      color: #eaf4e6;
-      border: 1px solid #223a21;
-      font-weight: 900;
-      font-size: .95rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      backdrop-filter: blur(3px);
-      -webkit-backdrop-filter: blur(3px);
+      padding: .4rem .7rem;
+      border-radius: 6px;
+      background: rgba(46,77,44,0.95);
+      color: #e8f5e4;
+      border: none;
+      font-weight: 700;
+      font-size: .85rem;
+      box-shadow: none;
+      backdrop-filter: none;
       line-height: 1;
-      z-index: 2;
     }
-    
-    .wishlist-price-badge::before {
-      content: none;
-    }
-    
-    .wishlist-price-badge::after {
-      content: none;
-    }
-    
-    .wishlist-price-badge .original-price {
+
+    .price-badge .original-price {
       font-size: 0.75rem;
       text-decoration: line-through;
       opacity: 0.7;
       font-weight: 500;
     }
-    
-    .wishlist-price-badge .discount-percent {
+
+    .price-badge .discount-percent {
       position: absolute;
       top: -8px;
       right: -8px;
@@ -784,215 +642,134 @@
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    
-    @media (max-width: 768px) {
-      .wishlist-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-      }
-      
-      .wishlist-item-actions {
-        flex-direction: column;
-      }
-    }
 
-    /* Wishlist Styles */
-    .wishlist-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-      width: 100%;
-    }
-
-    .wishlist-card {
-      position: relative;
-      background: rgba(21,25,34,0.5);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      cursor: pointer;
-    }
-    .wishlist-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-      border-color: rgba(255,255,255,0.15);
-    }
-    .wishlist-card .card-link{ position:absolute; inset:0; z-index:1; text-indent:-9999px; }
-
-
-
-    .wishlist-card-image {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 0.75rem;
-    }
-
-    .wishlist-card-image img {
-      max-width: 100%;
-      height: auto;
-      object-fit: contain;
-      transition: transform 0.3s ease;
-    }
-
-    .wishlist-price-badge {
+    .discount-percent {
       position: absolute;
-      bottom: 1rem;
-      left: 1rem;
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: .48rem 1rem .48rem 1.4rem;
-      border-radius: 8px;
-      background: var(--price-tag-green);
-      color: #eaf4e6;
-      border: 1px solid #223a21;
-      font-weight: 900;
-      font-size: .95rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      z-index: 2;
-      line-height: 1;
-    }
-
-    .wishlist-price-badge::before {
-      content: none;
-    }
-
-    .wishlist-price-badge::after {
-      content: none;
-    }
-
-    .wishlist-price-badge .original-price {
-      font-size: 0.75rem;
-      text-decoration: line-through;
-      opacity: 0.7;
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
-
-    .wishlist-discount-percent {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
+      top: -8px;
+      right: -8px;
       background: #ef4444;
       color: white;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 800;
-      padding: 0.3rem 0.6rem;
-      border-radius: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      z-index: 2;
     }
 
-    .wishlist-card-content {
-      padding: 0.75rem 0.85rem 0.75rem;
+    .product-details {
+      padding: 0.75rem 0.85rem 0.5rem;
       display: flex;
       flex-direction: column;
       flex: 1;
-      gap: 0.5rem;
+      gap: 0.35rem;
     }
 
-    .wishlist-card-title {
+    .product-name {
       font-size: 0.9rem;
       font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
       color: var(--text-primary);
       margin: 0;
       line-height: 1.3;
-      overflow: hidden;
-      text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       line-clamp: 2;
       -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .wishlist-card-stock {
+    .stock-indicator {
       display: inline-flex;
       align-items: center;
       gap: .45rem;
-      padding: 0;
-      border-radius: 0;
+      padding: .38rem .6rem;
+      border-radius: 999px;
       border: none;
-      background: transparent;
-      color: rgba(255,255,255,0.55);
+      background: rgba(17, 22, 31, 0.6);
+      color: rgba(255, 255, 255, 0.95);
       font-size: 0.85rem;
-      margin: 0.5rem 0 0.8rem 0;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.8rem;
       width: fit-content;
-      box-shadow: none;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
     }
 
-    .wishlist-card-stock i {
-      font-size: .9rem;
-      opacity: .9;
-    }
+    .stock-indicator i { font-size: .9rem; opacity: .9; }
 
-    .wishlist-card-actions {
+    /* Product Card Action Buttons */
+    .product-actions {
       display: flex;
-      gap: 0.75rem;
-      margin-top: auto;
+      gap: 8px;
+      margin-top: auto; /* push to bottom */
+      justify-content: center; /* center horizontally */
+      padding-bottom: .5rem; /* breathing room from card edge */
+      width: 100%;
+      align-items: center;
     }
 
-    .wishlist-card-actions .btn-add-cart {
+    .product-actions form {
+      display: flex;
       flex: 1;
-      padding: 0.7rem 1rem;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .btn-view {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
       background: rgba(255,255,255,0.85);
       color: #111318;
       border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
       cursor: pointer;
-      transition: all 0.25s ease;
-      display: flex;
+      font-weight: 900;
+      letter-spacing: 0.025em;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .wishlist-card-actions .btn-add-cart:active {
-      transform: translateY(0);
+      gap: .5rem;
+      font-size: 0.95rem;
+      flex: 1;
     }
 
-    .wishlist-card-actions .btn-add-cart:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .btn-remove {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.85);
+      color: #111318;
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+      cursor: pointer;
+      font-weight: 900;
+      letter-spacing: 0.025em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-size: 0.95rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .btn-view:hover, .btn-remove:hover {
+      background: rgba(255,255,255,0.85);
+      color: #111318;
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
       transform: none;
     }
 
-    .wishlist-card-actions .btn-remove {
-      padding: 0.7rem 1rem;
-      background: rgba(255,255,255,0.85);
-      border: 1px solid rgba(255,255,255,0.35);
-      color: #111318;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      font-weight: 700;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+    .btn-view:active, .btn-remove:active {
+      transform: translateY(1px);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.22);
     }
-    .wishlist-card-actions .btn-remove:hover { background: rgba(255,255,255,0.9); }
 
-    /* Ensure form-based remove buttons inside wishlist use smoky white */
-    .wishlist-grid .btn-danger { 
-      background: rgba(255,255,255,0.85) !important;
-      color: #111318 !important;
-      border: 1px solid rgba(255,255,255,0.35) !important;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22) !important;
-    }
-    .wishlist-grid .btn-danger:hover { background: rgba(255,255,255,0.9) !important; }
+    .btn-view:focus, .btn-remove:focus { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 2px; }
     .empty-wishlist {
       text-align: center;
       padding: 4rem 2rem;
@@ -1576,36 +1353,36 @@
             {% if wishlist_items %}
               <div class="wishlist-grid" id="wishlistGrid">
                 {% for product in wishlist_items %}
-                  <div class="wishlist-card{% if loop.index0 >= 5 %} wishlist-hidden{% endif %}"{% if loop.index0 >= 5 %} style="display:none"{% endif %}>
-                    <div class="wishlist-card-image">
-                      <img src="{{ product.image }}" alt="{{ product.name }}">
+                  <div class="product-card">
+                    <div class="product-image-container">
+                      <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
                       {% if product.discount and product.discount > 0 %}
-                        <span class="wishlist-discount-percent">-{{ product.discount|int }}%</span>
+                        <span class="discount-percent">-{{ product.discount|int }}%</span>
                       {% endif %}
-                      <div class="wishlist-price-badge">
+                      <div class="price-badge">
                         {% if product.discount and product.discount > 0 %}
                           <span class="original-price">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
                         {% endif %}
                         <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
                       </div>
                     </div>
-                    <div class="wishlist-card-content">
-                      <h4 class="wishlist-card-title">{{ product.name }}</h4>
-                      <div class="wishlist-card-stock">
+                    <div class="product-details">
+                      <h4 class="product-name">{{ product.name }}</h4>
+                      <div class="stock-indicator">
                         <i class="fas fa-boxes"></i>
                         <span>{{ product.stock }} left</span>
                       </div>
-                      <form method="post" action="/wishlist/remove/{{ product.id }}" style="position:relative; z-index:2; margin-top:auto;">
-                        <button type="submit" class="btn btn-danger" style="padding:.45rem .75rem; font-size:.8rem; border-radius:6px; width:auto;">Remove</button>
-                      </form>
+                      <div class="product-actions">
+                        <a href="/product/{{ product.id }}" class="btn-view">View</a>
+                        <form method="post" action="/wishlist/remove/{{ product.id }}" style="position:relative; z-index:2;">
+                          <button type="submit" class="btn-remove">Remove</button>
+                        </form>
+                      </div>
                     </div>
-                    <a class="card-link" href="/product/{{ product.id }}">View</a>
+                    <a class="card-link" href="/product/{{ product.id }}"></a>
                   </div>
                 {% endfor %}
               </div>
-              {% if wishlist_items|length > 5 %}
-                <button id="wishlistMoreBtn" class="see-more-btn" type="button">See More ({{ wishlist_items|length - 5 }} more)</button>
-              {% endif %}
             {% else %}
               <div class="empty-wishlist">
                 <i class="fas fa-heart"></i>
