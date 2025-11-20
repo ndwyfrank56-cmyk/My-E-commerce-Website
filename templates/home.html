@@ -4298,8 +4298,8 @@
     });
 
     // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    const searchDropdown = document.getElementById('searchDropdown');
+    const searchInput = document.querySelector('.search-box');
+    const searchDropdown = document.getElementById('searchSuggestions');
     let searchTimeout;
 
     if (searchInput) {
@@ -4313,39 +4313,50 @@
         }
 
         searchTimeout = setTimeout(() => {
-          fetch(`/api/search?q=${encodeURIComponent(query)}&limit=6`)
+          fetch(`/api/search?q=${encodeURIComponent(query)}`)
             .then(res => res.json())
             .then(data => {
-              if (data.results && data.results.length > 0) {
+              if (data && data.length > 0) {
                 let html = '';
-                data.results.forEach(item => {
-                  html += `
-                    <div class="search-result-item" onclick="window.location.href='${item.url}'">
-                      <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/48?text=No+Image'">
-                      <div class="search-result-info">
-                        <div class="search-result-name">${item.name}</div>
-                        <div class="search-result-price">RWF ${Math.round(item.price).toLocaleString()}</div>
+                data.forEach(item => {
+                  if (item.type === 'product') {
+                    html += `
+                      <div class="search-result-item" onclick="window.location.href='/product/${item.id}'" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-box" style="color: #666;"></i>
+                        <div>
+                          <div style="font-weight: 500;">${item.name}</div>
+                          <div style="font-size: 0.85rem; color: #666;">RWF ${Math.round(item.price).toLocaleString()}</div>
+                        </div>
                       </div>
-                    </div>
-                  `;
+                    `;
+                  } else if (item.type === 'category') {
+                    html += `
+                      <div class="search-result-item" onclick="window.location.href='/category/${item.id}'" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; background: #f5f5f5;">
+                        <i class="fas fa-tag" style="color: #2e4d2c;"></i>
+                        <div>
+                          <div style="font-weight: 500; color: #2e4d2c;">Category: ${item.name}</div>
+                        </div>
+                      </div>
+                    `;
+                  }
                 });
                 searchDropdown.innerHTML = html;
-                searchDropdown.classList.add('active');
+                searchDropdown.style.display = 'block';
               } else {
-                searchDropdown.innerHTML = '<div class="search-no-results">No products found</div>';
-                searchDropdown.classList.add('active');
+                searchDropdown.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">No products or categories found</div>';
+                searchDropdown.style.display = 'block';
               }
             })
             .catch(err => {
               console.error('Search error:', err);
-              searchDropdown.classList.remove('active');
+              searchDropdown.style.display = 'none';
             });
         }, 300);
       });
 
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-bar-wrapper')) {
-          searchDropdown.classList.remove('active');
+        if (!e.target.closest('.search-container')) {
+          searchDropdown.style.display = 'none';
         }
       });
     }
