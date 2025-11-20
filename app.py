@@ -1148,15 +1148,21 @@ def send_email(to_email, subject, body_html):
             html_part = MIMEText(body_html, 'html')
             msg.attach(html_part)
             
-            print(f"[EMAIL] Connecting to SMTP...")
-            # Connect to Gmail SMTP and send (with timeout)
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
-                print(f"[EMAIL] Connected to SMTP, logging in...")
-                server.login(gmail_user, gmail_password)
-                print(f"[EMAIL] Login successful, sending email...")
-                server.sendmail(gmail_user, to_email, msg.as_string())
+            print(f"[EMAIL] Connecting to SMTP (timeout: 5s)...")
+            # Connect to Gmail SMTP and send (with shorter timeout)
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=5)
+            print(f"[EMAIL] Connected to SMTP, logging in...")
+            server.login(gmail_user, gmail_password)
+            print(f"[EMAIL] Login successful, sending email...")
+            server.sendmail(gmail_user, to_email, msg.as_string())
+            server.quit()
             
             print(f"[EMAIL] SUCCESS: Email sent to {to_email}")
+        except smtplib.SMTPAuthenticationError as e:
+            print(f"[EMAIL] AUTH FAILED: Invalid Gmail credentials")
+            print(f"[EMAIL] Error: {e}")
+        except smtplib.SMTPException as e:
+            print(f"[EMAIL] SMTP ERROR: {e}")
         except Exception as e:
             import traceback
             print(f"[EMAIL] FAILED to send to {to_email}")
