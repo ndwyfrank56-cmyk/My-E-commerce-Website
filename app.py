@@ -1136,6 +1136,9 @@ def send_email(to_email, subject, body_html):
     
     def _send_async():
         try:
+            print(f"[EMAIL] Starting email send to {to_email}")
+            print(f"[EMAIL] Using Gmail user: {gmail_user}")
+            
             msg = MIMEMultipart('alternative')
             msg['From'] = gmail_user
             msg['To'] = to_email
@@ -1145,14 +1148,20 @@ def send_email(to_email, subject, body_html):
             html_part = MIMEText(body_html, 'html')
             msg.attach(html_part)
             
+            print(f"[EMAIL] Connecting to SMTP...")
             # Connect to Gmail SMTP and send (with timeout)
             with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
+                print(f"[EMAIL] Connected to SMTP, logging in...")
                 server.login(gmail_user, gmail_password)
+                print(f"[EMAIL] Login successful, sending email...")
                 server.sendmail(gmail_user, to_email, msg.as_string())
             
-            print(f"[EMAIL] Sent successfully to {to_email}")
+            print(f"[EMAIL] SUCCESS: Email sent to {to_email}")
         except Exception as e:
-            print(f"[EMAIL] Failed to send to {to_email}: {e}")
+            import traceback
+            print(f"[EMAIL] FAILED to send to {to_email}")
+            print(f"[EMAIL] Error: {e}")
+            print(f"[EMAIL] Traceback: {traceback.format_exc()}")
     
     # Send email in background thread (non-blocking)
     import threading
