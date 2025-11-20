@@ -250,7 +250,10 @@ class GlobalLoadingManager {
     // Only skip if request has explicit no-loading header
     if (options.headers && options.headers['X-No-Loading']) return true;
     
-    // Show loading for ALL AJAX requests - no restrictions!
+    // Skip loading for search API requests (they're fast and shouldn't show overlay)
+    if (url.includes('/api/search')) return true;
+    
+    // Show loading for ALL other AJAX requests
     return false;
   }
 
