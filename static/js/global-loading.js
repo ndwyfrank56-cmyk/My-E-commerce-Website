@@ -147,6 +147,9 @@ class GlobalLoadingManager {
       // Only skip if form has explicit no-loading class
       if (form.classList.contains('no-loading')) return;
       
+      // Skip if form is inside search container
+      if (form.closest('.search-container')) return;
+      
       // Show loading for ALL forms - no restrictions!
       this.show('Processing...', 'Submitting your request');
       
@@ -241,6 +244,9 @@ class GlobalLoadingManager {
     // Skip if it's an email or tel link
     const href = link.getAttribute('href') || '';
     if (href.startsWith('mailto:') || href.startsWith('tel:')) return true;
+    
+    // Skip if it's a search result item (they navigate quickly)
+    if (link.closest('.search-result-item')) return true;
     
     // Show loading for everything else - no restrictions!
     return false;
