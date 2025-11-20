@@ -1119,50 +1119,63 @@ def safe_error_log(error, context=""):
         return f"Error: {error}"
 
 def send_email(to_email, subject, body_html):
-    """Send email via Gmail SMTP using environment variables (non-blocking).
+    """Send email via SendGrid API (non-blocking).
     
     Required environment variables:
-    - GMAIL_USER: Sender Gmail address (e.g., nduwayofrank1@gmail.com)
-    - GMAIL_APP_PASSWORD: Gmail App Password (not regular password)
+    - SENDGRID_API_KEY: SendGrid API key
+    - SENDGRID_FROM_EMAIL: Sender email address
     
     Returns True on success, False on failure.
     """
-    gmail_user = os.environ.get('GMAIL_USER')
-    gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
+    sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
+    from_email = os.environ.get('SENDGRID_FROM_EMAIL')
     
-    if not gmail_user or not gmail_password:
-        print("[EMAIL] Not configured: GMAIL_USER or GMAIL_APP_PASSWORD missing")
+    if not sendgrid_api_key or not from_email:
+        print("[EMAIL] Not configured: SENDGRID_API_KEY or SENDGRID_FROM_EMAIL missing")
         return False
     
     def _send_async():
         try:
-            print(f"[EMAIL] Starting email send to {to_email}")
-            print(f"[EMAIL] Using Gmail user: {gmail_user}")
+            print(f"[EMAIL] Starting SendGrid email send to {to_email}")
+            print(f"[EMAIL] From: {from_email}")
             
-            msg = MIMEMultipart('alternative')
-            msg['From'] = gmail_user
-            msg['To'] = to_email
-            msg['Subject'] = subject
+            import requests
             
-            # Attach HTML body
-            html_part = MIMEText(body_html, 'html')
-            msg.attach(html_part)
+            headers = {
+                'Authorization': f'Bearer {sendgrid_api_key}',
+                'Content-Type': 'application/json'
+            }
             
-            print(f"[EMAIL] Connecting to SMTP (timeout: 5s)...")
-            # Connect to Gmail SMTP and send (with shorter timeout)
-            server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=5)
-            print(f"[EMAIL] Connected to SMTP, logging in...")
-            server.login(gmail_user, gmail_password)
-            print(f"[EMAIL] Login successful, sending email...")
-            server.sendmail(gmail_user, to_email, msg.as_string())
-            server.quit()
+            data = {
+                'personalizations': [
+                    {
+                        'to': [{'email': to_email}],
+                        'subject': subject
+                    }
+                ],
+                'from': {'email': from_email},
+                'content': [
+                    {
+                        'type': 'text/html',
+                        'value': body_html
+                    }
+                ]
+            }
             
-            print(f"[EMAIL] SUCCESS: Email sent to {to_email}")
-        except smtplib.SMTPAuthenticationError as e:
-            print(f"[EMAIL] AUTH FAILED: Invalid Gmail credentials")
-            print(f"[EMAIL] Error: {e}")
-        except smtplib.SMTPException as e:
-            print(f"[EMAIL] SMTP ERROR: {e}")
+            print(f"[EMAIL] Sending via SendGrid API...")
+            response = requests.post(
+                'https://api.sendgrid.com/v3/mail/send',
+                json=data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code in [200, 201, 202]:
+                print(f"[EMAIL] SUCCESS: Email sent to {to_email} (status: {response.status_code})")
+            else:
+                print(f"[EMAIL] FAILED: SendGrid returned {response.status_code}")
+                print(f"[EMAIL] Response: {response.text}")
+                
         except Exception as e:
             import traceback
             print(f"[EMAIL] FAILED to send to {to_email}")
