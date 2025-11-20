@@ -1778,10 +1778,6 @@
   <!-- Modern Cart Section -->
   <main class="main-content scroll-animate">
     <div class="section-header">
-      <div>
-        <h2 class="section-title">ADD TO CART</h2>
-        <p class="section-subtitle">Review your selected items and proceed to checkout</p>
-      </div>
       {% if cart_items %}
         {% set total = namespace(value=0) %}
         {% for item in cart_items %}
@@ -1797,6 +1793,8 @@
             Checkout
           </a>
         </div>
+      {% else %}
+        <h2 class="section-title">Your Cart</h2>
       {% endif %}
     </div>
     
