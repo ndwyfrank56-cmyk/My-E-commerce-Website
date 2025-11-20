@@ -1119,7 +1119,7 @@ def safe_error_log(error, context=""):
         return f"Error: {error}"
 
 def send_email(to_email, subject, body_html):
-    """Send email via Gmail SMTP using environment variables.
+    """Send email via Gmail SMTP using environment variables (non-blocking).
     
     Required environment variables:
     - GMAIL_USER: Sender Gmail address (e.g., nduwayofrank1@gmail.com)
@@ -1131,29 +1131,35 @@ def send_email(to_email, subject, body_html):
     gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
     
     if not gmail_user or not gmail_password:
-        print("Email not configured: GMAIL_USER or GMAIL_APP_PASSWORD missing in environment")
+        print("[EMAIL] Not configured: GMAIL_USER or GMAIL_APP_PASSWORD missing")
         return False
     
-    try:
-        msg = MIMEMultipart('alternative')
-        msg['From'] = gmail_user
-        msg['To'] = to_email
-        msg['Subject'] = subject
-        
-        # Attach HTML body
-        html_part = MIMEText(body_html, 'html')
-        msg.attach(html_part)
-        
-        # Connect to Gmail SMTP and send
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(gmail_user, gmail_password)
-            server.sendmail(gmail_user, to_email, msg.as_string())
-        
-        print(f"Email sent successfully to {to_email}")
-        return True
-    except Exception as e:
-        print(f"Failed to send email to {to_email}: {e}")
-        return False
+    def _send_async():
+        try:
+            msg = MIMEMultipart('alternative')
+            msg['From'] = gmail_user
+            msg['To'] = to_email
+            msg['Subject'] = subject
+            
+            # Attach HTML body
+            html_part = MIMEText(body_html, 'html')
+            msg.attach(html_part)
+            
+            # Connect to Gmail SMTP and send (with timeout)
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
+                server.login(gmail_user, gmail_password)
+                server.sendmail(gmail_user, to_email, msg.as_string())
+            
+            print(f"[EMAIL] Sent successfully to {to_email}")
+        except Exception as e:
+            print(f"[EMAIL] Failed to send to {to_email}: {e}")
+    
+    # Send email in background thread (non-blocking)
+    import threading
+    thread = threading.Thread(target=_send_async, daemon=True)
+    thread.start()
+    
+    return True
 
 # Cached helper functions for performance # Cache for 10 minutes
 def get_all_categories():
