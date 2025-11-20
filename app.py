@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, url_for, flash, redirect, ses
 from flask_mysqldb import MySQL
 from flask_compress import Compress
 # from flask_session import Session  # Disabled due to compatibility issues
-import redis
+# import redis  # Disabled - using Flask default sessions
 # Using XAMPP MySQL - no SQLite fallback needed
 USE_SQLITE = False
 from collections import defaultdict
@@ -67,32 +67,34 @@ app.config['MYSQL_PORT'] = int(os.environ.get('MYSQL_PORT', 3306))
 USE_SQLITE = False
 mysql = MySQL(app)
 
-# Redis Configuration for Sessions and Caching
-REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
-REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
-REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
-REDIS_DB = int(os.environ.get('REDIS_DB', 0))
+# Redis Configuration for Sessions and Caching (DISABLED)
+# Using Flask default sessions instead
+REDIS_AVAILABLE = False
+# REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+# REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
+# REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
+# REDIS_DB = int(os.environ.get('REDIS_DB', 0))
 
-# Configure Redis connection
-try:
-    redis_client = redis.Redis(
-        host=REDIS_HOST,
-        port=REDIS_PORT,
-        password=REDIS_PASSWORD,
-        db=REDIS_DB,
-        decode_responses=True,
-        socket_connect_timeout=5,
-        socket_timeout=5,
-        retry_on_timeout=True
-    )
-    # Test Redis connection
-    redis_client.ping()
-    print(f"[OK] Redis connected successfully to {REDIS_HOST}:{REDIS_PORT}")
-    REDIS_AVAILABLE = True
-except Exception as e:
-    print(f"[ERROR] Redis connection failed: {e}")
-    print("[WARNING] Falling back to Flask default sessions")
-    REDIS_AVAILABLE = False
+# Configure Redis connection (DISABLED)
+# try:
+#     redis_client = redis.Redis(
+#         host=REDIS_HOST,
+#         port=REDIS_PORT,
+#         password=REDIS_PASSWORD,
+#         db=REDIS_DB,
+#         decode_responses=True,
+#         socket_connect_timeout=5,
+#         socket_timeout=5,
+#         retry_on_timeout=True
+#     )
+#     # Test Redis connection
+#     redis_client.ping()
+#     print(f"[OK] Redis connected successfully to {REDIS_HOST}:{REDIS_PORT}")
+#     REDIS_AVAILABLE = True
+# except Exception as e:
+#     print(f"[ERROR] Redis connection failed: {e}")
+#     print("[WARNING] Falling back to Flask default sessions")
+#     REDIS_AVAILABLE = False
 
 # Note: Flask-Session disabled due to compatibility issues
 # Using Redis only for cart storage and caching
