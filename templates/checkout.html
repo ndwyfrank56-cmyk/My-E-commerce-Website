@@ -2163,10 +2163,10 @@ body { padding-top: 120px; }
     </div>
   </aside>
 
-  <main class="container scroll-animate">
+  <main class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="flash-container scroll-animate">
+        <div class="flash-container">
           {% for category, message in messages %}
             {% if category == 'error' %}
               <div class="flash flash-{{ category }}">{{ message }}</div>
@@ -2186,7 +2186,7 @@ body { padding-top: 120px; }
     {% endif %}
 
     <!-- Order Summary - Top Section -->
-    <aside class="card scroll-animate" style="grid-column: 1 / -1; margin-bottom: 2rem;">
+    <aside class="card" style="grid-column: 1 / -1; margin-bottom: 2rem;">
       <h2>Order Summary</h2>
       {% if not cart_items %}
         <div class="empty">No items to show.</div>
@@ -2196,7 +2196,7 @@ body { padding-top: 120px; }
           {% for item in cart_items %}
             {% set subtotal = item.price * item.quantity %}
             {% set total.value = total.value + subtotal %}
-            <div class="order-item scroll-animate" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
+            <div class="order-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
               <a href="/product/{{ item.product_id }}" class="order-thumb" style="display: block; text-decoration: none;"><img src="{{ item.image }}" alt="{{ item.name }}"></a>
               <div class="order-info">
                 <a href="/product/{{ item.product_id }}" class="order-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">{{ item.name }}</a>
@@ -2232,7 +2232,7 @@ body { padding-top: 120px; }
           {% endfor %}
         </div>
         
-        <div class="total scroll-animate" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div class="total" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
           <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Total Amount</div>
           <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
         </div>
@@ -2240,7 +2240,7 @@ body { padding-top: 120px; }
     </aside>
 
     <!-- Address + MoMo Payment Form -->
-    <section class="card scroll-animate" style="grid-column: 1 / -1;">
+    <section class="card" style="grid-column: 1 / -1;">
       {% if not cart_items %}
         <div class="empty">
           Your cart is empty. <a href="/" style="color: var(--accent); text-decoration: none; font-weight: 700;">Continue shopping</a>
@@ -2748,23 +2748,6 @@ body { padding-top: 120px; }
       document.getElementById('leftSidebar')?.classList.remove('active');
       document.getElementById('overlay')?.classList.remove('active');
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const animateElements = document.querySelectorAll('.scroll-animate');
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: '50px 0px -50px 0px'
-      });
-
-      animateElements.forEach(el => observer.observe(el));
-    });
 
     // ============================================
     // Pure OpenStreetMap - NO LEAFLET, NO DUPLICATES
