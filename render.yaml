@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: emarket
+    name: emarket-buak
     env: python
     region: oregon
     plan: free
