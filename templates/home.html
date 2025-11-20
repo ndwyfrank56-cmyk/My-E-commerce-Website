@@ -4301,6 +4301,7 @@
     // Search functionality
     const searchInput = document.querySelector('.search-box');
     const searchDropdown = document.getElementById('searchSuggestions');
+    const searchContainer = document.querySelector('.search-container');
     let searchTimeout;
 
     if (searchInput) {
@@ -4321,7 +4322,7 @@
                 let html = '';
                 data.forEach(item => {
                   html += `
-                    <div class="search-result-item" onclick="window.location.href='/product/${item.id}'" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;">
+                    <div class="search-result-item" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;" onclick="event.stopPropagation(); window.location.href='/product/${item.id}'">
                       <i class="fas fa-box" style="color: #666;"></i>
                       <div>
                         <div style="font-weight: 500;">${item.name}</div>
@@ -4344,10 +4345,16 @@
         }, 300);
       });
 
+      // Close dropdown when clicking outside search container
       document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
+        if (searchContainer && !searchContainer.contains(e.target)) {
           searchDropdown.style.display = 'none';
         }
+      });
+
+      // Prevent dropdown from closing when clicking inside it
+      searchDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
       });
     }
   </script>
