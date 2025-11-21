@@ -561,6 +561,15 @@
     }
 
     /* Product Card Styles - Exact Match from Home Page */
+    .product-image-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%;
+      background: #1a1f2e;
+      border-radius: 16px 16px 0 0;
+      overflow: visible;
+    }
+
     .product-card {
       position: relative;
       background: #0F1115;
@@ -621,7 +630,7 @@
       box-shadow: none;
       backdrop-filter: none;
       line-height: 1;
-      z-index: 10;
+      z-index: 5;
     }
 
     .price-badge .original-price {
@@ -629,19 +638,21 @@
       text-decoration: line-through;
       opacity: 0.7;
       font-weight: 500;
+      margin-bottom: 0.2rem;
     }
 
     .price-badge .discount-percent {
       position: absolute;
-      top: -8px;
-      right: -8px;
+      top: -10px;
+      right: -10px;
       background: #ef4444;
       color: white;
       font-size: 0.7rem;
       font-weight: 800;
-      padding: 2px 6px;
+      padding: 3px 7px;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      z-index: 10;
     }
 
     .discount-percent {
@@ -655,7 +666,6 @@
       padding: 2px 6px;
       border-radius: 4px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      z-index: 20;
     }
 
     .product-details {
