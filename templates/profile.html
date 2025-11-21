@@ -1372,12 +1372,6 @@
                         <i class="fas fa-boxes"></i>
                         <span>{{ product.stock }} left</span>
                       </div>
-                      <div class="product-actions">
-                        <a href="/product/{{ product.id }}" class="btn-view">View</a>
-                        <form method="post" action="/wishlist/remove/{{ product.id }}" style="position:relative; z-index:2;">
-                          <button type="submit" class="btn-remove">Remove</button>
-                        </form>
-                      </div>
                     </div>
                     <a class="card-link" href="/product/{{ product.id }}"></a>
                   </div>
@@ -1700,10 +1694,6 @@
           </div>
           <div class="wishlist-item-content">
             <h4 class="wishlist-item-title">${item.name}</h4>
-            <div class="wishlist-item-actions">
-              <a href="/product/${item.product_id}" class="btn btn-primary">View</a>
-              <button class="btn btn-danger" onclick="removeFromWishlist(${item.product_id}, this)">Remove</button>
-            </div>
           </div>
         `;
         container.appendChild(itemElement);
