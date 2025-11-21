@@ -618,8 +618,9 @@
       left: 0.65rem;
       bottom: 0.65rem;
       display: inline-flex;
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
       padding: .4rem .7rem;
       border-radius: 6px;
       background: rgba(46,77,44,0.95);
@@ -638,21 +639,21 @@
       text-decoration: line-through;
       opacity: 0.7;
       font-weight: 500;
-      margin-bottom: 0.2rem;
     }
 
     .price-badge .discount-percent {
-      position: absolute;
-      top: -10px;
-      right: -10px;
+      position: relative;
+      top: 0;
+      right: 0;
       background: #ef4444;
       color: white;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      padding: 2px 5px;
+      border-radius: 3px;
+      box-shadow: none;
       z-index: 10;
+      white-space: nowrap;
     }
 
     .discount-percent {
