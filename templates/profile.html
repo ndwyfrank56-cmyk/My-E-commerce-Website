@@ -573,25 +573,26 @@
     .product-card {
       position: relative;
       background: #0F1115;
-      border-radius: 18px;
+      border-radius: 12px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.06);
-      transition: none;
+      transition: all 0.2s ease;
       box-shadow: none;
       isolation: isolate;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      cursor: pointer;
-      padding: 14px;
     }
 
     /* Make whole card clickable */
     .product-card .card-link { position: absolute; inset: 0; z-index: 1; text-indent: -9999px; }
 
-    /* remove glossy layer and hover effects */
+    /* Hover effect */
     .product-card::before { content: none; }
-    .product-card:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.08); }
+    .product-card:hover { 
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 
     .product-image-container {
       position: relative;
@@ -613,47 +614,65 @@
       filter: none;
     }
 
-    .price-badge {
-      position: absolute;
-      left: 0.65rem;
-      bottom: 0.65rem;
-      display: inline-flex;
-      flex-direction: row;
-      align-items: center;
+    .product-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
       gap: 0.5rem;
-      padding: .4rem .7rem;
-      border-radius: 6px;
-      background: rgba(46,77,44,0.95);
-      color: #e8f5e4;
-      border: none;
-      font-weight: 700;
-      font-size: .85rem;
-      box-shadow: none;
-      backdrop-filter: none;
-      line-height: 1;
-      z-index: 5;
     }
 
-    .price-badge .original-price {
+    .product-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .product-price {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+
+    .product-price .original-price {
       font-size: 0.75rem;
       text-decoration: line-through;
-      opacity: 0.7;
+      opacity: 0.6;
       font-weight: 500;
     }
 
-    .price-badge .discount-percent {
-      position: relative;
-      top: 0;
-      right: 0;
+    .product-price .current-price {
+      font-size: 0.95rem;
+      color: #4ade80;
+    }
+
+    .stock-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: auto;
+    }
+
+    .stock-indicator i {
+      font-size: 0.75rem;
+    }
+
+    .discount-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
       background: #ef4444;
       color: white;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 800;
-      padding: 2px 5px;
-      border-radius: 3px;
-      box-shadow: none;
+      padding: 4px 8px;
+      border-radius: 4px;
       z-index: 10;
-      white-space: nowrap;
     }
 
     .discount-percent {
@@ -1370,17 +1389,17 @@
                     <div class="product-image-container">
                       <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
                       {% if product.discount and product.discount > 0 %}
-                        <span class="discount-percent">-{{ product.discount|int }}%</span>
+                        <span class="discount-badge">-{{ product.discount|int }}%</span>
                       {% endif %}
-                      <div class="price-badge">
-                        {% if product.discount and product.discount > 0 %}
-                          <span class="original-price">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
-                        {% endif %}
-                        <span>RWF {{ '{:,.0f}'.format(product.price) }}</span>
-                      </div>
                     </div>
                     <div class="product-details">
                       <h4 class="product-name">{{ product.name }}</h4>
+                      <div class="product-price">
+                        {% if product.discount and product.discount > 0 %}
+                          <span class="original-price">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
+                        {% endif %}
+                        <span class="current-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
+                      </div>
                       <div class="stock-indicator">
                         <i class="fas fa-boxes"></i>
                         <span>{{ product.stock }} left</span>
