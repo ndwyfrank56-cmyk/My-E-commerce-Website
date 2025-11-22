@@ -692,15 +692,15 @@
 
     .wishlist-remove-btn {
       position: absolute;
-      bottom: -18px;
-      right: 0;
-      width: 36px;
-      height: 36px;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 32px;
+      height: 32px;
       border-radius: 6px;
-      background: transparent;
+      background: rgba(239, 68, 68, 0.9);
       border: none;
-      color: #ef4444;
-      font-size: 0.9rem;
+      color: white;
+      font-size: 0.85rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1445,7 +1445,7 @@
                         <span class="discount-badge">-{{ product.discount|int }}%</span>
                       {% endif %}
                       <button class="wishlist-remove-btn" onclick="removeFromWishlist({{ product.id }}, this)" title="Remove from wishlist">
-                        <i class="fas fa-trash"></i>
+                        <i class="fas fa-times"></i>
                       </button>
                     </div>
                     <div class="product-details">
