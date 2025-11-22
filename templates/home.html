@@ -1575,11 +1575,14 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: none;
-      opacity: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(46, 77, 44, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(199, 169, 106, 0.05) 0%, transparent 50%);
+      opacity: 1;
       z-index: 1;
       will-change: auto;
       transition: none;
+      pointer-events: none;
     }
 
 
@@ -3550,9 +3553,9 @@
   <section class="hero-section scroll-animate">
     <div class="hero-content">
       <h1 class="hero-title">Need It <span class="highlight">Now?</span> Tap & Done.</h1>
-      <p class="hero-subtitle">Stop browsing 10 sites. Find what you need, checkout in 60 seconds, and get it delivered in 1-2 days, guaranteed.</p>
+      <p class="hero-subtitle">Stop jumping between sites. Find what you want, checkout in under 60 seconds, and get it in 1-2 days. Guaranteed.</p>
       <a href="#products" class="hero-cta" onclick="event.stopPropagation(); scrollToSection('#products'); return false;">
-        Shop Express Inventory
+        Shop Now
       </a>
       
       <div class="hero-features">
