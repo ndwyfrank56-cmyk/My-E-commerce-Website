@@ -3270,24 +3270,29 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 38px;
-      padding: 0.45rem 0.7rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 6px;
-      color: rgba(255,255,255,0.75);
-      font-size: 0.75rem;
+      min-width: 50px;
+      padding: 0.65rem 1.2rem;
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 50px;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.8rem;
       font-weight: 600;
-      transition: none;
-      letter-spacing: 0;
+      transition: all 0.2s ease;
+      letter-spacing: 0.3px;
     }
 
 
-    .size-checkbox-label input:checked + .size-pill {
-      background: rgba(255,255,255,0.2);
+    .size-checkbox-label:hover .size-pill {
       border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .size-checkbox-label input:checked + .size-pill {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.6);
       color: rgba(255,255,255,1);
-      font-weight: 700;
+      font-weight: 600;
       box-shadow: none;
       transform: none;
     }
