@@ -1575,10 +1575,8 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: 
-        radial-gradient(circle at 20% 50%, rgba(199, 169, 106, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(46, 77, 44, 0.06) 0%, transparent 50%);
-      opacity: 1;
+      background: url('/static/eshop.jpg') no-repeat center center / cover;
+      opacity: 0.25;
       z-index: 1;
       will-change: auto;
       transition: none;
@@ -1607,7 +1605,7 @@
     }
     
     .hero-title .highlight {
-      background: linear-gradient(135deg, #c7a96a 0%, #e8d5b7 100%);
+      background: linear-gradient(135deg, #2e4d2c 0%, #3d6b38 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -1638,34 +1636,24 @@
       gap: 0.7rem;
       padding: 1rem 2.2rem;
       border-radius: 10px;
-      color: #0f1318;
+      color: #ffffff;
       text-decoration: none;
       font-weight: 700;
       font-size: 1rem;
-      background: linear-gradient(135deg, #c7a96a 0%, #e8d5b7 100%);
-      border: none;
-      box-shadow: 0 8px 24px rgba(199, 169, 106, 0.3);
+      background: #2e4d2c;
+      border: 1px solid rgba(46, 77, 44, 0.6);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       overflow: hidden;
       isolation: isolate;
       opacity: 1;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       font-weight: 700;
       letter-spacing: 0.5px;
-    }
-    .hero-cta:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(199, 169, 106, 0.4);
-      background: linear-gradient(135deg, #e8d5b7 0%, #f5e8d0 100%);
     }
     .hero-cta::after {
       content: '→';
       font-weight: 900;
       transform: translateX(0);
-      transition: transform 0.3s ease;
       opacity: 1;
-    }
-    .hero-cta:hover::after {
-      transform: translateX(4px);
     }
 
     .hero-features {
@@ -1683,15 +1671,8 @@
       color: rgba(255, 255, 255, 0.9);
       padding: 1.5rem;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(199, 169, 106, 0.15);
-      transition: all 0.3s ease;
-    }
-    
-    .hero-feature:hover {
-      background: rgba(199, 169, 106, 0.08);
-      border-color: rgba(199, 169, 106, 0.3);
-      transform: translateY(-4px);
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(46, 77, 44, 0.3);
     }
 
     .hero-feature-icon { 
@@ -1700,11 +1681,11 @@
       justify-content: center;
       width: 48px;
       height: 48px;
-      background: rgba(199, 169, 106, 0.15);
+      background: rgba(46, 77, 44, 0.4);
       border-radius: 10px;
       margin-bottom: 1rem;
       font-size: 1.5rem;
-      color: #c7a96a;
+      color: #2e4d2c;
     }
 
     .hero-feature h3 {
@@ -2300,6 +2281,8 @@
       
       .hero-feature {
         padding: 1.2rem;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(46, 77, 44, 0.3);
       }
 
       .category-header {
