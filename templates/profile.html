@@ -1803,31 +1803,6 @@
       });
     }
     
-    function removeFromWishlist(productId, button) {
-      console.log('Remove button clicked for product:', productId);
-      fetch('/wishlist/remove', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ product_id: productId })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Remove response:', data);
-        if (data.success) {
-          // Remove the item from the UI
-          button.closest('.wishlist-item').remove();
-          
-          // Check if wishlist is now empty
-          const container = document.getElementById('wishlist-items');
-          if (container.children.length === 0) {
-            document.getElementById('wishlist-empty').style.display = 'block';
-          }
-        }
-      })
-      .catch(error => console.error('Error removing from wishlist:', error));
-    }
     
     // Toggle order items visibility
     function toggleOrderItems(button) {
