@@ -3088,6 +3088,32 @@ def wishlist_count():
         print(f"Error getting wishlist count: {e}")
         return jsonify({'count': 0, 'error': str(e)}), 500
 
+@app.route('/wishlist/get')
+@login_required
+def get_wishlist():
+    """Get all wishlist items for the logged-in user"""
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT p.* FROM products p
+            INNER JOIN wishlist w ON p.id = w.product_id
+            WHERE w.user_id = %s
+            ORDER BY w.added_at DESC
+        """, (session['user_id'],))
+        wishlist_data = cur.fetchall()
+        cur.close()
+        
+        wishlist_items = []
+        for product_data in wishlist_data:
+            product = get_product_with_discount(product_data)
+            if product:
+                wishlist_items.append(product)
+        
+        return jsonify({'success': True, 'wishlist': wishlist_items})
+    except Exception as e:
+        print(f"Error getting wishlist: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/wishlist/add/<int:product_id>', methods=['POST'])
 @login_required
 def add_to_wishlist(product_id):
@@ -3120,11 +3146,17 @@ def add_to_wishlist(product_id):
         flash('Error adding to wishlist', 'error')
         return redirect(request.referrer or url_for('home'))
 
-@app.route('/wishlist/remove/<int:product_id>', methods=['POST'])
+@app.route('/wishlist/remove', methods=['POST'])
 @login_required
-def remove_from_wishlist(product_id):
+def remove_from_wishlist():
     """Remove product from wishlist"""
     try:
+        data = request.get_json()
+        product_id = data.get('product_id')
+        
+        if not product_id:
+            return jsonify({'success': False, 'error': 'Product ID required'}), 400
+        
         cur = mysql.connection.cursor()
         
         # Get product name before removing
@@ -3137,12 +3169,10 @@ def remove_from_wishlist(product_id):
         mysql.connection.commit()
         cur.close()
         
-        flash(f'{product_name} removed from wishlist', 'success')
-        return redirect(request.referrer or url_for('profile'))
+        return jsonify({'success': True, 'message': f'{product_name} removed from wishlist'})
     except Exception as e:
         print(f"Error removing from wishlist: {e}")
-        flash('Error removing from wishlist', 'error')
-        return redirect(request.referrer or url_for('profile'))
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/wishlist/add-to-cart/<int:product_id>', methods=['POST'])
 @login_required

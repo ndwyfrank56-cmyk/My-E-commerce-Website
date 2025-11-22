@@ -1412,40 +1412,18 @@
         <div id="panel-wishlist" class="tab-panel" role="tabpanel" aria-labelledby="tab-wishlist" hidden>
           <div class="card">
             <h3>My Wishlist</h3>
-            {% if wishlist_items %}
-              <div class="wishlist-grid" id="wishlistGrid">
-                {% for product in wishlist_items %}
-                  <div class="product-card">
-                    <div class="product-image-container">
-                      <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
-                      {% if product.discount and product.discount > 0 %}
-                        <span class="discount-badge">-{{ product.discount|int }}%</span>
-                      {% endif %}
-                    </div>
-                    <div class="product-details">
-                      <h4 class="product-name">{{ product.name }}</h4>
-                      <div class="product-price">
-                        {% if product.discount and product.discount > 0 %}
-                          <span class="original-price">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
-                        {% endif %}
-                        <span class="current-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
-                      </div>
-                      <div class="stock-indicator">
-                        <i class="fas fa-boxes"></i>
-                        <span>{{ product.stock }} left</span>
-                      </div>
-                    </div>
-                    <a class="card-link" href="/product/{{ product.id }}"></a>
-                  </div>
-                {% endfor %}
-              </div>
-            {% else %}
+            <div id="wishlist-loading" style="display: none; text-align: center; padding: 2rem;">
+              <div class="spinner"></div>
+              <p>Loading wishlist...</p>
+            </div>
+            <div id="wishlist-empty" style="display: none;">
               <div class="empty-wishlist">
                 <i class="fas fa-heart"></i>
                 <p>Your wishlist is empty</p>
                 <a href="/" class="btn">Start Shopping</a>
               </div>
-            {% endif %}
+            </div>
+            <div id="wishlist-items" class="wishlist-grid"></div>
           </div>
         </div>
 
@@ -1997,6 +1975,11 @@
 
       backdrop.onclick = () => document.body.removeChild(overlay);
     }
+    
+    // Initialize wishlist on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadWishlist();
+    });
   </script>
 
   <!-- Global Loading JavaScript -->
