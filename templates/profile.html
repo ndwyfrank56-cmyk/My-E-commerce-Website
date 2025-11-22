@@ -690,6 +690,29 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
+    .wishlist-remove-btn {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: rgba(239, 68, 68, 0.9);
+      border: none;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 11;
+      transition: none;
+    }
+
+    .wishlist-remove-btn:active {
+      transform: scale(0.95);
+    }
+
     .product-details {
       padding: 0.75rem 0.85rem 0.5rem;
       display: flex;
@@ -1412,18 +1435,43 @@
         <div id="panel-wishlist" class="tab-panel" role="tabpanel" aria-labelledby="tab-wishlist" hidden>
           <div class="card">
             <h3>My Wishlist</h3>
-            <div id="wishlist-loading" style="display: none; text-align: center; padding: 2rem;">
-              <div class="spinner"></div>
-              <p>Loading wishlist...</p>
-            </div>
-            <div id="wishlist-empty" style="display: none;">
+            {% if wishlist_items %}
+              <div class="wishlist-grid" id="wishlistGrid">
+                {% for product in wishlist_items %}
+                  <div class="product-card wishlist-card">
+                    <div class="product-image-container">
+                      <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                      {% if product.discount and product.discount > 0 %}
+                        <span class="discount-badge">-{{ product.discount|int }}%</span>
+                      {% endif %}
+                      <button class="wishlist-remove-btn" onclick="removeFromWishlist({{ product.id }}, this)" title="Remove from wishlist">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                    <div class="product-details">
+                      <h4 class="product-name">{{ product.name }}</h4>
+                      <div class="product-price">
+                        {% if product.discount and product.discount > 0 %}
+                          <span class="original-price">RWF {{ '{:,.0f}'.format(product.original_price) }}</span>
+                        {% endif %}
+                        <span class="current-price">RWF {{ '{:,.0f}'.format(product.price) }}</span>
+                      </div>
+                      <div class="stock-indicator">
+                        <i class="fas fa-boxes"></i>
+                        <span>{{ product.stock }} left</span>
+                      </div>
+                    </div>
+                    <a class="card-link" href="/product/{{ product.id }}"></a>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
               <div class="empty-wishlist">
                 <i class="fas fa-heart"></i>
                 <p>Your wishlist is empty</p>
                 <a href="/" class="btn">Start Shopping</a>
               </div>
-            </div>
-            <div id="wishlist-items" class="wishlist-grid"></div>
+            {% endif %}
           </div>
         </div>
 
@@ -1619,7 +1667,7 @@
       }
     }
     
-    function removeFromWishlist(productId) {
+    function removeFromWishlist(productId, buttonEl) {
       fetch('/wishlist/remove', {
         method: 'POST',
         headers: {
@@ -1631,7 +1679,13 @@
       .then(data => {
         if (data.success) {
           showToast('Removed from wishlist', 'info');
-          loadWishlist(); // Reload the wishlist
+          // Remove the card from DOM
+          const card = buttonEl.closest('.product-card');
+          if (card) {
+            card.style.opacity = '0';
+            card.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => card.remove(), 300);
+          }
         } else {
           showToast(data.message || 'Error removing from wishlist', 'error');
         }
@@ -1976,10 +2030,6 @@
       backdrop.onclick = () => document.body.removeChild(overlay);
     }
     
-    // Initialize wishlist on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      loadWishlist();
-    });
   </script>
 
   <!-- Global Loading JavaScript -->
