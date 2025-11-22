@@ -1825,6 +1825,7 @@
                 <div class="cart-item-price">RWF {{ '{:,.0f}'.format(item.price) }}</div>
                 <div class="cart-item-controls">
                   <div class="qty-control">
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-right: 0.3rem;">Qty:</span>
                     <button class="qty-btn" onclick="stepQty(this,-1,this.dataset.max)" data-id="{{ item.id }}" data-max="{{ item.stock }}">−</button>
                     <input type="number" value="{{ item.quantity }}" min="1" max="{{ item.stock }}"
                            onchange="updateQuantity('{{ item.id }}', this.value)" class="quantity-input">
