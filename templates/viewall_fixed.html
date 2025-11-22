@@ -1887,13 +1887,13 @@
     /* Product price styling - show below product name */
     .product-price { 
       display: flex !important;
+      flex-wrap: wrap;
       align-items: center;
       gap: 0.5rem;
       font-size: 0.95rem;
       font-weight: 700;
       color: #c7a96a;
       margin-top: 0.5rem;
-      white-space: nowrap;
     }
 
     .product-price span {
@@ -3644,13 +3644,13 @@
 
       .product-price { 
         display: flex !important;
+        flex-wrap: wrap;
         align-items: center;
         gap: 0.5rem;
         font-size: 1.1rem !important; 
         font-weight: 700 !important; 
         color: #c7a96a !important;
         margin-bottom: 0.75rem;
-        white-space: nowrap;
       }
 
       .stock-indicator {
@@ -3682,7 +3682,7 @@
       .category-title { font-size: 0.95rem; }
       .product-name { font-size: 0.8rem; }
       .price-badge { font-size: 0.9rem; }
-      .product-price { display: flex !important; align-items: center; gap: 0.5rem; font-size: 0.95rem !important; font-weight: 700 !important; color: #c7a96a !important; white-space: nowrap; }
+      .product-price { display: flex !important; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.95rem !important; font-weight: 700 !important; color: #c7a96a !important; }
     }
 
     /* ===== Subtle texture overlay for Filter Sidebar ===== */
