@@ -1165,28 +1165,36 @@
       position: relative;
       background: transparent;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 1rem 0;
-      margin: 0;
+      padding: 1.5rem 0;
+      margin: 0 0 3rem 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .categories-nav .category-link {
       position: relative;
       display: inline-flex;
       align-items: center;
-      padding: 1rem 2rem;
-      font-size: 0.9rem;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: none;
-      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
-      transition: none;
-      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
       background: transparent;
+    }
+
+    .categories-nav .category-link:hover {
+      color: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
     }
 
     .categories-nav .category-link::before {
@@ -1195,8 +1203,8 @@
 
     .categories-nav .category-link.active {
       color: #ffffff;
-      background: rgba(46, 204, 113, 0.1);
-      border-bottom-color: #2ECC71;
+      background: rgba(46, 77, 44, 0.3);
+      border-color: rgba(46, 77, 44, 0.6);
     }
 
     /* Responsive Categories Nav */
