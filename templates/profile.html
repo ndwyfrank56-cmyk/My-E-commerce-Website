@@ -1677,14 +1677,19 @@
         body: JSON.stringify({ product_id: productId })
       })
       .then(response => {
+        console.log('Wishlist remove response status:', response.status);
         if (response.status === 401) {
           showToast('Please log in to manage your wishlist', 'error');
           return null;
+        }
+        if (!response.ok && response.status !== 200) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
       .then(data => {
         if (!data) return;
+        console.log('Wishlist remove response data:', data);
         if (data.success) {
           showToast('Removed from wishlist', 'info');
           // Remove the card from DOM
@@ -1700,7 +1705,7 @@
       })
       .catch(error => {
         console.error('Error removing from wishlist:', error);
-        showToast('Error removing from wishlist', 'error');
+        showToast('Error removing from wishlist: ' + error.message, 'error');
       });
     }
     
