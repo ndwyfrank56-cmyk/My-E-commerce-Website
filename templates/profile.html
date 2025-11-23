@@ -1666,57 +1666,60 @@
         return;
       }
       
-      const requestBody = JSON.stringify({ product_id: parseInt(productId) });
-      console.log('Sending request body:', requestBody);
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/wishlist/remove', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       
-      const fetchRequest = window.fetch('/wishlist/remove', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: requestBody
-      });
-      
-      fetchRequest
-      .then(response => {
-        console.log('Wishlist remove response status:', response.status);
+      xhr.onload = function() {
+        console.log('Wishlist remove response status:', xhr.status);
         
-        if (response.status === 401) {
+        if (xhr.status === 401) {
           showToast('Please log in to manage your wishlist', 'error');
-          return null;
+          return;
         }
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (xhr.status !== 200) {
+          showToast('Error removing from wishlist (Status: ' + xhr.status + ')', 'error');
+          return;
         }
         
-        return response.json();
-      })
-      .then(data => {
-        if (!data) return;
-        console.log('Wishlist remove response data:', data);
-        
-        if (data.success) {
-          showToast('Removed from wishlist', 'info');
-          // Find and remove the card from DOM
-          const cards = document.querySelectorAll('.wishlist-card');
-          cards.forEach(card => {
-            const btn = card.querySelector('.wishlist-remove-btn');
-            if (btn && btn.onclick.toString().includes(productId)) {
-              card.style.opacity = '0';
-              card.style.transition = 'opacity 0.3s ease';
-              setTimeout(() => card.remove(), 300);
-            }
-          });
-        } else {
-          showToast(data.error || data.message || 'Error removing from wishlist', 'error');
+        try {
+          const data = JSON.parse(xhr.responseText);
+          console.log('Wishlist remove response data:', data);
+          
+          if (data.success) {
+            showToast('Removed from wishlist', 'info');
+            // Find and remove the card from DOM
+            const cards = document.querySelectorAll('.wishlist-card');
+            cards.forEach(card => {
+              const btn = card.querySelector('.wishlist-remove-btn');
+              if (btn && btn.onclick.toString().includes(productId)) {
+                card.style.opacity = '0';
+                card.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => card.remove(), 300);
+              }
+            });
+          } else {
+            showToast(data.error || data.message || 'Error removing from wishlist', 'error');
+          }
+        } catch (e) {
+          console.error('Error parsing response:', e);
+          showToast('Error removing from wishlist', 'error');
         }
-      })
-      .catch(error => {
-        console.error('Error removing from wishlist:', error);
-        showToast('Error removing from wishlist: ' + error.message, 'error');
-      });
+      };
+      
+      xhr.onerror = function() {
+        console.error('XHR error:', xhr.statusText);
+        showToast('Error removing from wishlist', 'error');
+      };
+      
+      try {
+        xhr.send(JSON.stringify({ product_id: parseInt(productId) }));
+      } catch (e) {
+        console.error('Error sending request:', e);
+        showToast('Error removing from wishlist: ' + e.message, 'error');
+      }
     }
     
     function showToast(message, type) {
