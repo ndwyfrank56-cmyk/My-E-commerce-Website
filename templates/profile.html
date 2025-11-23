@@ -1435,7 +1435,7 @@
                       {% if product.discount and product.discount > 0 %}
                         <span class="discount-badge">-{{ product.discount|int }}%</span>
                       {% endif %}
-                      <button class="wishlist-remove-btn" data-product-id="{{ product.id }}" onclick="removeFromWishlist(event)" title="Remove from wishlist">
+                      <button class="wishlist-remove-btn" onclick="removeWishlistItem({{ product.id }})" title="Remove from wishlist">
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -1658,14 +1658,8 @@
       }
     }
     
-    function removeFromWishlist(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      
-      const button = event.currentTarget;
-      const productId = button.getAttribute('data-product-id');
-      
-      console.log('removeFromWishlist called with productId:', productId);
+    function removeWishlistItem(productId) {
+      console.log('removeWishlistItem called with productId:', productId);
       
       if (!productId) {
         showToast('Product ID not found', 'error');
@@ -1675,26 +1669,22 @@
       const requestBody = JSON.stringify({ product_id: parseInt(productId) });
       console.log('Sending request body:', requestBody);
       
-      fetch('/wishlist/remove', {
+      const fetchRequest = window.fetch('/wishlist/remove', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
         body: requestBody
-      })
+      });
+      
+      fetchRequest
       .then(response => {
         console.log('Wishlist remove response status:', response.status);
-        console.log('Response headers:', response.headers.get('content-type'));
         
         if (response.status === 401) {
           showToast('Please log in to manage your wishlist', 'error');
           return null;
-        }
-        
-        if (response.status === 415) {
-          console.error('415 Unsupported Media Type - Content-Type issue');
-          throw new Error('Server rejected the request format');
         }
         
         if (!response.ok) {
@@ -1709,13 +1699,16 @@
         
         if (data.success) {
           showToast('Removed from wishlist', 'info');
-          // Remove the card from DOM
-          const card = button.closest('.product-card');
-          if (card) {
-            card.style.opacity = '0';
-            card.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => card.remove(), 300);
-          }
+          // Find and remove the card from DOM
+          const cards = document.querySelectorAll('.wishlist-card');
+          cards.forEach(card => {
+            const btn = card.querySelector('.wishlist-remove-btn');
+            if (btn && btn.onclick.toString().includes(productId)) {
+              card.style.opacity = '0';
+              card.style.transition = 'opacity 0.3s ease';
+              setTimeout(() => card.remove(), 300);
+            }
+          });
         } else {
           showToast(data.error || data.message || 'Error removing from wishlist', 'error');
         }

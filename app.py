@@ -3154,13 +3154,13 @@ def add_to_wishlist(product_id):
 def remove_from_wishlist():
     """Remove product from wishlist"""
     try:
-        # Try to get JSON data, with fallback to query parameters
+        # Get JSON data
         data = request.get_json(force=True, silent=True)
         if not data:
             data = {}
         
-        # Get product_id from JSON body or query parameters
-        product_id = data.get('product_id') or request.args.get('product_id')
+        # Get product_id from JSON body
+        product_id = data.get('product_id')
         
         if not product_id:
             return jsonify({'success': False, 'error': 'Product ID required'}), 400
