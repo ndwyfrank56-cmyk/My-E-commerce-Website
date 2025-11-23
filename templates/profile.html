@@ -1435,7 +1435,7 @@
                       {% if product.discount and product.discount > 0 %}
                         <span class="discount-badge">-{{ product.discount|int }}%</span>
                       {% endif %}
-                      <button class="wishlist-remove-btn" onclick="removeFromWishlist({{ product.id }}, this)" title="Remove from wishlist">
+                      <button class="wishlist-remove-btn" data-product-id="{{ product.id }}" onclick="removeFromWishlist(event)" title="Remove from wishlist">
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -1658,8 +1658,22 @@
       }
     }
     
-    function removeFromWishlist(productId, buttonEl) {
+    function removeFromWishlist(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const button = event.currentTarget;
+      const productId = button.getAttribute('data-product-id');
+      
       console.log('removeFromWishlist called with productId:', productId);
+      
+      if (!productId) {
+        showToast('Product ID not found', 'error');
+        return;
+      }
+      
+      const requestBody = JSON.stringify({ product_id: parseInt(productId) });
+      console.log('Sending request body:', requestBody);
       
       fetch('/wishlist/remove', {
         method: 'POST',
@@ -1667,7 +1681,7 @@
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify({ product_id: parseInt(productId) })
+        body: requestBody
       })
       .then(response => {
         console.log('Wishlist remove response status:', response.status);
@@ -1696,7 +1710,7 @@
         if (data.success) {
           showToast('Removed from wishlist', 'info');
           // Remove the card from DOM
-          const card = buttonEl.closest('.product-card');
+          const card = button.closest('.product-card');
           if (card) {
             card.style.opacity = '0';
             card.style.transition = 'opacity 0.3s ease';
