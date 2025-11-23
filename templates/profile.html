@@ -1659,28 +1659,40 @@
     }
     
     function removeFromWishlist(productId, buttonEl) {
+      console.log('removeFromWishlist called with productId:', productId);
+      
       fetch('/wishlist/remove', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify({ product_id: productId })
+        body: JSON.stringify({ product_id: parseInt(productId) })
       })
       .then(response => {
         console.log('Wishlist remove response status:', response.status);
+        console.log('Response headers:', response.headers.get('content-type'));
+        
         if (response.status === 401) {
           showToast('Please log in to manage your wishlist', 'error');
           return null;
         }
-        if (!response.ok && response.status !== 200) {
+        
+        if (response.status === 415) {
+          console.error('415 Unsupported Media Type - Content-Type issue');
+          throw new Error('Server rejected the request format');
+        }
+        
+        if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         return response.json();
       })
       .then(data => {
         if (!data) return;
         console.log('Wishlist remove response data:', data);
+        
         if (data.success) {
           showToast('Removed from wishlist', 'info');
           // Remove the card from DOM
