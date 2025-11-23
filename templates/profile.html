@@ -1672,11 +1672,19 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({ product_id: productId })
       })
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 401) {
+          showToast('Please log in to manage your wishlist', 'error');
+          return null;
+        }
+        return response.json();
+      })
       .then(data => {
+        if (!data) return;
         if (data.success) {
           showToast('Removed from wishlist', 'info');
           // Remove the card from DOM
@@ -1687,7 +1695,7 @@
             setTimeout(() => card.remove(), 300);
           }
         } else {
-          showToast(data.message || 'Error removing from wishlist', 'error');
+          showToast(data.error || data.message || 'Error removing from wishlist', 'error');
         }
       })
       .catch(error => {
