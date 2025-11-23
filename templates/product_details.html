@@ -2230,12 +2230,12 @@
         }
       });
       
-      // Highlight selected thumbnail (subtle)
+      // Highlight selected thumbnail with forest green border
       const selectedFrame = element.querySelector('div');
       if (selectedFrame) {
         selectedFrame.style.opacity = '1';
-        selectedFrame.style.border = '2px solid #6a6a6a';
-        selectedFrame.style.borderColor = '#6a6a6a';
+        selectedFrame.style.border = '3px solid #2e4d2c';
+        selectedFrame.style.borderColor = '#2e4d2c';
         selectedFrame.style.boxShadow = 'none';
         selectedFrame.style.outline = 'none';
       }
@@ -2448,6 +2448,12 @@
           const selectedBox = document.querySelector(`.variation-box[data-variation-id="${dropdownVarId}"]`);
           if (selectedBox) {
             maxStock = parseInt(selectedBox.getAttribute('data-stock') || '99', 10);
+          }
+        } else if (hasImageVars && !hasDropdownVars && imgVarId) {
+          // If only image variations (no dropdown), use image variation stock
+          const selectedImg = document.querySelector(`.image-variation-item[data-img-var-id="${imgVarId}"]`);
+          if (selectedImg) {
+            maxStock = parseInt(selectedImg.getAttribute('data-stock') || '99', 10);
           }
         }
       } else {
