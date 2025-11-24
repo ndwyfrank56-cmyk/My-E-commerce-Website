@@ -359,14 +359,24 @@
 body { padding-top: 120px; }
 
 /* Layout */
-.container { max-width: 1000px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: start; overflow: visible; }
+.container { max-width: 1000px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 2rem; align-items: start; overflow: visible; }
 
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; }
     
-    /* Order Summary Card - Natural Height */
-    .card:last-child {
+    /* Order Summary Card - On top, full width */
+    .container > aside {
+      grid-column: 1;
+      grid-row: 1;
       align-self: start;
       padding: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Form Card - Below order summary */
+    .container > section {
+      grid-column: 1;
+      grid-row: 2;
       width: 100%;
       box-sizing: border-box;
     }
@@ -699,9 +709,6 @@ body { padding-top: 120px; }
 
     @media (max-width: 900px) {
       .container { 
-        display: grid;
-        grid-template-columns: 1fr; 
-        grid-template-rows: auto auto;
         padding: 0 1rem;
         gap: 1.5rem;
       }
@@ -710,17 +717,6 @@ body { padding-top: 120px; }
       
       .card {
         padding: 1.25rem;
-      }
-      
-      /* Reorder: Order summary first, then form on mobile */
-      .container > aside {
-        grid-column: 1 / 2;
-        grid-row: 1 / 2;
-      }
-      
-      .container > section {
-        grid-column: 1 / 2;
-        grid-row: 2 / 3;
       }
     }
     
