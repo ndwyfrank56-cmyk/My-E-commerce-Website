@@ -2252,6 +2252,41 @@ body { padding-top: 120px; }
           <input type="hidden" id="latitude" name="latitude" value="{{ request.form.get('latitude','') }}">
           <input type="hidden" id="longitude" name="longitude" value="{{ request.form.get('longitude','') }}">
           
+          <!-- Login Section -->
+          {% if not session.user_id %}
+          <div class="checkout-section">
+            <div class="section-header">
+              <h3>Login or Continue as Guest</h3>
+            </div>
+            
+            <div class="section-content">
+              <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <button type="button" id="loginTabBtn" onclick="showLoginTab()" style="flex: 1; padding: 0.75rem; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Login</button>
+                <button type="button" id="guestTabBtn" onclick="showGuestTab()" style="flex: 1; padding: 0.75rem; background: transparent; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-weight: 600;">Continue as Guest</button>
+              </div>
+              
+              <!-- Login Tab -->
+              <div id="loginTab" style="display: none;">
+                <div class="form-row">
+                  <label for="login_email">Email</label>
+                  <input id="login_email" type="email" placeholder="your.email@example.com" style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-primary); font-size: 1rem;">
+                </div>
+                <div class="form-row">
+                  <label for="login_password">Password</label>
+                  <input id="login_password" type="password" placeholder="Your password" style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-primary); font-size: 1rem;">
+                </div>
+                <button type="button" onclick="handleLogin()" style="width: 100%; padding: 0.75rem; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 1rem;">Sign In</button>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">Don't have an account? <a href="/register" style="color: var(--accent); text-decoration: none;">Register here</a></p>
+              </div>
+              
+              <!-- Guest Tab -->
+              <div id="guestTab" style="display: block;">
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Continue without logging in. You can create an account anytime.</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          
           <!-- Contact Information -->
           <div class="checkout-section">
             <div class="section-header">
@@ -2911,6 +2946,59 @@ body { padding-top: 120px; }
       const initialMode = checkedRadio ? checkedRadio.value : 'cod';
       setMode(initialMode);
     })();
+    
+    // Login/Guest Tab Functions
+    function showLoginTab() {
+      document.getElementById('loginTab').style.display = 'block';
+      document.getElementById('guestTab').style.display = 'none';
+      document.getElementById('loginTabBtn').style.background = 'var(--accent)';
+      document.getElementById('loginTabBtn').style.color = 'white';
+      document.getElementById('guestTabBtn').style.background = 'transparent';
+      document.getElementById('guestTabBtn').style.color = 'var(--text-secondary)';
+      document.getElementById('guestTabBtn').style.borderColor = 'var(--border)';
+    }
+    
+    function showGuestTab() {
+      document.getElementById('loginTab').style.display = 'none';
+      document.getElementById('guestTab').style.display = 'block';
+      document.getElementById('guestTabBtn').style.background = 'var(--accent)';
+      document.getElementById('guestTabBtn').style.color = 'white';
+      document.getElementById('loginTabBtn').style.background = 'transparent';
+      document.getElementById('loginTabBtn').style.color = 'var(--text-secondary)';
+      document.getElementById('loginTabBtn').style.borderColor = 'var(--border)';
+    }
+    
+    function handleLogin() {
+      const email = document.getElementById('login_email').value;
+      const password = document.getElementById('login_password').value;
+      
+      if (!email || !password) {
+        alert('Please enter email and password');
+        return;
+      }
+      
+      // Send login request
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, password: password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Reload page to update user data
+          window.location.reload();
+        } else {
+          alert(data.message || 'Login failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Login error');
+      });
+    }
   </script>
 
   <!-- Wishlist Count Script -->
