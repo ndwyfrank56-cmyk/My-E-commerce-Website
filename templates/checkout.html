@@ -359,11 +359,11 @@
 body { padding-top: 120px; }
 
 /* Layout */
-.container { max-width: 1000px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 2rem; align-items: start; overflow: visible; }
+.container { max-width: 1200px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; overflow: visible; }
 
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; }
     
-    /* Order Summary Card - On top, full width */
+    /* Order Summary Card - Left side */
     .container > aside {
       grid-column: 1;
       grid-row: 1;
@@ -373,10 +373,10 @@ body { padding-top: 120px; }
       box-sizing: border-box;
     }
     
-    /* Form Card - Below order summary */
+    /* Form Card - Right side */
     .container > section {
-      grid-column: 1;
-      grid-row: 2;
+      grid-column: 2;
+      grid-row: 1;
       width: 100%;
       box-sizing: border-box;
     }
@@ -709,9 +709,21 @@ body { padding-top: 120px; }
 
     @media (max-width: 900px) {
       .container { 
+        grid-template-columns: 1fr;
         padding: 0 1rem;
         gap: 1.5rem;
       }
+      
+      .container > aside {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      
+      .container > section {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      
       .split { grid-template-columns: 1fr; }
       #map { height: 260px; }
       
