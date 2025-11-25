@@ -359,7 +359,7 @@
 body { padding-top: 120px; }
 
 /* Layout */
-.container { max-width: 1000px; margin: 1.5rem auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; overflow: visible; }
+.container { max-width: 100%; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; overflow: visible; }
 
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; }
     
@@ -699,8 +699,8 @@ body { padding-top: 120px; }
 
     @media (max-width: 900px) {
       .container { 
-        padding: 0 1rem;
-        gap: 1.5rem;
+        padding: 0;
+        gap: 0;
       }
       
       .split { grid-template-columns: 1fr; }
@@ -708,6 +708,7 @@ body { padding-top: 120px; }
       
       .card {
         padding: 1.25rem;
+        border-radius: 0;
       }
     }
     
@@ -2185,8 +2186,62 @@ body { padding-top: 120px; }
       {% endfor %}
     {% endif %}
 
+    <!-- Order Summary - Bottom Section -->
+    <aside class="card" style="grid-column: 1 / -1; margin-bottom: 0; width: 100%; box-sizing: border-box; border-radius: 0; margin-top: 2rem;">
+      <h2>Order Summary</h2>
+      {% if not cart_items %}
+        <div class="empty">No items to show.</div>
+      {% else %}
+        <div class="order-items">
+          {% set total = namespace(value=0) %}
+          {% for item in cart_items %}
+            {% set subtotal = item.price * item.quantity %}
+            {% set total.value = total.value + subtotal %}
+            <div class="order-item" style="cursor: pointer;" onclick="navigateToProduct(event, '{{ item.product_id }}')">
+              <a href="/product/{{ item.product_id }}" class="order-thumb" style="display: block; text-decoration: none;"><img src="{{ item.image }}" alt="{{ item.name }}"></a>
+              <div class="order-info">
+                <a href="/product/{{ item.product_id }}" class="order-name" style="color: inherit; text-decoration: none; display: block; cursor: pointer;">{{ item.name }}</a>
+                {% if item.img_var_name %}
+                <div class="order-variations" style="font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 0.2rem; font-weight: 500;">
+                  {{ item.img_var_name }}
+                </div>
+                {% endif %}
+                {% if item.img_var_description %}
+                <div class="order-variations" style="font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 0.1rem;">
+                  {{ item.img_var_description }}
+                </div>
+                {% endif %}
+                {% if item.variations and item.variations.strip() %}
+                <div class="order-variations" style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem;">
+                  {% set var_parts = item.variations.split(',') %}
+                  {% for part in var_parts %}
+                    {% if part.strip() %}
+                      {% set key_val = part.split(':') %}
+                      {% if key_val|length == 2 %}
+                        <div>{{ key_val[0].strip().capitalize() }}: {{ key_val[1].strip() }}</div>
+                      {% else %}
+                        <div>{{ part.strip() }}</div>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                {% endif %}
+                <div class="order-meta">Qty: {{ item.quantity }}</div>
+              </div>
+              <div class="order-price">RWF {{ '{:,.0f}'.format(subtotal) }}</div>
+            </div>
+          {% endfor %}
+        </div>
+        
+        <div class="total" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+          <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em;">Total Amount</div>
+          <div style="font-weight: 800; font-size: 1.4rem; color: rgba(255,255,255,0.85);">RWF {{ '{:,.0f}'.format(total.value) }}</div>
+        </div>
+      {% endif %}
+    </aside>
+
     <!-- Address + MoMo Payment Form -->
-    <section class="card" style="grid-column: 1 / 3;">
+    <section class="card" style="grid-column: 1 / -1; width: 100%; box-sizing: border-box; border-radius: 0; order: -1;">
       {% if not cart_items %}
         <div class="empty">
           Your cart is empty. <a href="/" style="color: var(--accent); text-decoration: none; font-weight: 700;">Continue shopping</a>
