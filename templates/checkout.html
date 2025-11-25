@@ -2270,9 +2270,14 @@ body { padding-top: 120px; }
                 </div>
               </div>
               
+              <div class="form-row">
+                <label for="email_address">Email Address</label>
+                <input id="email_address" name="email_address" type="email" placeholder="your.email@example.com" value="{{ request.form.get('email_address', user_data.email if user_data else '') }}" required>
+              </div>
+              
               {% if not session.user_id %}
               <div class="form-row">
-                <label for="guest_email">Email Address</label>
+                <label for="guest_email">Guest Email</label>
                 <input id="guest_email" name="guest_email" type="email" placeholder="your.email@example.com" value="{{ request.form.get('guest_email', user_data.email if user_data else '') }}" required>
               </div>
               {% endif %}
