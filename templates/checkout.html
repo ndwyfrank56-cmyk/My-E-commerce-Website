@@ -2186,8 +2186,8 @@ body { padding-top: 120px; }
       {% endfor %}
     {% endif %}
 
-    <!-- Order Summary - Bottom Section -->
-    <aside class="card" style="grid-column: 1 / -1; margin-bottom: 0; width: 100%; box-sizing: border-box; border-radius: 0; margin-top: 2rem;">
+    <!-- Order Summary - Top Section -->
+    <aside class="card" style="grid-column: 1 / -1; margin-bottom: 0; width: 100%; box-sizing: border-box; border-radius: 0; order: -1;">
       <h2>Order Summary</h2>
       {% if not cart_items %}
         <div class="empty">No items to show.</div>
@@ -2241,7 +2241,7 @@ body { padding-top: 120px; }
     </aside>
 
     <!-- Address + MoMo Payment Form -->
-    <section class="card" style="grid-column: 1 / -1; width: 100%; box-sizing: border-box; border-radius: 0; order: -1;">
+    <section class="card" style="grid-column: 1 / -1; width: 100%; box-sizing: border-box; border-radius: 0;">
       {% if not cart_items %}
         <div class="empty">
           Your cart is empty. <a href="/" style="color: var(--accent); text-decoration: none; font-weight: 700;">Continue shopping</a>
