@@ -359,7 +359,7 @@
 body { padding-top: 120px; }
 
 /* Layout */
-.container { max-width: 100%; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; overflow: visible; }
+.container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; overflow: visible; }
 
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; }
     
@@ -699,7 +699,7 @@ body { padding-top: 120px; }
 
     @media (max-width: 900px) {
       .container { 
-        padding: 0;
+        padding: 0 1rem;
         gap: 0;
       }
       
@@ -708,7 +708,6 @@ body { padding-top: 120px; }
       
       .card {
         padding: 1.25rem;
-        border-radius: 0;
       }
     }
     
@@ -2187,7 +2186,7 @@ body { padding-top: 120px; }
     {% endif %}
 
     <!-- Order Summary - Top Section -->
-    <aside class="card" style="grid-column: 1 / -1; margin-bottom: 0; width: 100%; box-sizing: border-box; border-radius: 0; order: -1;">
+    <aside class="card" style="grid-column: 1; margin-bottom: 0; width: 100%; box-sizing: border-box; order: -1;">
       <h2>Order Summary</h2>
       {% if not cart_items %}
         <div class="empty">No items to show.</div>
@@ -2241,7 +2240,7 @@ body { padding-top: 120px; }
     </aside>
 
     <!-- Address + MoMo Payment Form -->
-    <section class="card" style="grid-column: 1 / -1; width: 100%; box-sizing: border-box; border-radius: 0;">
+    <section class="card" style="grid-column: 1; width: 100%; box-sizing: border-box;">
       {% if not cart_items %}
         <div class="empty">
           Your cart is empty. <a href="/" style="color: var(--accent); text-decoration: none; font-weight: 700;">Continue shopping</a>
