@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/global-loading.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css', v='29') }}">
-  <!-- Pure OpenStreetMap - No Leaflet -->
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <style>
     :root {
       --bg: #0b0c10;
@@ -2790,7 +2791,7 @@ body { padding-top: 120px; }
     }
 
     // ============================================
-    // Pure OpenStreetMap - NO LEAFLET, NO DUPLICATES
+    // Leaflet Interactive Map
     // ============================================
     document.addEventListener('DOMContentLoaded', function () {
       const mapContainer = document.getElementById('map');
@@ -2799,80 +2800,89 @@ body { padding-top: 120px; }
       const latInput = document.getElementById('latitude');
       const lngInput = document.getElementById('longitude');
       
-      // Default: Kigali, Rwanda
-      let lat = -1.9441, lng = 30.0619;
+      let lat = -1.9536;
+      let lng = 29.8739;
       
-      // Load saved coords if available
-      if (latInput?.value && lngInput?.value) {
-        const l1 = parseFloat(latInput.value);
-        const l2 = parseFloat(lngInput.value);
-        if (!isNaN(l1) && !isNaN(l2)) {
-          lat = l1; lng = l2;
-        }
+      // Load saved coordinates if available
+      if (latInput && latInput.value) {
+        lat = parseFloat(latInput.value);
+      }
+      if (lngInput && lngInput.value) {
+        lng = parseFloat(lngInput.value);
       }
       
-      // Update map function
-      function updateMap() {
-        const zoom = 15;
-        const bbox = `${lng - 0.005},${lat - 0.005},${lng + 0.005},${lat + 0.005}`;
-        const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
-        
-        mapContainer.innerHTML = `
-          <iframe 
-            src="${embedUrl}"
-            width="100%" 
-            height="100%" 
-            frameborder="0" 
-            scrolling="no"
-            marginheight="0"
-            marginwidth="0"
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            style="border:none; border-radius:12px; display:block;"
-            loading="lazy"
-          ></iframe>
-        `;
-        
-        // Update hidden inputs
+      // Initialize Leaflet map
+      const map = L.map('map', {
+        center: [lat, lng],
+        zoom: 15,
+        dragging: true,
+        touchZoom: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        zoomControl: true
+      });
+      
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: ' OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+      
+      // Add marker
+      let marker = L.marker([lat, lng], {
+        draggable: true
+      }).addTo(map);
+      
+      // Update coordinates when marker is dragged
+      marker.on('dragend', function() {
+        const pos = marker.getLatLng();
+        lat = pos.lat;
+        lng = pos.lng;
+        updateInputs();
+      });
+      
+      // Update coordinates when map is clicked
+      map.on('click', function(e) {
+        lat = e.latlng.lat;
+        lng = e.latlng.lng;
+        marker.setLatLng([lat, lng]);
+        updateInputs();
+      });
+      
+      // Update input fields
+      function updateInputs() {
         if (latInput) latInput.value = lat.toFixed(7);
         if (lngInput) lngInput.value = lng.toFixed(7);
       }
       
-      // Initial map render
-      updateMap();
-      
       // Use My Location button
       const locateBtn = document.getElementById('locateBtn');
       if (locateBtn) {
-        locateBtn.addEventListener('click', () => {
-          if (!navigator.geolocation) {
+        locateBtn.addEventListener('click', function () {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (pos) => {
+                lat = pos.coords.latitude;
+                lng = pos.coords.longitude;
+                map.setView([lat, lng], 15);
+                marker.setLatLng([lat, lng]);
+                updateInputs();
+                locateBtn.innerHTML = '<i class="fas fa-check"></i> Location Set';
+                setTimeout(() => {
+                  locateBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Use My Location';
+                }, 2000);
+              },
+              (err) => {
+                alert('Error getting location: ' + err.message);
+              }
+            );
+          } else {
             alert('Geolocation not supported');
-            return;
           }
-          
-          locateBtn.disabled = true;
-          locateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
-          
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              lat = pos.coords.latitude;
-              lng = pos.coords.longitude;
-              updateMap();
-              locateBtn.innerHTML = '<i class="fas fa-check"></i> Location Set';
-              setTimeout(() => {
-                locateBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Use My Location';
-                locateBtn.disabled = false;
-              }, 2000);
-            },
-            (err) => {
-              alert('Could not get location. Please enter address manually.');
-              locateBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Use My Location';
-              locateBtn.disabled = false;
-            }
-          );
         });
       }
       
-      console.log('OpenStreetMap: LOADED (No Leaflet, No Duplicates)');
+      console.log('Leaflet Map: LOADED - Interactive and Draggable');
     });
 
   (function wirePaymentToggle(){
@@ -3173,6 +3183,9 @@ body { padding-top: 120px; }
 
   </script>
   {% endif %}
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
   <!-- Global Loading JavaScript -->
   <script src="{{ url_for('static', filename='js/global-loading.js') }}"></script>
