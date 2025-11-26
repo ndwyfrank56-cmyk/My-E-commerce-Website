@@ -2906,32 +2906,47 @@ body { padding-top: 120px; }
           }
           
           try {
-            // Use Nominatim (OpenStreetMap) for geocoding
+            // Use Nominatim (OpenStreetMap) for geocoding with proper headers
             const response = await fetch(
-              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`,
+              {
+                headers: {
+                  'Accept': 'application/json',
+                  'User-Agent': 'eMarket-Checkout'
+                }
+              }
             );
+            
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const results = await response.json();
             
-            if (results.length === 0) {
+            if (!Array.isArray(results) || results.length === 0) {
               searchResults.innerHTML = '<div style="padding: 0.75rem; color: var(--text-secondary);">No results found</div>';
               searchResults.style.display = 'block';
               return;
             }
             
-            searchResults.innerHTML = results.map(result => `
-              <div style="padding: 0.75rem; border-bottom: 1px solid var(--border); cursor: pointer; color: var(--text-primary); transition: background 0.2s;" 
-                   onmouseover="this.style.background='var(--panel-2)'" 
-                   onmouseout="this.style.background='transparent'"
-                   onclick="selectLocation(${result.lat}, ${result.lon}, '${result.display_name.replace(/'/g, "\\'")}')">
-                <div style="font-weight: 500; font-size: 0.9rem;">${result.display_name.split(',')[0]}</div>
-                <div style="font-size: 0.8rem; color: var(--text-light);">${result.display_name}</div>
-              </div>
-            `).join('');
+            searchResults.innerHTML = results.map(result => {
+              const displayName = result.display_name || 'Unknown Location';
+              const mainName = displayName.split(',')[0];
+              return `
+                <div style="padding: 0.75rem; border-bottom: 1px solid var(--border); cursor: pointer; color: var(--text-primary); transition: background 0.2s;" 
+                     onmouseover="this.style.background='var(--panel-2)'" 
+                     onmouseout="this.style.background='transparent'"
+                     onclick="selectLocation(${result.lat}, ${result.lon}, '${displayName.replace(/'/g, "\\'")}')">
+                  <div style="font-weight: 500; font-size: 0.9rem;">${mainName}</div>
+                  <div style="font-size: 0.8rem; color: var(--text-light);">${displayName}</div>
+                </div>
+              `;
+            }).join('');
             
             searchResults.style.display = 'block';
           } catch (error) {
             console.error('Search error:', error);
-            searchResults.innerHTML = '<div style="padding: 0.75rem; color: var(--text-secondary);">Search error</div>';
+            searchResults.innerHTML = '<div style="padding: 0.75rem; color: #ef4444;">Search unavailable. Try using the map or "Use My Location" button.</div>';
             searchResults.style.display = 'block';
           }
         });
