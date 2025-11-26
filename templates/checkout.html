@@ -2860,6 +2860,10 @@ body { padding-top: 120px; }
       if (locateBtn) {
         locateBtn.addEventListener('click', function () {
           if (navigator.geolocation) {
+            // Show loading spinner
+            locateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Location...';
+            locateBtn.disabled = true;
+            
             navigator.geolocation.getCurrentPosition(
               (pos) => {
                 lat = pos.coords.latitude;
@@ -2868,11 +2872,14 @@ body { padding-top: 120px; }
                 marker.setLatLng([lat, lng]);
                 updateInputs();
                 locateBtn.innerHTML = '<i class="fas fa-check"></i> Location Set';
+                locateBtn.disabled = false;
                 setTimeout(() => {
                   locateBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Use My Location';
                 }, 2000);
               },
               (err) => {
+                locateBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Use My Location';
+                locateBtn.disabled = false;
                 alert('Error getting location: ' + err.message);
               }
             );
