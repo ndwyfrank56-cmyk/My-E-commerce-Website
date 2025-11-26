@@ -118,6 +118,7 @@ else:
     print("[OK] HTTPS required for OAuth - PRODUCTION MODE")
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
 # Determine redirect URI based on environment
@@ -128,11 +129,38 @@ else:
     # Development: Use localhost
     default_redirect = os.environ.get('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:5000/google/callback')
 
-# Only initialize Google OAuth if client_secret.json exists
-GOOGLE_AUTH_ENABLED = os.path.exists(client_secrets_file) and GOOGLE_CLIENT_ID
+# Initialize Google OAuth - try environment variables first, then client_secret.json
+GOOGLE_AUTH_ENABLED = False
+flow = None
 
-if GOOGLE_AUTH_ENABLED:
+if GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
     try:
+        # Use environment variables
+        from google_auth_oauthlib.flow import Flow as GoogleFlow
+        flow = GoogleFlow.from_client_config(
+            {
+                "installed": {
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                    "redirect_uris": [default_redirect]
+                }
+            },
+            scopes=[
+                "https://www.googleapis.com/auth/userinfo.profile",
+                "https://www.googleapis.com/auth/userinfo.email",
+                "openid"
+            ],
+            redirect_uri=default_redirect
+        )
+        GOOGLE_AUTH_ENABLED = True
+        print(f"[OK] Google OAuth initialized from environment variables: {default_redirect}")
+    except Exception as e:
+        print(f"[WARNING] Google OAuth from env vars failed: {e}")
+elif os.path.exists(client_secrets_file):
+    try:
+        # Fallback to client_secret.json
         flow = Flow.from_client_secrets_file(
             client_secrets_file=client_secrets_file,
             scopes=[
@@ -142,12 +170,12 @@ if GOOGLE_AUTH_ENABLED:
             ],
             redirect_uri=default_redirect
         )
-        print(f"[OK] Google OAuth initialized: {default_redirect}")
+        GOOGLE_AUTH_ENABLED = True
+        print(f"[OK] Google OAuth initialized from client_secret.json: {default_redirect}")
     except Exception as e:
-        print(f"[WARNING] Google OAuth initialization failed: {e}")
-        GOOGLE_AUTH_ENABLED = False
+        print(f"[WARNING] Google OAuth from client_secret.json failed: {e}")
 else:
-    print("[INFO] Google OAuth not configured - skipping initialization")
+    print("[INFO] Google OAuth not configured - set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables")
 
 def get_db_cursor():
     """Get database cursor with error handling"""
