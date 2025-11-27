@@ -338,8 +338,8 @@
     .share-link i {
       font-size: 1rem;
     }
-    .share-link:hover {
-      transform: translateY(-1px);
+    .share-link:hover i {
+      color: inherit;
     }
     .share-whatsapp:hover i { color: #25D366; }
     .share-facebook:hover i { color: #1877F2; }
@@ -2548,14 +2548,17 @@
     }
     
     function shareOnInstagram(productName, productUrl) {
-      // Instagram doesn't support direct web share with prefilled text.
-      // So we copy the link and give a small hint.
-      const text = `${productName} - ${productUrl}`;
-      navigator.clipboard.writeText(text).then(() => {
-        showToast('Link copied for Instagram', 'success');
+      // Open Instagram app or web
+      // Try to open Instagram app first, fallback to web
+      const instagramUrl = `https://www.instagram.com/`;
+      window.open(instagramUrl, '_blank');
+      
+      // Also copy the link for easy pasting
+      navigator.clipboard.writeText(productUrl).then(() => {
+        showToast('Link copied - paste in Instagram story or DM', 'success');
       }).catch(err => {
-        console.error('Failed to copy for Instagram:', err);
-        showToast('Could not copy link', 'error');
+        console.error('Failed to copy:', err);
+        showToast('Opening Instagram...', 'info');
       });
     }
     
