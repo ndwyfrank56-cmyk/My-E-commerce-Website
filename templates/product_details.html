@@ -2622,10 +2622,10 @@
     
     function copyProductLink(productUrl) {
       navigator.clipboard.writeText(productUrl).then(() => {
-        showToast('Copied to clipboard', 'success');
+        showToast('Copied!', 'success');
       }).catch(err => {
         console.error('Failed to copy:', err);
-        showToast('Failed to copy link', 'error');
+        showToast('Failed to copy', 'error');
       });
     }
     
