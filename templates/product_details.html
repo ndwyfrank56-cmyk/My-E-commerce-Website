@@ -1541,7 +1541,7 @@
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="hidden" name="product_id" value="{{ product.id }}">
           </form>
-          <button id="wishlistBtn" class="wishlist-btn {% if in_wishlist %}active{% endif %}" type="button" data-in="{{ '1' if in_wishlist else '0' }}" onclick="event.stopPropagation()">
+          <button id="wishlistBtn" class="wishlist-btn {% if in_wishlist %}active{% endif %}" type="button" data-in="{{ '1' if in_wishlist else '0' }}" onclick="event.stopPropagation(); toggleWishlist('{{ product.id }}');">
             <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
           </button>
         </div>
