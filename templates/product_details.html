@@ -1548,16 +1548,7 @@
       <div>
         <div class="product-media" style="position:relative;" onclick="openImageZoom()">
           <img id="mainProductImage" src="{{ product.image }}" alt="{{ product.name }}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\'%3E%3Crect fill=\'%23eee\' width=\'600\' height=\'400\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23999\' font-size=\'20\' font-family=\'Inter, sans-serif\'%3ENo image%3C/text%3E%3C/svg%3E'">
-          <!-- Wishlist forms for server flash -->
-          <form id="wlAdd" method="post" action="{{ url_for('add_to_wishlist', product_id=product.id) }}" style="display:none">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-          </form>
-          <form id="wlRemove" method="post" action="{{ url_for('remove_from_wishlist', product_id=product.id) }}" style="display:none">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-          </form>
-          <button id="wishlistBtn" class="wishlist-btn {% if in_wishlist %}active{% endif %}" type="button" data-in="{{ '1' if in_wishlist else '0' }}" onclick="event.stopPropagation(); toggleWishlist('{{ product.id }}');">
+          <button id="wishlistBtn" class="wishlist-btn {% if in_wishlist %}active{% endif %}" type="button" data-in="{{ '1' if in_wishlist else '0' }}" onclick="event.stopPropagation(); event.preventDefault(); toggleWishlist('{{ product.id }}'); return false;">
             <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
           </button>
         </div>
