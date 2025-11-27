@@ -3135,13 +3135,11 @@
           try {
             const data = JSON.parse(xhr.responseText);
             if (data.success) {
-              // Update button state
-              const btn = document.getElementById('wishlistBtn');
-              btn.setAttribute('data-in', '0');
-              btn.classList.remove('active');
-              btn.querySelector('i').className = 'far fa-heart';
               showToast('Removed from wishlist', 'info');
-              updateWishlistCount();
+              // Reload page after 500ms
+              setTimeout(() => {
+                location.reload();
+              }, 500);
             } else {
               showToast(data.error || 'Error removing from wishlist', 'error');
             }
