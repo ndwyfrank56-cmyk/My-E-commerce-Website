@@ -2977,9 +2977,77 @@
       window.location.href = `/product/${productId}`;
     }
 
+    // Wishlist button toggle
+    function toggleWishlist(productId) {
+      const btn = document.getElementById('wishlistBtn');
+      const isInWishlist = btn.getAttribute('data-in') === '1';
+      
+      if (isInWishlist) {
+        // Remove from wishlist
+        removeFromWishlist(productId);
+      } else {
+        // Add to wishlist
+        addToWishlist(productId);
+      }
+    }
+    
+    function addToWishlist(productId) {
+      const form = document.getElementById('wlAdd');
+      if (form) {
+        form.submit();
+      }
+    }
+    
+    function removeFromWishlist(productId) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/wishlist/remove', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.success) {
+              // Update button state
+              const btn = document.getElementById('wishlistBtn');
+              btn.setAttribute('data-in', '0');
+              btn.classList.remove('active');
+              btn.querySelector('i').className = 'far fa-heart';
+              showToast('Removed from wishlist', 'info');
+              updateWishlistCount();
+            } else {
+              showToast(data.error || 'Error removing from wishlist', 'error');
+            }
+          } catch (e) {
+            console.error('Error parsing response:', e);
+            showToast('Error removing from wishlist', 'error');
+          }
+        } else {
+          showToast('Error removing from wishlist', 'error');
+        }
+      };
+      
+      xhr.onerror = function() {
+        showToast('Error removing from wishlist', 'error');
+      };
+      
+      xhr.send(JSON.stringify({ product_id: parseInt(productId) }));
+    }
+    
     // Update count on page load
     document.addEventListener('DOMContentLoaded', function() {
       updateWishlistCount();
+      
+      // Set up wishlist button click handler
+      const wishlistBtn = document.getElementById('wishlistBtn');
+      if (wishlistBtn) {
+        const productId = '{{ product.id }}';
+        wishlistBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleWishlist(productId);
+        });
+      }
       
       // Auto mini-cart popup removed - using flash messages instead
     });
