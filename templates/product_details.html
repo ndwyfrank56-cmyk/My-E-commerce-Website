@@ -2561,7 +2561,7 @@
     
     function copyProductLink(productUrl) {
       navigator.clipboard.writeText(productUrl).then(() => {
-        showToast('Link copied', 'success');
+        showToast('Copied to clipboard', 'success');
       }).catch(err => {
         console.error('Failed to copy:', err);
         showToast('Failed to copy link', 'error');

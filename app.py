@@ -49,6 +49,115 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 compress = Compress()
 compress.init_app(app)
 
+# ============================================
+# Email Sending Function
+# ============================================
+def send_email(recipient_email, subject, html_content):
+    """
+    Send an email using Gmail SMTP.
+    
+    Args:
+        recipient_email: Email address to send to
+        subject: Email subject
+        html_content: HTML content of the email
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        gmail_user = os.environ.get('GMAIL_USER')
+        gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
+        
+        if not gmail_user or not gmail_password:
+            print("[WARNING] Gmail credentials not configured. Email not sent.")
+            return False
+        
+        # Create message
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = gmail_user
+        msg['To'] = recipient_email
+        
+        # Attach HTML content
+        msg.attach(MIMEText(html_content, 'html'))
+        
+        # Send email via Gmail SMTP
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(gmail_user, gmail_password)
+            server.sendmail(gmail_user, recipient_email, msg.as_string())
+        
+        print(f"[OK] Email sent to {recipient_email}")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to send email to {recipient_email}: {str(e)}")
+        return False
+
+def send_welcome_email(email, first_name):
+    """Send a welcome email to a new user."""
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h1 style="color: #333; text-align: center;">Welcome to CiTi🛒Plug!</h1>
+                <p style="color: #666; font-size: 16px;">Hi {first_name},</p>
+                <p style="color: #666; font-size: 16px;">Thank you for signing up with us! We're excited to have you as part of the CiTiPlug family.</p>
+                <p style="color: #666; font-size: 16px;">You can now:</p>
+                <ul style="color: #666; font-size: 16px;">
+                    <li>Browse our amazing products</li>
+                    <li>Add items to your wishlist</li>
+                    <li>Place orders and track them</li>
+                    <li>Manage your profile</li>
+                </ul>
+                <p style="color: #666; font-size: 16px;">If you have any questions, feel free to reach out to us.</p>
+                <p style="color: #666; font-size: 16px;">Happy shopping!<br><strong>The CiTiPlug Team</strong></p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #999; font-size: 12px; text-align: center;">This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+    </html>
+    """
+    return send_email(email, "Welcome to CiTi🛒Plug!", html_content)
+
+def send_order_confirmation_email(email, order_id, full_name, total_amount, items):
+    """Send an order confirmation email."""
+    items_html = "".join([
+        f"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>{item['name']}</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: center;'>{item['quantity']}</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>RWF {item['price']:,.0f}</td></tr>"
+        for item in items
+    ])
+    
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h1 style="color: #333; text-align: center;">Order Confirmation</h1>
+                <p style="color: #666; font-size: 16px;">Hi {full_name},</p>
+                <p style="color: #666; font-size: 16px;">Thank you for your order! Here are your order details:</p>
+                <p style="color: #333; font-size: 14px; font-weight: bold;">Order ID: #{order_id}</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Product</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 2px solid #ddd;">Qty</th>
+                            <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items_html}
+                    </tbody>
+                </table>
+                <div style="text-align: right; margin: 20px 0;">
+                    <p style="color: #333; font-size: 18px; font-weight: bold;">Total: RWF {total_amount:,.0f}</p>
+                </div>
+                <p style="color: #666; font-size: 16px;">We'll keep you updated on your order status. You can track your order anytime on your profile.</p>
+                <p style="color: #666; font-size: 16px;">Thank you for shopping with CiTiPlug!<br><strong>The CiTiPlug Team</strong></p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #999; font-size: 12px; text-align: center;">This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+    </html>
+    """
+    return send_email(email, f"Order Confirmation - Order #{order_id}", html_content)
+
 # Performance: Add caching headers for static files
 @app.after_request
 def add_caching_headers(response):
@@ -1627,6 +1736,9 @@ def register():
         mysql.connection.commit()
         cur.close()
         
+        # Send welcome email
+        send_welcome_email(email, first_name)
+        
         # Regenerate session after successful registration
         old_cart = session.get('cart', {})
         session['user_id'] = user_id
@@ -1958,6 +2070,9 @@ def google_callback():
             
             user_id = cur.lastrowid
             
+            # Send welcome email for new Google OAuth user
+            send_welcome_email(email, first_name)
+            
             # Set session
             session['user_id'] = user_id
             session['username'] = username
@@ -1968,7 +2083,7 @@ def google_callback():
             session['cart'] = old_cart
             session.modified = True
             
-            flash(f'Welcome to eMarket, {first_name}! Your account has been created.', 'success')
+            flash(f'Welcome to CiTiPlug, {first_name}! Your account has been created.', 'success')
             cur.close()
             return redirect(url_for('home'))
             
@@ -4011,6 +4126,18 @@ def pay_cod():
                 print(f"COD ORDER: Stock deducted from {stock_level} level for {ci['name']}")
             
             mysql.connection.commit()
+            
+            # Send order confirmation email
+            user_email = None
+            if session.get('user_id'):
+                # Get logged-in user's email
+                cur.execute("SELECT email FROM users WHERE id = %s", (session.get('user_id'),))
+                user_row = cur.fetchone()
+                user_email = user_row[0] if user_row else None
+            
+            if user_email:
+                send_order_confirmation_email(user_email, order_id, full_name, total, cart_items)
+            
             cur.close()
             print("DEBUG: COD order created successfully!")
         except Exception as e:
