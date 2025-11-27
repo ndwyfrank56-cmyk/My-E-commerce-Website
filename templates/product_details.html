@@ -3153,18 +3153,6 @@
     // Update count on page load
     document.addEventListener('DOMContentLoaded', function() {
       updateWishlistCount();
-      
-      // Set up wishlist button click handler
-      const wishlistBtn = document.getElementById('wishlistBtn');
-      if (wishlistBtn) {
-        const productId = '{{ product.id }}';
-        wishlistBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          toggleWishlist(productId);
-        });
-      }
-      
-      // Auto mini-cart popup removed - using flash messages instead
     });
 
 
