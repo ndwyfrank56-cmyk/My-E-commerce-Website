@@ -1628,6 +1628,29 @@
           </button>
         </div>
         
+        <!-- Share Product Section -->
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+          <p style="font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 0.75rem;">Share this product:</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <!-- WhatsApp Share -->
+            <button onclick="shareOnWhatsApp('{{ product.name }}', '{{ request.url }}')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease;">
+              <i class="fab fa-whatsapp"></i> WhatsApp
+            </button>
+            <!-- Facebook Share -->
+            <button onclick="shareOnFacebook('{{ request.url }}')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; background: #1877F2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease;">
+              <i class="fab fa-facebook"></i> Facebook
+            </button>
+            <!-- Twitter Share -->
+            <button onclick="shareOnTwitter('{{ product.name }}', '{{ request.url }}')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; background: #1DA1F2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease;">
+              <i class="fab fa-twitter"></i> Twitter
+            </button>
+            <!-- Copy Link -->
+            <button onclick="copyProductLink('{{ request.url }}')" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; background: var(--panel-2); color: rgba(255,255,255,0.9); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease;">
+              <i class="fas fa-link"></i> Copy Link
+            </button>
+          </div>
+        </div>
+        
         <!-- Hidden inputs to store selected variations -->
         <input type="hidden" id="selectedImageVariations" value=""><!-- stores img_var_id when present -->
         <input type="hidden" id="selectedDropdownVariations" value=""><!-- stores dropdown_var_id when present -->
@@ -2481,6 +2504,33 @@
       
       qtyEl.textContent = current;
       warningEl.style.display = 'none';
+    }
+    
+    // Share functions
+    function shareOnWhatsApp(productName, productUrl) {
+      const text = `Check out this product: ${productName} - ${productUrl}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+    
+    function shareOnFacebook(productUrl) {
+      const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+      window.open(facebookUrl, '_blank', 'width=600,height=400');
+    }
+    
+    function shareOnTwitter(productName, productUrl) {
+      const text = `Check out: ${productName} ${productUrl}`;
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      window.open(twitterUrl, '_blank');
+    }
+    
+    function copyProductLink(productUrl) {
+      navigator.clipboard.writeText(productUrl).then(() => {
+        showToast('Link copied to clipboard!', 'success');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        showToast('Failed to copy link', 'error');
+      });
     }
     
     async function addToCartWithVariations(productId) {
