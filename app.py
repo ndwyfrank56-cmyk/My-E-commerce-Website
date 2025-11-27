@@ -3260,10 +3260,48 @@ def get_wishlist():
         print(f"Error getting wishlist: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/wishlist/add', methods=['POST'])
+@login_required
+def add_to_wishlist_json():
+    """Add product to wishlist (JSON API)"""
+    try:
+        data = request.get_json(force=True, silent=True)
+        if not data:
+            data = {}
+        
+        product_id = data.get('product_id')
+        if not product_id:
+            return jsonify({'success': False, 'error': 'Product ID required'}), 400
+        
+        cur = mysql.connection.cursor()
+        
+        # Check if product exists
+        cur.execute("SELECT name FROM products WHERE id = %s", (product_id,))
+        product = cur.fetchone()
+        if not product:
+            return jsonify({'success': False, 'error': 'Product not found'}), 404
+        
+        product_name = product[0]
+        
+        # Try to add to wishlist
+        try:
+            cur.execute("INSERT INTO wishlist (user_id, product_id) VALUES (%s, %s)", 
+                       (session['user_id'], product_id))
+            mysql.connection.commit()
+            cur.close()
+            return jsonify({'success': True, 'message': f'{product_name} added to wishlist'})
+        except Exception as e:
+            cur.close()
+            # Already in wishlist
+            return jsonify({'success': True, 'message': f'{product_name} is already in your wishlist'})
+    except Exception as e:
+        print(f"Error adding to wishlist: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/wishlist/add/<int:product_id>', methods=['POST'])
 @login_required
 def add_to_wishlist(product_id):
-    """Add product to wishlist"""
+    """Add product to wishlist (Form submission)"""
     try:
         cur = mysql.connection.cursor()
         
