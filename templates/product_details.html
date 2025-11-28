@@ -3126,11 +3126,8 @@
           try {
             const data = JSON.parse(xhr.responseText);
             if (data.success) {
-              showToast('Removed from wishlist', 'info');
-              // Reload page after 500ms
-              setTimeout(() => {
-                location.reload();
-              }, 500);
+              // Reload immediately without toast
+              location.reload();
             } else {
               showToast(data.error || 'Error removing from wishlist', 'error');
             }

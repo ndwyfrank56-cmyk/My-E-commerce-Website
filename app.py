@@ -3358,6 +3358,9 @@ def remove_from_wishlist():
         mysql.connection.commit()
         cur.close()
         
+        # Add flash message for after reload
+        flash(f'{product_name} removed from wishlist', 'info')
+        
         return jsonify({'success': True, 'message': f'{product_name} removed from wishlist'})
     except Exception as e:
         print(f"Error removing from wishlist: {e}")
