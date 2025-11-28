@@ -3261,10 +3261,13 @@ def get_wishlist():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/wishlist/add', methods=['POST'])
-@login_required
 def add_to_wishlist_json():
     """Add product to wishlist (JSON API)"""
     try:
+        # Check if user is logged in
+        if 'user_id' not in session:
+            return jsonify({'success': False, 'error': 'You must be logged in to add items to wishlist'}), 401
+        
         data = request.get_json(force=True, silent=True)
         if not data:
             data = {}
@@ -3331,10 +3334,13 @@ def add_to_wishlist(product_id):
         return redirect(request.referrer or url_for('home'))
 
 @app.route('/wishlist/remove', methods=['POST'])
-@login_required
 def remove_from_wishlist():
     """Remove product from wishlist"""
     try:
+        # Check if user is logged in
+        if 'user_id' not in session:
+            return jsonify({'success': False, 'error': 'You must be logged in to manage wishlist'}), 401
+        
         # Get JSON data
         data = request.get_json(force=True, silent=True)
         if not data:

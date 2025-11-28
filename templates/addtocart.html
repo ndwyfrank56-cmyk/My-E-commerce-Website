@@ -728,16 +728,16 @@
 
     .checkout-btn {
       width: auto;
-      min-width: 180px;
-      max-width: 280px;
-      min-height: 52px;
-      padding: 1rem 2rem;
+      min-width: 140px;
+      max-width: 200px;
+      min-height: 44px;
+      padding: 0.75rem 1.5rem;
       background: linear-gradient(135deg, #c2a46a 0%, #a98c57 100%);
       border: 1px solid rgba(194,164,106,0.3);
       border-radius: 8px;
       color: #111318;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
@@ -2359,11 +2359,17 @@
         const response = await fetch('/api/wishlist/count');
         const data = await response.json();
         const badge = document.getElementById('wishlistBadge');
-        if (badge && data.count !== undefined) {
-          badge.textContent = data.count;
-          badge.style.display = data.count > 0 ? 'flex' : 'none';
+        if (badge) {
+          const count = (data && typeof data.count !== 'undefined') ? data.count : 0;
+          badge.textContent = count;
+          badge.style.display = 'flex';
         }
       } catch (error) {
+        const badge = document.getElementById('wishlistBadge');
+        if (badge) {
+          badge.textContent = '0';
+          badge.style.display = 'flex';
+        }
         console.error('Error fetching wishlist count:', error);
       }
     }

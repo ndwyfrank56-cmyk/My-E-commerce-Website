@@ -2586,37 +2586,32 @@
       const text = `🛍️ Check out this amazing product!\n\n${productName}\n\n${productUrl}\n\nShare with your friends!`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
       window.open(whatsappUrl, '_blank');
-      showToast('Opening WhatsApp...', 'info');
     }
     
     function shareOnFacebook(productUrl) {
       const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}&quote=Check%20out%20this%20amazing%20product%20from%20CiTiPlug!`;
       window.open(facebookUrl, '_blank', 'width=600,height=400');
-      showToast('Opening Facebook...', 'info');
     }
     
     function shareOnInstagram(productName, productUrl) {
       // Copy the link and show instructions
       const shareText = `${productName}\n\n${productUrl}\n\nShare with your followers!`;
       navigator.clipboard.writeText(shareText).then(() => {
-        showToast('Copied! Open Instagram to share in story or DM', 'success');
         // Open Instagram after a short delay
         setTimeout(() => {
           window.open('https://www.instagram.com/', '_blank');
         }, 500);
       }).catch(err => {
         console.error('Failed to copy:', err);
-        showToast('Opening Instagram...', 'info');
         window.open('https://www.instagram.com/', '_blank');
       });
     }
     
     function copyProductLink(productUrl) {
       navigator.clipboard.writeText(productUrl).then(() => {
-        showToast('Copied!', 'success');
+        // Show only the copy icon without flash message
       }).catch(err => {
         console.error('Failed to copy:', err);
-        showToast('Failed to copy', 'error');
       });
     }
     
@@ -3050,7 +3045,10 @@
         }
       } catch (error) {
         const badge = document.getElementById('wishlistBadge');
-        if (badge) { badge.textContent = '0'; badge.style.display = 'flex'; }
+        if (badge) {
+          badge.textContent = '0';
+          badge.style.display = 'flex';
+        }
         console.error('Error fetching wishlist count:', error);
       }
     }
