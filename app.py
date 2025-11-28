@@ -158,6 +158,139 @@ def send_order_confirmation_email(email, order_id, full_name, total_amount, item
     """
     return send_email(email, f"Order Confirmation - Order #{order_id}", html_content)
 
+def send_order_status_email(email, full_name, order_id, status, tracking_info=None):
+    """Send order status update email."""
+    status_messages = {
+        'processing': 'Your order is being prepared for shipment.',
+        'shipped': 'Your order has been shipped! Track it with the information below.',
+        'delivered': 'Your order has been delivered. Thank you for shopping with us!',
+        'cancelled': 'Your order has been cancelled. A refund will be processed shortly.'
+    }
+    
+    status_colors = {
+        'processing': '#3b82f6',
+        'shipped': '#f59e0b',
+        'delivered': '#10b981',
+        'cancelled': '#ef4444'
+    }
+    
+    status_message = status_messages.get(status, 'Your order status has been updated.')
+    status_color = status_colors.get(status, '#3b82f6')
+    
+    tracking_html = ''
+    if tracking_info:
+        tracking_html = f"""
+        <div style="background: #f0f9ff; border-left: 4px solid {status_color}; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <p style="color: #333; font-weight: bold; margin: 0 0 10px 0;">Tracking Information:</p>
+            <p style="color: #666; margin: 5px 0;"><strong>Tracking Number:</strong> {tracking_info.get('tracking_number', 'N/A')}</p>
+            <p style="color: #666; margin: 5px 0;"><strong>Carrier:</strong> {tracking_info.get('carrier', 'N/A')}</p>
+        </div>
+        """
+    
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h1 style="color: {status_color}; text-align: center;">Order {status.upper()}</h1>
+                <p style="color: #666; font-size: 16px;">Hi {full_name},</p>
+                <p style="color: #666; font-size: 16px;">{status_message}</p>
+                <p style="color: #333; font-size: 14px; font-weight: bold;">Order ID: #{order_id}</p>
+                {tracking_html}
+                <p style="color: #666; font-size: 16px;">You can view your order details anytime on your profile.</p>
+                <p style="color: #666; font-size: 16px;">Thank you for shopping with CiTiPlug!<br><strong>The CiTiPlug Team</strong></p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #999; font-size: 12px; text-align: center;">This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+    </html>
+    """
+    return send_email(email, f"Order {status.upper()} - Order #{order_id}", html_content)
+
+def send_order_cancellation_email(email, full_name, order_id, reason=None):
+    """Send order cancellation email."""
+    reason_text = f"<p style='color: #666; font-size: 16px;'><strong>Reason:</strong> {reason}</p>" if reason else ""
+    
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h1 style="color: #ef4444; text-align: center;">Order Cancelled</h1>
+                <p style="color: #666; font-size: 16px;">Hi {full_name},</p>
+                <p style="color: #666; font-size: 16px;">Your order has been cancelled.</p>
+                <p style="color: #333; font-size: 14px; font-weight: bold;">Order ID: #{order_id}</p>
+                {reason_text}
+                <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                    <p style="color: #333; margin: 0;"><strong>Refund Status:</strong> A refund will be processed to your original payment method within 5-7 business days.</p>
+                </div>
+                <p style="color: #666; font-size: 16px;">If you have any questions, please contact our support team.</p>
+                <p style="color: #666; font-size: 16px;">Thank you for your understanding!<br><strong>The CiTiPlug Team</strong></p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #999; font-size: 12px; text-align: center;">This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+    </html>
+    """
+    return send_email(email, f"Order Cancelled - Order #{order_id}", html_content)
+
+def send_admin_notification_email(admin_email, order_id, customer_name, customer_email, total_amount, items_count):
+    """Send notification to admin when new order is placed."""
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h1 style="color: #10b981; text-align: center;">🎉 New Order Received!</h1>
+                <p style="color: #666; font-size: 16px;">A new order has been placed on CiTiPlug.</p>
+                <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                    <p style="color: #333; margin: 5px 0;"><strong>Order ID:</strong> #{order_id}</p>
+                    <p style="color: #333; margin: 5px 0;"><strong>Customer:</strong> {customer_name}</p>
+                    <p style="color: #333; margin: 5px 0;"><strong>Email:</strong> {customer_email}</p>
+                    <p style="color: #333; margin: 5px 0;"><strong>Total Amount:</strong> RWF {total_amount:,.0f}</p>
+                    <p style="color: #333; margin: 5px 0;"><strong>Items:</strong> {items_count}</p>
+                </div>
+                <p style="color: #666; font-size: 16px;"><a href="https://my-e-commerce-website.onrender.com/admin/orders" style="color: #10b981; text-decoration: none; font-weight: bold;">View Order Details →</a></p>
+                <p style="color: #666; font-size: 16px;">Please process this order as soon as possible.</p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #999; font-size: 12px; text-align: center;">This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+    </html>
+    """
+    return send_email(admin_email, f"🎉 New Order #{order_id} - CiTiPlug", html_content)
+
+def send_promotional_email(recipient_emails, subject, promo_title, promo_description, promo_code=None, discount_percent=None, valid_until=None):
+    """Send promotional/newsletter email to multiple users."""
+    promo_code_html = f"<p style='color: #333; font-size: 18px; font-weight: bold; text-align: center; background: #f0f0f0; padding: 15px; border-radius: 8px; margin: 20px 0;'>Use Code: <span style='color: #10b981;'>{promo_code}</span></p>" if promo_code else ""
+    discount_html = f"<p style='color: #ef4444; font-size: 24px; font-weight: bold; text-align: center;'>{discount_percent}% OFF</p>" if discount_percent else ""
+    valid_until_html = f"<p style='color: #999; font-size: 12px; text-align: center;'>Valid until: {valid_until}</p>" if valid_until else ""
+    
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h1 style="color: #10b981; text-align: center;">{promo_title}</h1>
+                {discount_html}
+                <p style="color: #666; font-size: 16px; text-align: center;">{promo_description}</p>
+                {promo_code_html}
+                {valid_until_html}
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://my-e-commerce-website.onrender.com" style="background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Shop Now</a>
+                </div>
+                <p style="color: #666; font-size: 14px;">Don't miss out on this amazing offer!</p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #999; font-size: 12px; text-align: center;">This is an automated message. Please do not reply to this email.</p>
+            </div>
+        </body>
+    </html>
+    """
+    
+    # Send to all recipients
+    success_count = 0
+    for email in recipient_emails:
+        if send_email(email, subject, html_content):
+            success_count += 1
+    
+    return success_count == len(recipient_emails)
+
 # Performance: Add caching headers for static files
 @app.after_request
 def add_caching_headers(response):
@@ -4710,6 +4843,186 @@ def test_payment_setup():
             })
     else:
         return jsonify({'error': 'Test route only available in development mode'}), 403
+
+# ============================================
+# Email Routes for Admin
+# ============================================
+
+@app.route('/api/send-promotional-email', methods=['POST'])
+def api_send_promotional_email():
+    """API endpoint to send promotional emails to all users"""
+    if not session.get('user_id'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    # Check if user is admin (you can add admin check here)
+    data = request.get_json()
+    
+    try:
+        subject = data.get('subject', 'Special Offer from CiTiPlug')
+        promo_title = data.get('promo_title', 'Exclusive Offer')
+        promo_description = data.get('promo_description', 'Check out our amazing products!')
+        promo_code = data.get('promo_code')
+        discount_percent = data.get('discount_percent')
+        valid_until = data.get('valid_until')
+        
+        # Get all user emails
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT email FROM users WHERE is_active = TRUE")
+        users = cur.fetchall()
+        cur.close()
+        
+        recipient_emails = [user[0] for user in users]
+        
+        if not recipient_emails:
+            return jsonify({'error': 'No active users to send emails to'}), 400
+        
+        # Send promotional email
+        success = send_promotional_email(
+            recipient_emails,
+            subject,
+            promo_title,
+            promo_description,
+            promo_code,
+            discount_percent,
+            valid_until
+        )
+        
+        if success:
+            return jsonify({
+                'status': 'success',
+                'message': f'Promotional email sent to {len(recipient_emails)} users',
+                'recipients_count': len(recipient_emails)
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to send some emails'}), 500
+            
+    except Exception as e:
+        print(f"[ERROR] Promotional email error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/send-order-status-email', methods=['POST'])
+def api_send_order_status_email():
+    """API endpoint to send order status update emails"""
+    if not session.get('user_id'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.get_json()
+    
+    try:
+        order_id = data.get('order_id')
+        status = data.get('status')  # processing, shipped, delivered, cancelled
+        tracking_info = data.get('tracking_info')
+        
+        # Get order and user info
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT o.user_id, u.email, u.first_name, u.last_name 
+            FROM orders o 
+            JOIN users u ON o.user_id = u.id 
+            WHERE o.id = %s
+        """, (order_id,))
+        result = cur.fetchone()
+        cur.close()
+        
+        if not result:
+            return jsonify({'error': 'Order not found'}), 404
+        
+        user_id, email, first_name, last_name = result
+        full_name = f"{first_name} {last_name}"
+        
+        # Send status email
+        success = send_order_status_email(email, full_name, order_id, status, tracking_info)
+        
+        if success:
+            return jsonify({
+                'status': 'success',
+                'message': f'Order status email sent to {email}'
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to send email'}), 500
+            
+    except Exception as e:
+        print(f"[ERROR] Order status email error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/send-order-cancellation-email', methods=['POST'])
+def api_send_order_cancellation_email():
+    """API endpoint to send order cancellation emails"""
+    if not session.get('user_id'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.get_json()
+    
+    try:
+        order_id = data.get('order_id')
+        reason = data.get('reason')
+        
+        # Get order and user info
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT o.user_id, u.email, u.first_name, u.last_name 
+            FROM orders o 
+            JOIN users u ON o.user_id = u.id 
+            WHERE o.id = %s
+        """, (order_id,))
+        result = cur.fetchone()
+        cur.close()
+        
+        if not result:
+            return jsonify({'error': 'Order not found'}), 404
+        
+        user_id, email, first_name, last_name = result
+        full_name = f"{first_name} {last_name}"
+        
+        # Send cancellation email
+        success = send_order_cancellation_email(email, full_name, order_id, reason)
+        
+        if success:
+            return jsonify({
+                'status': 'success',
+                'message': f'Cancellation email sent to {email}'
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to send email'}), 500
+            
+    except Exception as e:
+        print(f"[ERROR] Order cancellation email error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/send-admin-notification', methods=['POST'])
+def api_send_admin_notification():
+    """API endpoint to send admin notification when order is placed"""
+    data = request.get_json()
+    
+    try:
+        admin_email = os.environ.get('ADMIN_EMAIL', 'ndwyfrank5@gmail.com')
+        order_id = data.get('order_id')
+        customer_name = data.get('customer_name')
+        customer_email = data.get('customer_email')
+        total_amount = data.get('total_amount')
+        items_count = data.get('items_count')
+        
+        # Send admin notification
+        success = send_admin_notification_email(
+            admin_email,
+            order_id,
+            customer_name,
+            customer_email,
+            total_amount,
+            items_count
+        )
+        
+        if success:
+            return jsonify({
+                'status': 'success',
+                'message': f'Admin notification sent to {admin_email}'
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to send email'}), 500
+            
+    except Exception as e:
+        print(f"[ERROR] Admin notification email error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
