@@ -326,13 +326,22 @@ def send_whatsapp_message(phone_number, message_text):
         
         print(f"[WhatsApp] Sending message to {phone_number}")
         
-        # Setup Chrome options for headless mode
+        # Setup Chrome options
         chrome_options = webdriver.ChromeOptions()
+        
+        # Use persistent user data directory for session persistence
+        user_data_dir = os.path.expanduser('~/.whatsapp_session')
+        chrome_options.add_argument(f'user-data-dir={user_data_dir}')
+        
+        # Headless mode settings
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        chrome_options.add_experimental_option('useAutomationExtension', False)
         
         # Create driver
         driver = webdriver.Chrome(
@@ -345,8 +354,17 @@ def send_whatsapp_message(phone_number, message_text):
             driver.get('https://web.whatsapp.com')
             print("[WhatsApp] Opening WhatsApp Web...")
             
-            # Wait for QR code to load (user needs to scan on first run)
+            # Wait for page to load
             time.sleep(5)
+            
+            # Check if QR code is present (not authenticated)
+            try:
+                qr_element = driver.find_element(By.XPATH, '//canvas[@aria-label="Scan this QR code to link a device!"]')
+                print("[WARNING] WhatsApp not authenticated. Please scan QR code manually.")
+                print("[INFO] Keeping browser open for 30 seconds for QR scan...")
+                time.sleep(30)
+            except:
+                print("[OK] WhatsApp already authenticated")
             
             # Navigate to chat with phone number
             chat_url = f'https://web.whatsapp.com/send?phone={phone_number.replace("+", "")}&text={message_text}'
@@ -354,15 +372,16 @@ def send_whatsapp_message(phone_number, message_text):
             print(f"[WhatsApp] Navigating to chat with {phone_number}")
             
             # Wait for message input to load
-            time.sleep(3)
+            time.sleep(5)
             
             # Find and click send button
             try:
-                send_button = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, '//button[@aria-label="Send"]'))
+                send_button = WebDriverWait(driver, 15).until(
+                    EC.element_to_be_clickable((By.XPATH, '//button[@aria-label="Send"]'))
                 )
                 send_button.click()
                 print(f"[OK] WhatsApp message sent to {phone_number}")
+                time.sleep(2)
                 return True
             except Exception as e:
                 print(f"[ERROR] Could not find send button: {str(e)}")
@@ -5118,6 +5137,57 @@ def api_send_admin_notification():
 # ============================================
 # WhatsApp Routes
 # ============================================
+
+@app.route('/api/whatsapp-setup', methods=['GET'])
+def whatsapp_setup():
+    """Setup route to authenticate WhatsApp Web (run this once locally)"""
+    if PRODUCTION_MODE:
+        return jsonify({'error': 'Setup only available in development mode'}), 403
+    
+    try:
+        print("[WhatsApp] Starting authentication setup...")
+        
+        chrome_options = webdriver.ChromeOptions()
+        user_data_dir = os.path.expanduser('~/.whatsapp_session')
+        chrome_options.add_argument(f'user-data-dir={user_data_dir}')
+        
+        # Don't use headless for setup - we need to see the QR code
+        chrome_options.add_argument('--window-size=1920,1080')
+        
+        driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=chrome_options
+        )
+        
+        try:
+            driver.get('https://web.whatsapp.com')
+            print("[WhatsApp] QR code page opened. Scan with your phone!")
+            print("[WhatsApp] Waiting for authentication (60 seconds)...")
+            
+            # Wait for authentication
+            for i in range(60):
+                try:
+                    # Check if authenticated by looking for chat list
+                    driver.find_element(By.XPATH, '//div[@data-testid="chat-list"]')
+                    print("[OK] WhatsApp authenticated successfully!")
+                    return jsonify({
+                        'status': 'success',
+                        'message': 'WhatsApp authenticated! Session saved. You can now send messages.'
+                    }), 200
+                except:
+                    time.sleep(1)
+            
+            return jsonify({
+                'status': 'timeout',
+                'message': 'Authentication timeout. Please try again and scan the QR code.'
+            }), 408
+            
+        finally:
+            driver.quit()
+            
+    except Exception as e:
+        print(f"[ERROR] WhatsApp setup error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/send-whatsapp-message', methods=['POST'])
 def api_send_whatsapp_message():
