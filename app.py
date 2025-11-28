@@ -21,7 +21,14 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
-from threading import Lock
+from threading import Lock, Thread
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 # from pay import PayClass as ExternalPayClass
 # Google OAuth imports
 import pathlib
@@ -297,6 +304,83 @@ def send_promotional_email(recipient_emails, subject, promo_title, promo_descrip
             success_count += 1
     
     return success_count == len(recipient_emails)
+
+# ============================================
+# WhatsApp Messaging Function (Web Automation)
+# ============================================
+def send_whatsapp_message(phone_number, message_text):
+    """
+    Send WhatsApp message using WhatsApp Web automation.
+    
+    Args:
+        phone_number: Phone number with country code (e.g., +250788123456)
+        message_text: Message to send
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        # Format phone number
+        if not phone_number.startswith('+'):
+            phone_number = '+' + phone_number
+        
+        print(f"[WhatsApp] Sending message to {phone_number}")
+        
+        # Setup Chrome options for headless mode
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--window-size=1920,1080')
+        
+        # Create driver
+        driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=chrome_options
+        )
+        
+        try:
+            # Open WhatsApp Web
+            driver.get('https://web.whatsapp.com')
+            print("[WhatsApp] Opening WhatsApp Web...")
+            
+            # Wait for QR code to load (user needs to scan on first run)
+            time.sleep(5)
+            
+            # Navigate to chat with phone number
+            chat_url = f'https://web.whatsapp.com/send?phone={phone_number.replace("+", "")}&text={message_text}'
+            driver.get(chat_url)
+            print(f"[WhatsApp] Navigating to chat with {phone_number}")
+            
+            # Wait for message input to load
+            time.sleep(3)
+            
+            # Find and click send button
+            try:
+                send_button = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, '//button[@aria-label="Send"]'))
+                )
+                send_button.click()
+                print(f"[OK] WhatsApp message sent to {phone_number}")
+                return True
+            except Exception as e:
+                print(f"[ERROR] Could not find send button: {str(e)}")
+                return False
+                
+        finally:
+            driver.quit()
+            
+    except Exception as e:
+        print(f"[ERROR] Failed to send WhatsApp message to {phone_number}: {str(e)}")
+        return False
+
+def send_whatsapp_message_async(phone_number, message_text):
+    """Send WhatsApp message asynchronously (non-blocking)"""
+    thread = Thread(target=send_whatsapp_message, args=(phone_number, message_text))
+    thread.daemon = True
+    thread.start()
+    return True
 
 # Performance: Add caching headers for static files
 @app.after_request
@@ -5029,6 +5113,96 @@ def api_send_admin_notification():
             
     except Exception as e:
         print(f"[ERROR] Admin notification email error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================
+# WhatsApp Routes
+# ============================================
+
+@app.route('/api/send-whatsapp-message', methods=['POST'])
+def api_send_whatsapp_message():
+    """API endpoint to send WhatsApp message"""
+    data = request.get_json()
+    
+    try:
+        phone_number = data.get('phone_number')
+        message_text = data.get('message')
+        
+        if not phone_number or not message_text:
+            return jsonify({'error': 'Phone number and message required'}), 400
+        
+        # Send asynchronously
+        send_whatsapp_message_async(phone_number, message_text)
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'WhatsApp message queued for {phone_number}'
+        }), 200
+            
+    except Exception as e:
+        print(f"[ERROR] WhatsApp message error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/send-whatsapp-otp', methods=['POST'])
+def api_send_whatsapp_otp():
+    """API endpoint to send WhatsApp OTP"""
+    data = request.get_json()
+    
+    try:
+        phone_number = data.get('phone_number')
+        otp_code = data.get('otp_code')
+        
+        if not phone_number or not otp_code:
+            return jsonify({'error': 'Phone number and OTP required'}), 400
+        
+        message = f'Your OTP is: {otp_code}\n\nDo not share this code with anyone.'
+        
+        # Send asynchronously
+        send_whatsapp_message_async(phone_number, message)
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'OTP sent to {phone_number}'
+        }), 200
+            
+    except Exception as e:
+        print(f"[ERROR] WhatsApp OTP error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/send-whatsapp-order-notification', methods=['POST'])
+def api_send_whatsapp_order_notification():
+    """API endpoint to send WhatsApp order notification"""
+    data = request.get_json()
+    
+    try:
+        phone_number = data.get('phone_number')
+        order_id = data.get('order_id')
+        customer_name = data.get('customer_name')
+        total_amount = data.get('total_amount')
+        
+        if not phone_number or not order_id:
+            return jsonify({'error': 'Phone number and order ID required'}), 400
+        
+        message = f"""Hi {customer_name}! 👋
+
+Your order #{order_id} has been confirmed! 🎉
+
+Total Amount: RWF {total_amount:,.0f}
+
+You'll receive updates about your order soon.
+
+Thank you for shopping with CiTiPlug! 🛍️"""
+        
+        # Send asynchronously
+        send_whatsapp_message_async(phone_number, message)
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'Order notification sent to {phone_number}'
+        }), 200
+            
+    except Exception as e:
+        print(f"[ERROR] WhatsApp order notification error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
