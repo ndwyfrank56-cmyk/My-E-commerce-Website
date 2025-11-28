@@ -22,13 +22,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 from threading import Lock, Thread
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-import time
 # from pay import PayClass as ExternalPayClass
 # Google OAuth imports
 import pathlib
@@ -306,100 +299,34 @@ def send_promotional_email(recipient_emails, subject, promo_title, promo_descrip
     return success_count == len(recipient_emails)
 
 # ============================================
-# WhatsApp Messaging Function (Web Automation)
+# WhatsApp Link Generator (Simple & Free)
 # ============================================
-def send_whatsapp_message(phone_number, message_text):
+def generate_whatsapp_link(phone_number, message_text):
     """
-    Send WhatsApp message using WhatsApp Web automation.
+    Generate WhatsApp link for sending messages.
+    User clicks link to send message via their WhatsApp.
     
     Args:
         phone_number: Phone number with country code (e.g., +250788123456)
         message_text: Message to send
     
     Returns:
-        True if successful, False otherwise
+        WhatsApp link URL
     """
-    try:
-        # Format phone number
-        if not phone_number.startswith('+'):
-            phone_number = '+' + phone_number
-        
-        print(f"[WhatsApp] Sending message to {phone_number}")
-        
-        # Setup Chrome options
-        chrome_options = webdriver.ChromeOptions()
-        
-        # Use persistent user data directory for session persistence
-        user_data_dir = os.path.expanduser('~/.whatsapp_session')
-        chrome_options.add_argument(f'user-data-dir={user_data_dir}')
-        
-        # Headless mode settings
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--window-size=1920,1080')
-        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        chrome_options.add_experimental_option('useAutomationExtension', False)
-        
-        # Create driver
-        driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=chrome_options
-        )
-        
-        try:
-            # Open WhatsApp Web
-            driver.get('https://web.whatsapp.com')
-            print("[WhatsApp] Opening WhatsApp Web...")
-            
-            # Wait for page to load
-            time.sleep(5)
-            
-            # Check if QR code is present (not authenticated)
-            try:
-                qr_element = driver.find_element(By.XPATH, '//canvas[@aria-label="Scan this QR code to link a device!"]')
-                print("[WARNING] WhatsApp not authenticated. Please scan QR code manually.")
-                print("[INFO] Keeping browser open for 30 seconds for QR scan...")
-                time.sleep(30)
-            except:
-                print("[OK] WhatsApp already authenticated")
-            
-            # Navigate to chat with phone number
-            chat_url = f'https://web.whatsapp.com/send?phone={phone_number.replace("+", "")}&text={message_text}'
-            driver.get(chat_url)
-            print(f"[WhatsApp] Navigating to chat with {phone_number}")
-            
-            # Wait for message input to load
-            time.sleep(5)
-            
-            # Find and click send button
-            try:
-                send_button = WebDriverWait(driver, 15).until(
-                    EC.element_to_be_clickable((By.XPATH, '//button[@aria-label="Send"]'))
-                )
-                send_button.click()
-                print(f"[OK] WhatsApp message sent to {phone_number}")
-                time.sleep(2)
-                return True
-            except Exception as e:
-                print(f"[ERROR] Could not find send button: {str(e)}")
-                return False
-                
-        finally:
-            driver.quit()
-            
-    except Exception as e:
-        print(f"[ERROR] Failed to send WhatsApp message to {phone_number}: {str(e)}")
-        return False
-
-def send_whatsapp_message_async(phone_number, message_text):
-    """Send WhatsApp message asynchronously (non-blocking)"""
-    thread = Thread(target=send_whatsapp_message, args=(phone_number, message_text))
-    thread.daemon = True
-    thread.start()
-    return True
+    if not phone_number.startswith('+'):
+        phone_number = '+' + phone_number
+    
+    # Remove + for URL encoding
+    phone_clean = phone_number.replace('+', '')
+    
+    # URL encode the message
+    import urllib.parse
+    message_encoded = urllib.parse.quote(message_text)
+    
+    # Generate WhatsApp link
+    whatsapp_link = f'https://wa.me/{phone_clean}?text={message_encoded}'
+    
+    return whatsapp_link
 
 # Performance: Add caching headers for static files
 @app.after_request
@@ -5135,63 +5062,12 @@ def api_send_admin_notification():
         return jsonify({'error': str(e)}), 500
 
 # ============================================
-# WhatsApp Routes
+# WhatsApp Routes (Link Generator)
 # ============================================
 
-@app.route('/api/whatsapp-setup', methods=['GET'])
-def whatsapp_setup():
-    """Setup route to authenticate WhatsApp Web (run this once locally)"""
-    if PRODUCTION_MODE:
-        return jsonify({'error': 'Setup only available in development mode'}), 403
-    
-    try:
-        print("[WhatsApp] Starting authentication setup...")
-        
-        chrome_options = webdriver.ChromeOptions()
-        user_data_dir = os.path.expanduser('~/.whatsapp_session')
-        chrome_options.add_argument(f'user-data-dir={user_data_dir}')
-        
-        # Don't use headless for setup - we need to see the QR code
-        chrome_options.add_argument('--window-size=1920,1080')
-        
-        driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=chrome_options
-        )
-        
-        try:
-            driver.get('https://web.whatsapp.com')
-            print("[WhatsApp] QR code page opened. Scan with your phone!")
-            print("[WhatsApp] Waiting for authentication (60 seconds)...")
-            
-            # Wait for authentication
-            for i in range(60):
-                try:
-                    # Check if authenticated by looking for chat list
-                    driver.find_element(By.XPATH, '//div[@data-testid="chat-list"]')
-                    print("[OK] WhatsApp authenticated successfully!")
-                    return jsonify({
-                        'status': 'success',
-                        'message': 'WhatsApp authenticated! Session saved. You can now send messages.'
-                    }), 200
-                except:
-                    time.sleep(1)
-            
-            return jsonify({
-                'status': 'timeout',
-                'message': 'Authentication timeout. Please try again and scan the QR code.'
-            }), 408
-            
-        finally:
-            driver.quit()
-            
-    except Exception as e:
-        print(f"[ERROR] WhatsApp setup error: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/send-whatsapp-message', methods=['POST'])
-def api_send_whatsapp_message():
-    """API endpoint to send WhatsApp message"""
+@app.route('/api/whatsapp-link', methods=['POST'])
+def api_whatsapp_link():
+    """API endpoint to generate WhatsApp link"""
     data = request.get_json()
     
     try:
@@ -5201,21 +5077,22 @@ def api_send_whatsapp_message():
         if not phone_number or not message_text:
             return jsonify({'error': 'Phone number and message required'}), 400
         
-        # Send asynchronously
-        send_whatsapp_message_async(phone_number, message_text)
+        # Generate link
+        whatsapp_link = generate_whatsapp_link(phone_number, message_text)
         
         return jsonify({
             'status': 'success',
-            'message': f'WhatsApp message queued for {phone_number}'
+            'link': whatsapp_link,
+            'message': 'Click the link to send message via WhatsApp'
         }), 200
             
     except Exception as e:
-        print(f"[ERROR] WhatsApp message error: {str(e)}")
+        print(f"[ERROR] WhatsApp link error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/send-whatsapp-otp', methods=['POST'])
-def api_send_whatsapp_otp():
-    """API endpoint to send WhatsApp OTP"""
+@app.route('/api/whatsapp-otp-link', methods=['POST'])
+def api_whatsapp_otp_link():
+    """API endpoint to generate WhatsApp OTP link"""
     data = request.get_json()
     
     try:
@@ -5226,22 +5103,21 @@ def api_send_whatsapp_otp():
             return jsonify({'error': 'Phone number and OTP required'}), 400
         
         message = f'Your OTP is: {otp_code}\n\nDo not share this code with anyone.'
-        
-        # Send asynchronously
-        send_whatsapp_message_async(phone_number, message)
+        whatsapp_link = generate_whatsapp_link(phone_number, message)
         
         return jsonify({
             'status': 'success',
-            'message': f'OTP sent to {phone_number}'
+            'link': whatsapp_link,
+            'message': 'Click the link to send OTP via WhatsApp'
         }), 200
             
     except Exception as e:
-        print(f"[ERROR] WhatsApp OTP error: {str(e)}")
+        print(f"[ERROR] WhatsApp OTP link error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/send-whatsapp-order-notification', methods=['POST'])
-def api_send_whatsapp_order_notification():
-    """API endpoint to send WhatsApp order notification"""
+@app.route('/api/whatsapp-order-link', methods=['POST'])
+def api_whatsapp_order_link():
+    """API endpoint to generate WhatsApp order notification link"""
     data = request.get_json()
     
     try:
@@ -5263,16 +5139,16 @@ You'll receive updates about your order soon.
 
 Thank you for shopping with CiTiPlug! 🛍️"""
         
-        # Send asynchronously
-        send_whatsapp_message_async(phone_number, message)
+        whatsapp_link = generate_whatsapp_link(phone_number, message)
         
         return jsonify({
             'status': 'success',
-            'message': f'Order notification sent to {phone_number}'
+            'link': whatsapp_link,
+            'message': 'Click the link to send order notification via WhatsApp'
         }), 200
             
     except Exception as e:
-        print(f"[ERROR] WhatsApp order notification error: {str(e)}")
+        print(f"[ERROR] WhatsApp order link error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
