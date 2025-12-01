@@ -140,8 +140,9 @@ Thank you for shopping with CiTiPlug! 🛒
 
 def send_email_async(recipient_email, subject, html_content):
     """
-    Send an email using Brevo (Sendinblue) SMTP.
+    Send an email using Brevo (Sendinblue) HTTP API.
     Free tier: 300 emails/day, no card required.
+    Works on Render free tier (HTTP allowed, SMTP blocked).
     
     Args:
         recipient_email: Email address to send to
@@ -153,45 +154,46 @@ def send_email_async(recipient_email, subject, html_content):
     """
     print(f"[THREAD] Email thread started for {recipient_email}")
     try:
-        # Get Brevo credentials from environment
-        brevo_smtp_user = os.environ.get('BREVO_SMTP_USER')
-        brevo_smtp_password = os.environ.get('BREVO_SMTP_PASSWORD')
+        # Get Brevo API key from environment
+        brevo_api_key = os.environ.get('BREVO_API_KEY')
         sender_email = os.environ.get('SENDER_EMAIL', 'noreply@citiplus.com')
         
         print(f"[DEBUG] Email function called")
-        print(f"[DEBUG] BREVO_SMTP_USER set: {bool(brevo_smtp_user)}")
-        print(f"[DEBUG] BREVO_SMTP_PASSWORD set: {bool(brevo_smtp_password)}")
+        print(f"[DEBUG] BREVO_API_KEY set: {bool(brevo_api_key)}")
         
-        if not brevo_smtp_user or not brevo_smtp_password:
-            print("[WARNING] Brevo credentials not configured. Email not sent.")
+        if not brevo_api_key:
+            print("[WARNING] Brevo API key not configured. Email not sent.")
             return False
         
-        # Create message
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = subject
-        msg['From'] = sender_email
-        msg['To'] = recipient_email
+        print(f"[DEBUG] Sending via Brevo HTTP API...")
         
-        # Attach HTML content
-        msg.attach(MIMEText(html_content, 'html'))
+        # Use Brevo API v3
+        url = "https://api.brevo.com/v3/smtp/email"
+        headers = {
+            "accept": "application/json",
+            "api-key": brevo_api_key,
+            "content-type": "application/json"
+        }
         
-        print(f"[DEBUG] Connecting to Brevo SMTP (smtp-relay.brevo.com:587)...")
-        # Send email via Brevo SMTP (TLS on port 587)
-        with smtplib.SMTP('smtp-relay.brevo.com', 587, timeout=10) as server:
-            server.starttls()
-            print(f"[DEBUG] TLS started, logging in...")
-            server.login(brevo_smtp_user, brevo_smtp_password)
-            print(f"[DEBUG] Logged in, sending email...")
-            server.sendmail(sender_email, recipient_email, msg.as_string())
-            print(f"[DEBUG] Email sent via SMTP")
+        data = {
+            "sender": {"email": sender_email},
+            "to": [{"email": recipient_email}],
+            "subject": subject,
+            "htmlContent": html_content
+        }
         
-        print(f"[OK] Email sent to {recipient_email} via Brevo")
-        return True
-    except smtplib.SMTPAuthenticationError as e:
-        print(f"[ERROR] Brevo authentication failed: {str(e)}")
-        return False
-    except smtplib.SMTPException as e:
-        print(f"[ERROR] SMTP error sending to {recipient_email}: {str(e)}")
+        print(f"[DEBUG] Making HTTP request to Brevo API...")
+        response = requests.post(url, json=data, headers=headers, timeout=10)
+        
+        if response.status_code in [200, 201]:
+            print(f"[OK] Email sent to {recipient_email} via Brevo API (status: {response.status_code})")
+            return True
+        else:
+            print(f"[ERROR] Brevo API error: {response.status_code} - {response.text}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Request error sending email: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
