@@ -69,6 +69,10 @@ def send_email(recipient_email, subject, html_content):
         gmail_user = os.environ.get('GMAIL_USER')
         gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
         
+        print(f"[DEBUG] Email function called")
+        print(f"[DEBUG] GMAIL_USER set: {bool(gmail_user)}")
+        print(f"[DEBUG] GMAIL_APP_PASSWORD set: {bool(gmail_password)}")
+        
         if not gmail_user or not gmail_password:
             print("[WARNING] Gmail credentials not configured. Email not sent.")
             print(f"  GMAIL_USER: {bool(gmail_user)}, GMAIL_APP_PASSWORD: {bool(gmail_password)}")
