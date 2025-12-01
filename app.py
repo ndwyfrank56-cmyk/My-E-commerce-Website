@@ -52,9 +52,9 @@ compress.init_app(app)
 # ============================================
 # Email Sending Function (Gmail SMTP - Production)
 # ============================================
-def send_email(recipient_email, subject, html_content):
+def send_email_async(recipient_email, subject, html_content):
     """
-    Send an email using Gmail SMTP.
+    Send an email using Gmail SMTP (runs in background thread).
     
     Args:
         recipient_email: Email address to send to
@@ -87,8 +87,8 @@ def send_email(recipient_email, subject, html_content):
         # Attach HTML content
         msg.attach(MIMEText(html_content, 'html'))
         
-        # Send email via Gmail SMTP
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        # Send email via Gmail SMTP with timeout
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
             server.login(gmail_user, gmail_password)
             server.sendmail(gmail_user, recipient_email, msg.as_string())
         
@@ -103,6 +103,15 @@ def send_email(recipient_email, subject, html_content):
     except Exception as e:
         print(f"[ERROR] Failed to send email to {recipient_email}: {str(e)}")
         return False
+
+def send_email(recipient_email, subject, html_content):
+    """
+    Send an email asynchronously (non-blocking).
+    Spawns a background thread to avoid blocking the main request.
+    """
+    thread = Thread(target=send_email_async, args=(recipient_email, subject, html_content), daemon=True)
+    thread.start()
+    return True  # Return immediately, email sends in background
 
 def send_welcome_email(email, first_name):
     """Send a welcome email to a new user."""
