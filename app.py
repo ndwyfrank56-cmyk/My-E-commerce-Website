@@ -54,7 +54,8 @@ compress.init_app(app)
 # ============================================
 def send_email_async(recipient_email, subject, html_content):
     """
-    Send an email using SendGrid API (runs in background thread).
+    Send an email using Mailgun API (runs in background thread).
+    Works on Render free tier via HTTP requests.
     
     Args:
         recipient_email: Email address to send to
@@ -66,50 +67,43 @@ def send_email_async(recipient_email, subject, html_content):
     """
     print(f"[THREAD] Email thread started for {recipient_email}")
     try:
-        # Get SendGrid API key from environment
-        sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
+        # Get Mailgun credentials from environment
+        mailgun_api_key = os.environ.get('MAILGUN_API_KEY')
+        mailgun_domain = os.environ.get('MAILGUN_DOMAIN')
         sender_email = os.environ.get('SENDER_EMAIL', 'noreply@citiplus.com')
         
         print(f"[DEBUG] Email function called")
-        print(f"[DEBUG] SENDGRID_API_KEY set: {bool(sendgrid_api_key)}")
-        print(f"[DEBUG] SENDER_EMAIL: {sender_email}")
+        print(f"[DEBUG] MAILGUN_API_KEY set: {bool(mailgun_api_key)}")
+        print(f"[DEBUG] MAILGUN_DOMAIN set: {bool(mailgun_domain)}")
         
-        if not sendgrid_api_key:
-            print("[WARNING] SendGrid API key not configured. Email not sent.")
+        if not mailgun_api_key or not mailgun_domain:
+            print("[WARNING] Mailgun credentials not configured. Email not sent.")
             return False
         
-        # Use SendGrid API via HTTP (works on Render free tier)
-        print(f"[DEBUG] Sending via SendGrid API...")
-        url = "https://api.sendgrid.com/v3/mail/send"
-        headers = {
-            "Authorization": f"Bearer {sendgrid_api_key}",
-            "Content-Type": "application/json"
-        }
+        # Use Mailgun API via HTTP (works on Render free tier)
+        print(f"[DEBUG] Sending via Mailgun API...")
+        url = f"https://api.mailgun.net/v3/{mailgun_domain}/messages"
         
         data = {
-            "personalizations": [
-                {
-                    "to": [{"email": recipient_email}],
-                    "subject": subject
-                }
-            ],
-            "from": {"email": sender_email},
-            "content": [
-                {
-                    "type": "text/html",
-                    "value": html_content
-                }
-            ]
+            "from": sender_email,
+            "to": recipient_email,
+            "subject": subject,
+            "html": html_content
         }
         
-        print(f"[DEBUG] Making HTTP request to SendGrid...")
-        response = requests.post(url, json=data, headers=headers, timeout=10)
+        print(f"[DEBUG] Making HTTP request to Mailgun...")
+        response = requests.post(
+            url,
+            auth=("api", mailgun_api_key),
+            data=data,
+            timeout=10
+        )
         
-        if response.status_code in [200, 201, 202]:
-            print(f"[OK] Email sent to {recipient_email} via SendGrid (status: {response.status_code})")
+        if response.status_code in [200, 201]:
+            print(f"[OK] Email sent to {recipient_email} via Mailgun (status: {response.status_code})")
             return True
         else:
-            print(f"[ERROR] SendGrid API error: {response.status_code} - {response.text}")
+            print(f"[ERROR] Mailgun API error: {response.status_code} - {response.text}")
             return False
             
     except requests.exceptions.RequestException as e:
