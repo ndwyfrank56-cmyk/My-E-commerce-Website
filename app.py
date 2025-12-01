@@ -4288,10 +4288,13 @@ def pay_cod():
             else:
                 # Get guest email from form
                 user_email = request.form.get('guest_email', '').strip()
+                print(f"[DEBUG] Guest email from form: {user_email}")
             
+            print(f"[DEBUG] Final user_email: {user_email}")
             if user_email:
                 print(f"[EMAIL] Sending order confirmation to {user_email}")
-                send_order_confirmation_email(user_email, order_id, full_name, total, cart_items)
+                result = send_order_confirmation_email(user_email, order_id, full_name, total, cart_items)
+                print(f"[EMAIL] Send result: {result}")
             else:
                 print(f"[WARNING] No email address found for order {order_id}")
             
