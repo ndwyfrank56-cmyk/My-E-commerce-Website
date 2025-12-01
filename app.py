@@ -240,32 +240,15 @@ def send_welcome_email(email, first_name):
 
 def send_order_confirmation_email(email, order_id, full_name, total_amount, items):
     """Send an order confirmation email."""
-    items_html = "".join([
-        f"<tr><td style='padding: 8px; border-bottom: 1px solid #ddd;'>{item['name']}</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: center;'>{item['quantity']}</td><td style='padding: 8px; border-bottom: 1px solid #ddd; text-align: right;'>RWF {item['price']:,.0f}</td></tr>"
-        for item in items
-    ])
-    
     html_content = f"""
     <html>
         <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
             <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 <h1 style="color: #333; text-align: center;">Order Confirmation</h1>
                 <p style="color: #666; font-size: 16px;">Hi {full_name},</p>
-                <p style="color: #666; font-size: 16px;">Thank you for your order! Here are your order details:</p>
+                <p style="color: #666; font-size: 16px;">Thank you for your order!</p>
                 <p style="color: #333; font-size: 14px; font-weight: bold;">Order ID: #{order_id}</p>
-                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                    <thead>
-                        <tr style="background-color: #f0f0f0;">
-                            <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Product</th>
-                            <th style="padding: 10px; text-align: center; border-bottom: 2px solid #ddd;">Qty</th>
-                            <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items_html}
-                    </tbody>
-                </table>
-                <div style="text-align: right; margin: 20px 0;">
+                <div style="text-align: center; margin: 20px 0;">
                     <p style="color: #333; font-size: 18px; font-weight: bold;">Total: RWF {total_amount:,.0f}</p>
                 </div>
                 <p style="color: #666; font-size: 16px;">We'll keep you updated on your order status. You can track your order anytime on your profile.</p>
