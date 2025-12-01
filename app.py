@@ -54,7 +54,7 @@ compress.init_app(app)
 # ============================================
 def send_email_async(recipient_email, subject, html_content):
     """
-    Send an email using Gmail SMTP (runs in background thread).
+    Send an email using SendGrid API (runs in background thread).
     
     Args:
         recipient_email: Email address to send to
@@ -66,45 +66,54 @@ def send_email_async(recipient_email, subject, html_content):
     """
     print(f"[THREAD] Email thread started for {recipient_email}")
     try:
-        # Get Gmail credentials from environment
-        gmail_user = os.environ.get('GMAIL_USER')
-        gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
+        # Get SendGrid API key from environment
+        sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
+        sender_email = os.environ.get('SENDER_EMAIL', 'noreply@citiplus.com')
         
         print(f"[DEBUG] Email function called")
-        print(f"[DEBUG] GMAIL_USER set: {bool(gmail_user)}")
-        print(f"[DEBUG] GMAIL_APP_PASSWORD set: {bool(gmail_password)}")
-        print(f"[DEBUG] GMAIL_USER value: {gmail_user}")
+        print(f"[DEBUG] SENDGRID_API_KEY set: {bool(sendgrid_api_key)}")
+        print(f"[DEBUG] SENDER_EMAIL: {sender_email}")
         
-        if not gmail_user or not gmail_password:
-            print("[WARNING] Gmail credentials not configured. Email not sent.")
-            print(f"  GMAIL_USER: {bool(gmail_user)}, GMAIL_APP_PASSWORD: {bool(gmail_password)}")
+        if not sendgrid_api_key:
+            print("[WARNING] SendGrid API key not configured. Email not sent.")
             return False
         
-        # Create message
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = subject
-        msg['From'] = gmail_user
-        msg['To'] = recipient_email
+        # Use SendGrid API via HTTP (works on Render free tier)
+        print(f"[DEBUG] Sending via SendGrid API...")
+        url = "https://api.sendgrid.com/v3/mail/send"
+        headers = {
+            "Authorization": f"Bearer {sendgrid_api_key}",
+            "Content-Type": "application/json"
+        }
         
-        # Attach HTML content
-        msg.attach(MIMEText(html_content, 'html'))
+        data = {
+            "personalizations": [
+                {
+                    "to": [{"email": recipient_email}],
+                    "subject": subject
+                }
+            ],
+            "from": {"email": sender_email},
+            "content": [
+                {
+                    "type": "text/html",
+                    "value": html_content
+                }
+            ]
+        }
         
-        print(f"[DEBUG] Connecting to Gmail SMTP...")
-        # Send email via Gmail SMTP with timeout
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
-            print(f"[DEBUG] Connected to Gmail SMTP, logging in...")
-            server.login(gmail_user, gmail_password)
-            print(f"[DEBUG] Logged in, sending email...")
-            server.sendmail(gmail_user, recipient_email, msg.as_string())
-            print(f"[DEBUG] Email sent via SMTP")
+        print(f"[DEBUG] Making HTTP request to SendGrid...")
+        response = requests.post(url, json=data, headers=headers, timeout=10)
         
-        print(f"[OK] Email sent to {recipient_email} via Gmail")
-        return True
-    except smtplib.SMTPAuthenticationError as e:
-        print(f"[ERROR] Gmail authentication failed: {str(e)}")
-        return False
-    except smtplib.SMTPException as e:
-        print(f"[ERROR] SMTP error sending to {recipient_email}: {str(e)}")
+        if response.status_code in [200, 201, 202]:
+            print(f"[OK] Email sent to {recipient_email} via SendGrid (status: {response.status_code})")
+            return True
+        else:
+            print(f"[ERROR] SendGrid API error: {response.status_code} - {response.text}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Request error sending email: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
