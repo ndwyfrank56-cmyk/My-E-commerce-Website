@@ -140,8 +140,8 @@ Thank you for shopping with CiTiPlug! 🛒
 
 def send_email_async(recipient_email, subject, html_content):
     """
-    Log email to console (for testing/development).
-    In production, you can replace this with a real email service.
+    Send an email using Brevo (Sendinblue) SMTP.
+    Free tier: 300 emails/day, no card required.
     
     Args:
         recipient_email: Email address to send to
@@ -153,21 +153,50 @@ def send_email_async(recipient_email, subject, html_content):
     """
     print(f"[THREAD] Email thread started for {recipient_email}")
     try:
-        print(f"\n{'='*80}")
-        print(f"[EMAIL] Order Confirmation Email")
-        print(f"{'='*80}")
-        print(f"TO: {recipient_email}")
-        print(f"SUBJECT: {subject}")
-        print(f"{'='*80}")
-        print(f"CONTENT:")
-        print(f"{html_content}")
-        print(f"{'='*80}\n")
+        # Get Brevo credentials from environment
+        brevo_smtp_user = os.environ.get('BREVO_SMTP_USER')
+        brevo_smtp_password = os.environ.get('BREVO_SMTP_PASSWORD')
+        sender_email = os.environ.get('SENDER_EMAIL', 'noreply@citiplus.com')
         
-        print(f"[OK] Email logged to console for {recipient_email}")
+        print(f"[DEBUG] Email function called")
+        print(f"[DEBUG] BREVO_SMTP_USER set: {bool(brevo_smtp_user)}")
+        print(f"[DEBUG] BREVO_SMTP_PASSWORD set: {bool(brevo_smtp_password)}")
+        
+        if not brevo_smtp_user or not brevo_smtp_password:
+            print("[WARNING] Brevo credentials not configured. Email not sent.")
+            return False
+        
+        # Create message
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+        
+        # Attach HTML content
+        msg.attach(MIMEText(html_content, 'html'))
+        
+        print(f"[DEBUG] Connecting to Brevo SMTP (smtp-relay.brevo.com:587)...")
+        # Send email via Brevo SMTP (TLS on port 587)
+        with smtplib.SMTP('smtp-relay.brevo.com', 587, timeout=10) as server:
+            server.starttls()
+            print(f"[DEBUG] TLS started, logging in...")
+            server.login(brevo_smtp_user, brevo_smtp_password)
+            print(f"[DEBUG] Logged in, sending email...")
+            server.sendmail(sender_email, recipient_email, msg.as_string())
+            print(f"[DEBUG] Email sent via SMTP")
+        
+        print(f"[OK] Email sent to {recipient_email} via Brevo")
         return True
-            
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"[ERROR] Brevo authentication failed: {str(e)}")
+        return False
+    except smtplib.SMTPException as e:
+        print(f"[ERROR] SMTP error sending to {recipient_email}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
     except Exception as e:
-        print(f"[ERROR] Failed to log email: {str(e)}")
+        print(f"[ERROR] Failed to send email to {recipient_email}: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
@@ -3800,13 +3829,14 @@ def checkout():
                                     
                                     mysql.connection.commit()
                                     
-                                    # Send order confirmation via WhatsApp
-                                    print(f"[DEBUG] COD Order phone: delivery_phone={delivery_phone}")
-                                    if delivery_phone:
-                                        print(f"[WHATSAPP] Sending COD order confirmation to {delivery_phone}")
-                                        send_whatsapp_async(delivery_phone, order_id, full_name, total, cart_items)
+                                    # Send order confirmation email
+                                    order_email = user_data['email'] if user_data else guest_email
+                                    print(f"[DEBUG] COD Order email: user_data={bool(user_data)}, guest_email={guest_email}, final_email={order_email}")
+                                    if order_email:
+                                        print(f"[EMAIL] Sending COD order confirmation to {order_email}")
+                                        send_order_confirmation_email(order_email, order_id, full_name, total, cart_items)
                                     else:
-                                        print(f"[WARNING] No phone found for COD order {order_id}")
+                                        print(f"[WARNING] No email found for COD order {order_id}")
                                     
                                     cur.close()
                                     
