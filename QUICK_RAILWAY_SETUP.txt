@@ -1,0 +1,100 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  RAILWAY MYSQL DATABASE SETUP - QUICK START                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+YOUR CONNECTION DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Host:     nozomi.proxy.rlwy.net
+  Port:     26283
+  User:     root
+  Password: sbYYCDjoHzrDkxPIfmGIpHewbbkQTALu
+  Database: railway
+
+FASTEST METHOD - MySQL Workbench (Recommended):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Open MySQL Workbench
+2. Click the + button next to "MySQL Connections"
+3. Connection Name: Railway Production
+4. Hostname: nozomi.proxy.rlwy.net
+5. Port: 26283
+6. Username: root
+7. Password: Click "Store in Vault" → sbYYCDjoHzrDkxPIfmGIpHewbbkQTALu
+8. Default Schema: railway
+9. Click "Test Connection" → OK → OK
+10. Double-click "Railway Production" to connect
+11. File → Open SQL Script → init_railway_db_complete.sql
+12. Click Execute (lightning bolt icon) or Ctrl+Shift+Enter
+13. Done! ✓
+
+ALTERNATIVE METHODS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+METHOD 2 - Python Script:
+  1. Open PowerShell in your project folder
+  2. Run: python setup_railway_db.py
+  3. Enter your credentials when prompted
+  4. Done! ✓
+
+METHOD 3 - Command Line:
+  mysql -h nozomi.proxy.rlwy.net -u root -p --port 26283 railway
+  (password: sbYYCDjoHzrDkxPIfmGIpHewbbkQTALu)
+  
+  Then run:
+  source init_railway_db.sql
+
+METHOD 4 - Railway Web Console:
+  1. Go to railway.app dashboard
+  2. Click MySQL service
+  3. Click Data tab → Connect
+  4. Copy init_railway_db.sql content
+  5. Paste and Execute
+
+AFTER SETUP:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Update your .env file:
+  MYSQL_HOST=nozomi.proxy.rlwy.net
+  MYSQL_PORT=26283
+  MYSQL_USER=root
+  MYSQL_PASSWORD=sbYYCDjoHzrDkxPIfmGIpHewbbkQTALu
+  MYSQL_DB=railway
+
+TABLES CREATED (16 Total):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Core Tables:
+  ✓ users                    (user accounts & authentication)
+  ✓ categories               (product categories)
+  ✓ products                 (product listings)
+  ✓ image_variations         (product colors/styles)
+  ✓ dropdown_variation       (product sizes/attributes)
+  ✓ orders                   (customer orders)
+  ✓ order_items              (items in orders)
+  ✓ payments                 (payment transactions)
+  ✓ wishlist                 (user wishlists)
+  ✓ password_resets          (password reset tokens)
+
+Supporting Tables:
+  ✓ banners                  (promotional banners)
+  ✓ low_stock_alerts         (inventory alerts)
+  ✓ reviews                  (product reviews)
+  ✓ workers                  (staff information)
+  ✓ worker_login             (staff credentials)
+  ✓ worker_page_permissions  (staff access control)
+
+FILES PROVIDED:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📄 setup_railway_db.py              → Python setup script (RECOMMENDED)
+  📄 init_railway_db_complete.sql     → Complete SQL schema (16 tables)
+  📄 init_railway_db.sql              → Basic SQL schema (8 tables)
+  📄 DATABASE_SCHEMA.md               → Complete schema documentation
+  📄 RAILWAY_SETUP_GUIDE.md           → Detailed setup guide with all methods
+  📄 QUICK_RAILWAY_SETUP.txt          → This file
+
+NEED HELP?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. Read RAILWAY_SETUP_GUIDE.md for detailed instructions
+  2. Check troubleshooting section in the guide
+  3. Verify credentials in Railway dashboard
+  4. Ensure Railway MySQL service is running
+
+═══════════════════════════════════════════════════════════════════════════════

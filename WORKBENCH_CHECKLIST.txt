@@ -1,0 +1,116 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  MYSQL WORKBENCH - RAILWAY SETUP CHECKLIST                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+CONNECTION DETAILS (Copy these):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Host:     nozomi.proxy.rlwy.net
+  Port:     26283
+  User:     root
+  Password: sbYYCDjoHzrDkxPIfmGIpHewbbkQTALu
+  Database: railway
+
+STEP-BY-STEP CHECKLIST:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PHASE 1: CREATE CONNECTION
+  ☐ Open MySQL Workbench
+  ☐ Click + button next to "MySQL Connections"
+  ☐ Enter Connection Name: Railway Production
+  ☐ Select Connection Method: Standard (TCP/IP)
+  ☐ Enter Hostname: nozomi.proxy.rlwy.net
+  ☐ Enter Port: 26283
+  ☐ Enter Username: root
+  ☐ Click "Store in Vault" and enter password
+  ☐ Enter Default Schema: railway
+  ☐ Click "Test Connection"
+  ☐ See success message
+  ☐ Click OK → OK to save
+
+PHASE 2: CONNECT TO RAILWAY
+  ☐ See "Railway Production" in MySQL Connections
+  ☐ Double-click "Railway Production"
+  ☐ Wait for connection to open
+  ☐ See new tab with connection name
+
+PHASE 3: OPEN SQL SCRIPT
+  ☐ Click File menu
+  ☐ Select "Open SQL Script"
+  ☐ Navigate to: c:\Users\Public\Ecommerce website\
+  ☐ Select: init_railway_db_complete.sql
+  ☐ Click Open
+  ☐ See SQL code in new tab
+
+PHASE 4: EXECUTE SCRIPT
+  ☐ Click Execute button (lightning bolt ⚡)
+  ☐ Or press: Ctrl + Shift + Enter
+  ☐ Watch Output panel for progress
+  ☐ See "CREATE TABLE" messages
+  ☐ Wait for all statements to complete
+  ☐ See no red error messages
+
+PHASE 5: VERIFY TABLES
+  ☐ In left panel, expand connection
+  ☐ Right-click "Tables"
+  ☐ Select "Refresh"
+  ☐ Expand "Tables" folder
+  ☐ Verify you see all 16 tables:
+    ☐ banners
+    ☐ categories
+    ☐ dropdown_variation
+    ☐ image_variations
+    ☐ low_stock_alerts
+    ☐ order_items
+    ☐ orders
+    ☐ password_resets
+    ☐ payments
+    ☐ products
+    ☐ reviews
+    ☐ users
+    ☐ wishlist
+    ☐ worker_login
+    ☐ worker_page_permissions
+    ☐ workers
+
+PHASE 6: FINAL STEPS
+  ☐ Update .env file with Railway credentials
+  ☐ Test Flask connection
+  ☐ Deploy to Railway
+
+SUCCESS INDICATORS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ Connection test shows "Successfully made the MySQL connection"
+  ✓ All 16 tables appear in the Tables folder
+  ✓ No red error messages in Output panel
+  ✓ Script execution completes without errors
+
+TROUBLESHOOTING:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Problem: Connection Failed
+  → Check hostname, port, username, password
+  → Ensure no extra spaces
+  → Check internet connection
+
+  Problem: Authentication Failed
+  → Double-check password (case-sensitive)
+  → Use "Store in Vault" for secure storage
+  → Copy password directly from this file
+
+  Problem: Tables Not Showing
+  → Right-click Tables → Refresh
+  → Close and reopen connection
+  → Check Output panel for errors
+
+  Problem: Script Execution Error
+  → Check Output panel for specific error
+  → Ensure using init_railway_db_complete.sql
+  → Safe to run multiple times (uses IF NOT EXISTS)
+
+QUICK REFERENCE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  File to use:     init_railway_db_complete.sql
+  Tables created:  16 (10 core + 6 supporting)
+  Execution time:  ~5-10 seconds
+  Safe to re-run:  YES (uses IF NOT EXISTS)
+
+═══════════════════════════════════════════════════════════════════════════════
