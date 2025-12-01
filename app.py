@@ -64,8 +64,8 @@ def send_email_async(recipient_email, subject, html_content):
     Returns:
         True if successful, False otherwise
     """
+    print(f"[THREAD] Email thread started for {recipient_email}")
     try:
-        print(f"[THREAD] Email thread started for {recipient_email}")
         # Get Gmail credentials from environment
         gmail_user = os.environ.get('GMAIL_USER')
         gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
@@ -73,6 +73,7 @@ def send_email_async(recipient_email, subject, html_content):
         print(f"[DEBUG] Email function called")
         print(f"[DEBUG] GMAIL_USER set: {bool(gmail_user)}")
         print(f"[DEBUG] GMAIL_APP_PASSWORD set: {bool(gmail_password)}")
+        print(f"[DEBUG] GMAIL_USER value: {gmail_user}")
         
         if not gmail_user or not gmail_password:
             print("[WARNING] Gmail credentials not configured. Email not sent.")
@@ -88,21 +89,29 @@ def send_email_async(recipient_email, subject, html_content):
         # Attach HTML content
         msg.attach(MIMEText(html_content, 'html'))
         
+        print(f"[DEBUG] Connecting to Gmail SMTP...")
         # Send email via Gmail SMTP with timeout
         with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
+            print(f"[DEBUG] Connected to Gmail SMTP, logging in...")
             server.login(gmail_user, gmail_password)
+            print(f"[DEBUG] Logged in, sending email...")
             server.sendmail(gmail_user, recipient_email, msg.as_string())
+            print(f"[DEBUG] Email sent via SMTP")
         
         print(f"[OK] Email sent to {recipient_email} via Gmail")
         return True
-    except smtplib.SMTPAuthenticationError:
-        print(f"[ERROR] Gmail authentication failed. Check GMAIL_USER and GMAIL_APP_PASSWORD")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"[ERROR] Gmail authentication failed: {str(e)}")
         return False
     except smtplib.SMTPException as e:
         print(f"[ERROR] SMTP error sending to {recipient_email}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
     except Exception as e:
         print(f"[ERROR] Failed to send email to {recipient_email}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def send_email(recipient_email, subject, html_content):
