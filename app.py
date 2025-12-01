@@ -212,6 +212,55 @@ def send_email(recipient_email, subject, html_content):
     thread.start()
     return True  # Return immediately, email sends in background
 
+def validate_email_sendable(email):
+    """
+    Test if an email address can receive emails.
+    Returns True if email is valid and can receive, False otherwise.
+    """
+    if not email or not isinstance(email, str):
+        return False
+    
+    # Basic email format validation
+    if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
+        return False
+    
+    # Try to send a test email
+    try:
+        brevo_api_key = os.environ.get('BREVO_API_KEY')
+        sender_email = os.environ.get('SENDER_EMAIL', 'noreply@citiplus.com')
+        
+        if not brevo_api_key:
+            print(f"[WARNING] Cannot validate email - Brevo API key not configured")
+            return False
+        
+        # Send a simple test email
+        url = "https://api.brevo.com/v3/smtp/email"
+        headers = {
+            "accept": "application/json",
+            "api-key": brevo_api_key,
+            "content-type": "application/json"
+        }
+        
+        data = {
+            "sender": {"email": sender_email},
+            "to": [{"email": email}],
+            "subject": "Email Verification - CiTiPlug",
+            "htmlContent": "<p>This is a test email to verify your email address works.</p>"
+        }
+        
+        response = requests.post(url, json=data, headers=headers, timeout=5)
+        
+        if response.status_code in [200, 201]:
+            print(f"[OK] Email validation successful for {email}")
+            return True
+        else:
+            print(f"[ERROR] Email validation failed for {email}: {response.status_code} - {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"[ERROR] Email validation error for {email}: {str(e)}")
+        return False
+
 def send_welcome_email(email, first_name):
     """Send a welcome email to a new user."""
     html_content = f"""
@@ -3802,25 +3851,33 @@ def checkout():
                             session.modified = True
                             
                             if payment_method == 'cod':
-                                # For Cash on Delivery, create order immediately
-                                try:
-                                    # Create the order directly
-                                    from datetime import datetime
-                                    cur = mysql.connection.cursor()
-                                    
-                                    # Insert order - match database schema exactly
-                                    cur.execute("""
-                                        INSERT INTO orders (user_id, full_name, address_line, city, 
-                                                          delivery_phone, provider, momo_number, notes, latitude, 
-                                                          longitude, total_amount, payment_status, status, 
-                                                          created_at)
-                                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                                    """, (
-                                        user_id, full_name, address_line, city,
-                                        delivery_phone, 'COD', None, notes, latitude,
-                                        longitude, total, 'pending', 'pending',
-                                        datetime.now()
-                                    ))
+                                # For Cash on Delivery, validate email BEFORE creating order
+                                order_email = user_data['email'] if user_data else guest_email
+                                
+                                if not order_email:
+                                    flash('Email address is required to place an order', 'error')
+                                elif not validate_email_sendable(order_email):
+                                    flash(f'The email address "{order_email}" is invalid or cannot receive emails. Please check and try again.', 'error')
+                                else:
+                                    # Email is valid - create order
+                                    try:
+                                        # Create the order directly
+                                        from datetime import datetime
+                                        cur = mysql.connection.cursor()
+                                        
+                                        # Insert order - match database schema exactly
+                                        cur.execute("""
+                                            INSERT INTO orders (user_id, full_name, address_line, city, 
+                                                              delivery_phone, provider, momo_number, notes, latitude, 
+                                                              longitude, total_amount, payment_status, status, 
+                                                              created_at)
+                                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                        """, (
+                                            user_id, full_name, address_line, city,
+                                            delivery_phone, 'COD', None, notes, latitude,
+                                            longitude, total, 'pending', 'pending',
+                                            datetime.now()
+                                        ))
                                     
                                     order_id = cur.lastrowid
                                     
