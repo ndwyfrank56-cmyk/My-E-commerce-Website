@@ -54,8 +54,8 @@ compress.init_app(app)
 # ============================================
 def send_email_async(recipient_email, subject, html_content):
     """
-    Send an email using Mailgun API (runs in background thread).
-    Works on Render free tier via HTTP requests.
+    Log email to console (for testing/development).
+    In production, you can replace this with a real email service.
     
     Args:
         recipient_email: Email address to send to
@@ -67,52 +67,21 @@ def send_email_async(recipient_email, subject, html_content):
     """
     print(f"[THREAD] Email thread started for {recipient_email}")
     try:
-        # Get Mailgun credentials from environment
-        mailgun_api_key = os.environ.get('MAILGUN_API_KEY')
-        mailgun_domain = os.environ.get('MAILGUN_DOMAIN')
-        sender_email = os.environ.get('SENDER_EMAIL', 'noreply@citiplus.com')
+        print(f"\n{'='*80}")
+        print(f"[EMAIL] Order Confirmation Email")
+        print(f"{'='*80}")
+        print(f"TO: {recipient_email}")
+        print(f"SUBJECT: {subject}")
+        print(f"{'='*80}")
+        print(f"CONTENT:")
+        print(f"{html_content}")
+        print(f"{'='*80}\n")
         
-        print(f"[DEBUG] Email function called")
-        print(f"[DEBUG] MAILGUN_API_KEY set: {bool(mailgun_api_key)}")
-        print(f"[DEBUG] MAILGUN_DOMAIN set: {bool(mailgun_domain)}")
-        
-        if not mailgun_api_key or not mailgun_domain:
-            print("[WARNING] Mailgun credentials not configured. Email not sent.")
-            return False
-        
-        # Use Mailgun API via HTTP (works on Render free tier)
-        print(f"[DEBUG] Sending via Mailgun API...")
-        url = f"https://api.mailgun.net/v3/{mailgun_domain}/messages"
-        
-        data = {
-            "from": sender_email,
-            "to": recipient_email,
-            "subject": subject,
-            "html": html_content
-        }
-        
-        print(f"[DEBUG] Making HTTP request to Mailgun...")
-        response = requests.post(
-            url,
-            auth=("api", mailgun_api_key),
-            data=data,
-            timeout=10
-        )
-        
-        if response.status_code in [200, 201]:
-            print(f"[OK] Email sent to {recipient_email} via Mailgun (status: {response.status_code})")
-            return True
-        else:
-            print(f"[ERROR] Mailgun API error: {response.status_code} - {response.text}")
-            return False
+        print(f"[OK] Email logged to console for {recipient_email}")
+        return True
             
-    except requests.exceptions.RequestException as e:
-        print(f"[ERROR] Request error sending email: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return False
     except Exception as e:
-        print(f"[ERROR] Failed to send email to {recipient_email}: {str(e)}")
+        print(f"[ERROR] Failed to log email: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
