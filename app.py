@@ -4618,8 +4618,11 @@ def add_review():
         if not product_id:
             flash('Product is required', 'error')
             return redirect(url_for('home'))
-        if not review_text and rating is None:
-            flash('Add a rating or write a review before submitting', 'error')
+        if rating is None or rating == 0:
+            flash('Please select a rating before submitting', 'error')
+            return redirect(url_for('product_detail', product_id=product_id))
+        if not review_text:
+            flash('Please write a review before submitting', 'error')
             return redirect(url_for('product_detail', product_id=product_id))
 
         # Basic length guard
