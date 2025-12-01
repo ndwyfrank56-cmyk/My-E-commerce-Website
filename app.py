@@ -218,7 +218,7 @@ def send_welcome_email(email, first_name):
     <html>
         <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
             <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <h1 style="color: #333; text-align: center;">Welcome to CiTi🛒Plug!</h1>
+                <h1 style="color: #333; text-align: center;">Welcome to CiTiPlug!</h1>
                 <p style="color: #666; font-size: 16px;">Hi {first_name},</p>
                 <p style="color: #666; font-size: 16px;">Thank you for signing up with us! We're excited to have you as part of the CiTiPlug family.</p>
                 <p style="color: #666; font-size: 16px;">You can now:</p>
@@ -236,7 +236,7 @@ def send_welcome_email(email, first_name):
         </body>
     </html>
     """
-    return send_email(email, "Welcome to CiTi🛒Plug!", html_content)
+    return send_email(email, "Welcome to CiTiPlug!", html_content)
 
 def send_order_confirmation_email(email, order_id, full_name, total_amount, items):
     """Send an order confirmation email."""
