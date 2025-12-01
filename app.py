@@ -4276,9 +4276,7 @@ def pay_cod():
                 stock_level = deduct_stock_smartly(cur, ci['id'], int(ci['quantity']), variations)
                 print(f"COD ORDER: Stock deducted from {stock_level} level for {ci['name']}")
             
-            mysql.connection.commit()
-            
-            # Send order confirmation email
+            # Get user email BEFORE committing
             user_email = None
             if session.get('user_id'):
                 # Get logged-in user's email
@@ -4288,8 +4286,12 @@ def pay_cod():
             else:
                 # Get guest email from form
                 user_email = request.form.get('guest_email', '').strip()
-                print(f"[DEBUG] Guest email from form: {user_email}")
             
+            mysql.connection.commit()
+            cur.close()
+            
+            # Send order confirmation email (after cursor is closed)
+            print(f"[DEBUG] Guest email from form: {user_email}")
             print(f"[DEBUG] Final user_email: {user_email}")
             if user_email:
                 print(f"[EMAIL] Sending order confirmation to {user_email}")
@@ -4297,8 +4299,6 @@ def pay_cod():
                 print(f"[EMAIL] Send result: {result}")
             else:
                 print(f"[WARNING] No email address found for order {order_id}")
-            
-            cur.close()
             print("DEBUG: COD order created successfully!")
         except Exception as e:
             print(f"COD order error: {e}")
