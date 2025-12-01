@@ -65,6 +65,7 @@ def send_email_async(recipient_email, subject, html_content):
         True if successful, False otherwise
     """
     try:
+        print(f"[THREAD] Email thread started for {recipient_email}")
         # Get Gmail credentials from environment
         gmail_user = os.environ.get('GMAIL_USER')
         gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
