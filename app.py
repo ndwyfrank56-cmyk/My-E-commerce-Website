@@ -4281,9 +4281,15 @@ def pay_cod():
                 cur.execute("SELECT email FROM users WHERE id = %s", (session.get('user_id'),))
                 user_row = cur.fetchone()
                 user_email = user_row[0] if user_row else None
+            else:
+                # Get guest email from form
+                user_email = request.form.get('guest_email', '').strip()
             
             if user_email:
+                print(f"[EMAIL] Sending order confirmation to {user_email}")
                 send_order_confirmation_email(user_email, order_id, full_name, total, cart_items)
+            else:
+                print(f"[WARNING] No email address found for order {order_id}")
             
             cur.close()
             print("DEBUG: COD order created successfully!")
