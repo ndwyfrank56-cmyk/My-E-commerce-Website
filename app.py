@@ -3722,6 +3722,16 @@ def checkout():
                                         print(f"CHECKOUT COD: Stock deducted from {stock_level} level for {item['name']}")
                                     
                                     mysql.connection.commit()
+                                    
+                                    # Send order confirmation email
+                                    order_email = user_data['email'] if user_data else guest_email
+                                    print(f"[DEBUG] COD Order email: user_data={bool(user_data)}, guest_email={guest_email}, final_email={order_email}")
+                                    if order_email:
+                                        print(f"[EMAIL] Sending COD order confirmation to {order_email}")
+                                        send_order_confirmation_email(order_email, order_id, full_name, total, cart_items)
+                                    else:
+                                        print(f"[WARNING] No email found for COD order {order_id}")
+                                    
                                     cur.close()
                                     
                                     # Clear cart and pending order
