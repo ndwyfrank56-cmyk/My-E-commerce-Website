@@ -50,11 +50,11 @@ compress = Compress()
 compress.init_app(app)
 
 # ============================================
-# Email Sending Function (Zoho Mail - Production)
+# Email Sending Function (Gmail SMTP - Production)
 # ============================================
 def send_email(recipient_email, subject, html_content):
     """
-    Send an email using Zoho Mail SMTP.
+    Send an email using Gmail SMTP.
     
     Args:
         recipient_email: Email address to send to
@@ -65,32 +65,33 @@ def send_email(recipient_email, subject, html_content):
         True if successful, False otherwise
     """
     try:
-        # Get Zoho credentials from environment
-        zoho_email = os.environ.get('ZOHO_EMAIL', 'noreply@citiplug.com')
-        zoho_password = os.environ.get('ZOHO_PASSWORD')
+        # Get Gmail credentials from environment
+        gmail_user = os.environ.get('GMAIL_USER')
+        gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
         
-        if not zoho_password:
-            print("[WARNING] Zoho Mail credentials not configured. Email not sent.")
+        if not gmail_user or not gmail_password:
+            print("[WARNING] Gmail credentials not configured. Email not sent.")
+            print(f"  GMAIL_USER: {bool(gmail_user)}, GMAIL_APP_PASSWORD: {bool(gmail_password)}")
             return False
         
         # Create message
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
-        msg['From'] = zoho_email
+        msg['From'] = gmail_user
         msg['To'] = recipient_email
         
         # Attach HTML content
         msg.attach(MIMEText(html_content, 'html'))
         
-        # Send email via Zoho SMTP
-        with smtplib.SMTP_SSL('smtp.zoho.com', 465) as server:
-            server.login(zoho_email, zoho_password)
-            server.sendmail(zoho_email, recipient_email, msg.as_string())
+        # Send email via Gmail SMTP
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(gmail_user, gmail_password)
+            server.sendmail(gmail_user, recipient_email, msg.as_string())
         
-        print(f"[OK] Email sent to {recipient_email} via Zoho Mail")
+        print(f"[OK] Email sent to {recipient_email} via Gmail")
         return True
     except smtplib.SMTPAuthenticationError:
-        print(f"[ERROR] Zoho Mail authentication failed. Check ZOHO_EMAIL and ZOHO_PASSWORD")
+        print(f"[ERROR] Gmail authentication failed. Check GMAIL_USER and GMAIL_APP_PASSWORD")
         return False
     except smtplib.SMTPException as e:
         print(f"[ERROR] SMTP error sending to {recipient_email}: {str(e)}")
