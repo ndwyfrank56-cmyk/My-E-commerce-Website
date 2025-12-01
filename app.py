@@ -4276,6 +4276,7 @@ def pay_cod():
                 stock_level = deduct_stock_smartly(cur, ci['id'], int(ci['quantity']), variations)
                 print(f"COD ORDER: Stock deducted from {stock_level} level for {ci['name']}")
             
+            print("[DEBUG] About to get user email")
             # Get user email BEFORE committing
             user_email = None
             if session.get('user_id'):
