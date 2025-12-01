@@ -52,6 +52,92 @@ compress.init_app(app)
 # ============================================
 # Email Sending Function (Gmail SMTP - Production)
 # ============================================
+def send_whatsapp_async(phone_number, order_id, full_name, total_amount, items):
+    """
+    Send order confirmation via WhatsApp using Twilio (runs in background thread).
+    Free tier: 100 messages/month
+    
+    Args:
+        phone_number: Customer phone number (with country code, e.g., +250788123456)
+        order_id: Order ID
+        full_name: Customer name
+        total_amount: Order total
+        items: List of order items
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    print(f"[THREAD] WhatsApp thread started for {phone_number}")
+    try:
+        # Get Twilio credentials from environment
+        twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
+        twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
+        twilio_whatsapp_number = os.environ.get('TWILIO_WHATSAPP_NUMBER', 'whatsapp:+14155238886')
+        
+        print(f"[DEBUG] WhatsApp function called")
+        print(f"[DEBUG] TWILIO_ACCOUNT_SID set: {bool(twilio_account_sid)}")
+        print(f"[DEBUG] TWILIO_AUTH_TOKEN set: {bool(twilio_auth_token)}")
+        
+        if not twilio_account_sid or not twilio_auth_token:
+            print("[WARNING] Twilio credentials not configured. WhatsApp not sent.")
+            return False
+        
+        # Format items list
+        items_text = "\n".join([f"• {item['name']} x{item['quantity']} - RWF {item['price']:,.0f}" for item in items])
+        
+        # Create WhatsApp message
+        message_body = f"""
+🎉 Order Confirmation - Order #{order_id}
+
+Hi {full_name},
+
+Thank you for your order! Here are your order details:
+
+{items_text}
+
+💰 Total: RWF {total_amount:,.0f}
+
+We'll keep you updated on your order status. You can track your order anytime on your profile.
+
+Thank you for shopping with CiTiPlug! 🛒
+"""
+        
+        print(f"[DEBUG] Sending WhatsApp message via Twilio...")
+        
+        # Use Twilio API via HTTP
+        url = f"https://api.twilio.com/2010-04-01/Accounts/{twilio_account_sid}/Messages.json"
+        
+        data = {
+            "From": twilio_whatsapp_number,
+            "To": f"whatsapp:{phone_number}",
+            "Body": message_body
+        }
+        
+        response = requests.post(
+            url,
+            data=data,
+            auth=(twilio_account_sid, twilio_auth_token),
+            timeout=10
+        )
+        
+        if response.status_code in [200, 201]:
+            print(f"[OK] WhatsApp sent to {phone_number} via Twilio (status: {response.status_code})")
+            return True
+        else:
+            print(f"[ERROR] Twilio API error: {response.status_code} - {response.text}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Request error sending WhatsApp: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
+    except Exception as e:
+        print(f"[ERROR] Failed to send WhatsApp to {phone_number}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
+
 def send_email_async(recipient_email, subject, html_content):
     """
     Log email to console (for testing/development).
@@ -3714,14 +3800,13 @@ def checkout():
                                     
                                     mysql.connection.commit()
                                     
-                                    # Send order confirmation email
-                                    order_email = user_data['email'] if user_data else guest_email
-                                    print(f"[DEBUG] COD Order email: user_data={bool(user_data)}, guest_email={guest_email}, final_email={order_email}")
-                                    if order_email:
-                                        print(f"[EMAIL] Sending COD order confirmation to {order_email}")
-                                        send_order_confirmation_email(order_email, order_id, full_name, total, cart_items)
+                                    # Send order confirmation via WhatsApp
+                                    print(f"[DEBUG] COD Order phone: delivery_phone={delivery_phone}")
+                                    if delivery_phone:
+                                        print(f"[WHATSAPP] Sending COD order confirmation to {delivery_phone}")
+                                        send_whatsapp_async(delivery_phone, order_id, full_name, total, cart_items)
                                     else:
-                                        print(f"[WARNING] No email found for COD order {order_id}")
+                                        print(f"[WARNING] No phone found for COD order {order_id}")
                                     
                                     cur.close()
                                     
