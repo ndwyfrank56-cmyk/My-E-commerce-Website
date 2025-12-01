@@ -4302,20 +4302,26 @@ def pay_cod():
                 print(f"[WARNING] No email address found for order {order_id}")
             print("DEBUG: COD order created successfully!")
         except Exception as e:
-            print(f"COD order error: {e}")
-            print(f"COD order error type: {type(e)}")
+            print(f"[ERROR] COD order error: {e}")
+            print(f"[ERROR] COD order error type: {type(e)}")
             import traceback
             traceback.print_exc()
-            mysql.connection.rollback()
-            cur.close()
+            try:
+                mysql.connection.rollback()
+                cur.close()
+            except:
+                pass
             return jsonify({'status': 'error', 'message': f'Could not create COD order: {str(e)}'}), 500
 
         # Clear cart and respond
+        print("[DEBUG] Clearing cart and responding with success")
         session['cart'] = {}
         session.modified = True
         return jsonify({'status': 'successful', 'message': 'Order placed successfully! You will pay cash on delivery.', 'order_id': order_id}), 200
     except Exception as e:
-        print(f"COD error: {e}")
+        print(f"[ERROR] Outer COD error: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'status': 'error', 'message': 'Server error creating COD order'}), 500
 
 @app.route('/api/product/<int:product_id>')
