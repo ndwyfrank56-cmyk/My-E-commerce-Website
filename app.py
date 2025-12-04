@@ -3878,52 +3878,52 @@ def checkout():
                                             longitude, total, 'pending', 'pending',
                                             datetime.now()
                                         ))
-                                    
-                                    order_id = cur.lastrowid
-                                    
-                                    # Insert order items - match database schema exactly
-                                    for item in cart_items:
-                                        subtotal = item['quantity'] * item['price']
-                                        variations = item.get('variations', '')
-                                        cur.execute("""
-                                            INSERT INTO order_items (order_id, product_id, product_name, price, quantity, subtotal, VARIATIONS)
-                                            VALUES (%s, %s, %s, %s, %s, %s, %s)
-                                        """, (order_id, item['product_id'], item['name'], item['price'], item['quantity'], subtotal, variations))
                                         
-                                        # DEDUCT STOCK from appropriate level (triggers will cascade)
-                                        stock_level = deduct_stock_smartly(cur, item['product_id'], int(item['quantity']), variations)
-                                        print(f"CHECKOUT COD: Stock deducted from {stock_level} level for {item['name']}")
-                                    
-                                    mysql.connection.commit()
-                                    
-                                    # Send order confirmation email
-                                    order_email = user_data['email'] if user_data else guest_email
-                                    print(f"[DEBUG] COD Order email: user_data={bool(user_data)}, guest_email={guest_email}, final_email={order_email}")
-                                    if order_email:
-                                        print(f"[EMAIL] Sending COD order confirmation to {order_email}")
-                                        send_order_confirmation_email(order_email, order_id, full_name, total, cart_items)
-                                    else:
-                                        print(f"[WARNING] No email found for COD order {order_id}")
-                                    
-                                    cur.close()
-                                    
-                                    # Clear cart and pending order
-                                    session['cart'] = {}
-                                    session.pop('pending_order', None)
-                                    session.modified = True
-                                    
-                                    # Show success modal instead of redirect
-                                    return render_template('checkout.html', 
-                                                         categories=categories, 
-                                                         cart_items=[], 
-                                                         total=0, 
-                                                         user_data=user_data,
-                                                         show_success_modal=True,
-                                                         order_id=order_id)
-                                    
-                                except Exception as e:
-                                    print(f"Error creating COD order: {e}")
-                                    flash('Error creating order. Please try again.', 'error')
+                                        order_id = cur.lastrowid
+                                        
+                                        # Insert order items - match database schema exactly
+                                        for item in cart_items:
+                                            subtotal = item['quantity'] * item['price']
+                                            variations = item.get('variations', '')
+                                            cur.execute("""
+                                                INSERT INTO order_items (order_id, product_id, product_name, price, quantity, subtotal, VARIATIONS)
+                                                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                            """, (order_id, item['product_id'], item['name'], item['price'], item['quantity'], subtotal, variations))
+                                            
+                                            # DEDUCT STOCK from appropriate level (triggers will cascade)
+                                            stock_level = deduct_stock_smartly(cur, item['product_id'], int(item['quantity']), variations)
+                                            print(f"CHECKOUT COD: Stock deducted from {stock_level} level for {item['name']}")
+                                        
+                                        mysql.connection.commit()
+                                        
+                                        # Send order confirmation email
+                                        order_email = user_data['email'] if user_data else guest_email
+                                        print(f"[DEBUG] COD Order email: user_data={bool(user_data)}, guest_email={guest_email}, final_email={order_email}")
+                                        if order_email:
+                                            print(f"[EMAIL] Sending COD order confirmation to {order_email}")
+                                            send_order_confirmation_email(order_email, order_id, full_name, total, cart_items)
+                                        else:
+                                            print(f"[WARNING] No email found for COD order {order_id}")
+                                        
+                                        cur.close()
+                                        
+                                        # Clear cart and pending order
+                                        session['cart'] = {}
+                                        session.pop('pending_order', None)
+                                        session.modified = True
+                                        
+                                        # Show success modal instead of redirect
+                                        return render_template('checkout.html', 
+                                                             categories=categories, 
+                                                             cart_items=[], 
+                                                             total=0, 
+                                                             user_data=user_data,
+                                                             show_success_modal=True,
+                                                             order_id=order_id)
+                                        
+                                    except Exception as e:
+                                        print(f"Error creating COD order: {e}")
+                                        flash('Error creating order. Please try again.', 'error')
                             else:
                                 # Mobile Money payment
                                 payment_initiated = True
