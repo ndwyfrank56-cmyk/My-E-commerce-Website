@@ -2533,28 +2533,29 @@
   }
   
   .products-grid {
-    display: flex;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    gap: 1rem;
-    padding: 0 1rem 1rem 0;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-snap-type: x mandatory;
-    pointer-events: none;
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 1rem !important;
+    padding: 0 1rem 1rem 0 !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scroll-snap-type: x mandatory !important;
+    pointer-events: auto !important;
   }
   
   .products-grid::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
   
   .products-grid .product-card {
-    flex: 0 0 calc(50% - 0.5rem);
-    min-width: calc(50% - 0.5rem);
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    pointer-events: auto;
+    flex: 0 0 calc(50vw - 1rem) !important;
+    min-width: calc(50vw - 1rem) !important;
+    width: calc(50vw - 1rem) !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+    pointer-events: auto !important;
   }
   
   /* Special class for Explore More - horizontal scrolling */
@@ -4006,39 +4007,37 @@
     }
   })();
 
-  // Arrow navigation for mobile product grids
+  // Arrow navigation for all product grids
   document.addEventListener('DOMContentLoaded', function() {
-    if (window.innerWidth <= 768) {
-      // Show arrow containers on mobile
-      const arrowContainers = document.querySelectorAll('.scroll-arrows-container');
-      arrowContainers.forEach(container => {
-        container.style.display = 'flex';
-      });
-      
-      // Update arrow states based on scroll position
-      function updateArrowStates() {
-        const productGrids = document.querySelectorAll('.products-grid:not(.explore-more)');
-        productGrids.forEach(grid => {
-          const section = grid.closest('.category-section');
-          const leftArrow = section.querySelector('.scroll-arrow.left');
-          const rightArrow = section.querySelector('.scroll-arrow.right');
-          
-          if (leftArrow && rightArrow) {
-            leftArrow.disabled = grid.scrollLeft <= 0;
-            rightArrow.disabled = grid.scrollLeft >= (grid.scrollWidth - grid.clientWidth);
-          }
-        });
-      }
-      
-      // Add scroll listeners to update arrow states
-      const productGrids = document.querySelectorAll('.products-grid:not(.explore-more)');
+    // Show arrow containers for all sections
+    const arrowContainers = document.querySelectorAll('.scroll-arrows-container');
+    arrowContainers.forEach(container => {
+      container.style.display = 'flex';
+    });
+    
+    // Update arrow states based on scroll position
+    function updateArrowStates() {
+      const productGrids = document.querySelectorAll('.products-grid');
       productGrids.forEach(grid => {
-        grid.addEventListener('scroll', updateArrowStates);
+        const section = grid.closest('.category-section');
+        const leftArrow = section.querySelector('.scroll-arrow.left');
+        const rightArrow = section.querySelector('.scroll-arrow.right');
+        
+        if (leftArrow && rightArrow) {
+          leftArrow.disabled = grid.scrollLeft <= 0;
+          rightArrow.disabled = grid.scrollLeft >= (grid.scrollWidth - grid.clientWidth);
+        }
       });
-      
-      // Initial arrow state update
-      updateArrowStates();
     }
+    
+    // Add scroll listeners to update arrow states
+    const productGrids = document.querySelectorAll('.products-grid');
+    productGrids.forEach(grid => {
+      grid.addEventListener('scroll', updateArrowStates);
+    });
+    
+    // Initial arrow state update
+    updateArrowStates();
   });
 
   // Arrow scroll function
