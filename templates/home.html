@@ -4011,8 +4011,13 @@
     }
   })();
 
-  // Arrow navigation for all product grids
+  // Arrow navigation for product grids (mobile only)
   document.addEventListener('DOMContentLoaded', function() {
+    // Only show/use arrows on small screens
+    if (window.innerWidth > 768) {
+      return; // keep arrows hidden on desktop
+    }
+
     // Show arrow containers for all sections
     const arrowContainers = document.querySelectorAll('.scroll-arrows-container');
     arrowContainers.forEach(container => {
