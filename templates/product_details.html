@@ -1752,9 +1752,9 @@
               </div>
               <span id="ratingError" style="display:none;color:#ef4444;font-size:0.85rem;margin-top:-0.75rem;margin-bottom:0.5rem;">please pick a rating</span>
               <label for="review" class="review-form-label">your thoughts</label>
-              <textarea required maxlength="500" class="review-textarea" id="review" name="review" placeholder="what do you think about this product?" style="min-height: 80px;"></textarea>
+              <textarea required maxlength="500" class="review-textarea" id="review" name="review" placeholder="what do you think about this product?" style="min-height: 80px;" disabled></textarea>
               <div class="review-actions">
-                <button type="submit" class="review-submit">share review</button>
+                <button type="submit" class="review-submit" id="reviewSubmitBtn" disabled>share review</button>
               </div>
             </form>
           {% else %}
@@ -2913,6 +2913,8 @@
       var input = document.getElementById('ratingValue');
       var text = document.getElementById('ratingText');
       var errorMsg = document.getElementById('ratingError');
+      var reviewTextarea = document.getElementById('review');
+      var submitBtn = document.getElementById('reviewSubmitBtn');
       function paint(n){
         stars.forEach(function(s){
           var v = parseInt(s.getAttribute('data-val'));
@@ -2927,6 +2929,12 @@
           input.value = val;
           paint(val);
           if(errorMsg) errorMsg.style.display = 'none';
+
+          // Enable review writing only after a rating is chosen
+          if (val && reviewTextarea && submitBtn) {
+            reviewTextarea.disabled = false;
+            submitBtn.disabled = false;
+          }
         });
         s.addEventListener('mouseenter', function(){ paint(parseInt(this.getAttribute('data-val'))); });
       });
