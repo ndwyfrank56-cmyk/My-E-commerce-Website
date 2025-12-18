@@ -1574,7 +1574,9 @@
       padding: 6rem 2rem 5rem;
       margin: 120px auto 2rem;
       max-width: 100%;
-      background: linear-gradient(135deg, #0f1318 0%, #1a1f2e 50%, #0f1318 100%);
+      background: 
+        linear-gradient(135deg, rgba(15, 19, 24, 0.85) 0%, rgba(26, 31, 46, 0.75) 50%, rgba(15, 19, 24, 0.85) 100%),
+        url('{{ url_for('static', filename='eshop.jpg') }}') center/cover no-repeat;
       overflow: hidden;
       border-radius: 18px;
       border: none;
@@ -1588,8 +1590,8 @@
       right: 0;
       bottom: 0;
       background: 
-        radial-gradient(circle at 20% 50%, rgba(46, 77, 44, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(199, 169, 106, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(46, 77, 44, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(199, 169, 106, 0.1) 0%, transparent 50%);
       opacity: 1;
       z-index: 1;
       will-change: auto;
